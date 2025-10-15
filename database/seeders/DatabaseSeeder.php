@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'kode_user' => 'ADM001',
             'email' => 'admin@donasibuku.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('GTI_ERROR'),
             'role' => 'admin',
             'alamat' => 'Pusat Donasi Buku',
             'telepon' => '0895404587176',
