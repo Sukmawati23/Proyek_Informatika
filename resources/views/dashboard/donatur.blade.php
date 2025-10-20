@@ -152,10 +152,23 @@
             margin-bottom: 20px;
         }
         .notif-card {
-            background-color: #1a1aff;
-            padding: 15px;
-            margin-bottom: 15px;
+            background-color: #0000cc;
+            color: white;
+            padding: 10px 15px;
             border-radius: 10px;
+            margin-bottom: 10px;
+            max-width: 600px;
+            font-family: Arial, sans-serif;
+        }
+        .notif-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notif-footer small {
+            font-size: 12px;
+            color: #ddd;
         }
         .notif-card small {
             color: #ccc;
@@ -166,6 +179,23 @@
             width: 50px;
         }
 
+       .chat-link {
+            color: #ffffff;            
+            font-weight: bold;
+            background: none;          
+            padding: 0;               
+            border-radius: 0;         
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .chat-link:hover {
+            text-decoration: underline; 
+            opacity: 0.8;              
+        }
+
+
+
         /* Pengaturan */
         #settingsSection {
             display: none;
@@ -175,53 +205,53 @@
         }
 
         .switch {
-  position: relative;
-  display: inline-block;
-  width: 46px;
-  height: 24px;
-}
+        position: relative;
+        display: inline-block;
+        width: 46px;
+        height: 24px;
+        }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+        .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  border-radius: 24px;
-  transition: .4s;
-}
+        .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 24px;
+        transition: .4s;
+        }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: .4s;
-}
+        .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: .4s;
+        }
 
-input:checked + .slider {
-  background-color: #26e07f;
-}
+        input:checked + .slider {
+        background-color: #26e07f;
+        }
 
-input:checked + .slider:before {
-  transform: translateX(22px);
-}
+        input:checked + .slider:before {
+        transform: translateX(22px);
+        }
 
-.slider.round {
-  border-radius: 24px;
-}
+        .slider.round {
+        border-radius: 24px;
+        }
 
     </style>
 </head>
@@ -308,8 +338,10 @@ input:checked + .slider:before {
         <div id="notificationSection">
             <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
             <h2>Notifikasi</h2>
-            <div id="notifContainer"></div>
-        </div>
+            <div id="notifContainer"></div> 
+
+        </div> 
+
 
         <!-- Pengaturan Akun -->
         <div id="settingsSection">
@@ -529,13 +561,19 @@ if (namaDonatur) {
             updateDonationHistory();
         });
 
-        function addNotification(title, time) {
-            const notifContainer = document.getElementById('notifContainer');
-            const notifCard = document.createElement('div');
-            notifCard.className = 'notif-card';
-            notifCard.innerHTML = `<p>• Buku ‘${title}’ sudah diterima.</p><small>${time}</small>`;
-            notifContainer.appendChild(notifCard);
-        }
+    function addNotification(title, time, chatLink) {
+    const notifContainer = document.getElementById('notifContainer');
+    const notifCard = document.createElement('div');
+    notifCard.className = 'notif-card';
+    notifCard.innerHTML = `
+        <p>• Buku ‘${title}’ sudah diterima.</p>
+        <div class="notif-footer">
+            <small>${time}</small>
+            <a href="${chatLink}" class="chat-link">Masuk Chat</a>
+        </div>
+    `;
+    notifContainer.appendChild(notifCard);
+}
 
         function updateDonationHistory() {
             const receivedBooks = document.getElementById('receivedBooks');
