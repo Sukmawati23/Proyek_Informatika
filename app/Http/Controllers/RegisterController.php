@@ -26,9 +26,10 @@ class RegisterController extends Controller
         return view('auth.register-penerima');
     }
 
+    // Di dalam RegisterController.php, ganti kedua fungsi registerDonatur dan registerPenerima menjadi seperti ini:
+
     public function registerDonatur(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -37,12 +38,10 @@ class RegisterController extends Controller
             'telepon' => 'required|string|max:15',
         ]);
 
-        // Menghasilkan kode_user otomatis
         $latest = User::where('role', 'donatur')->orderBy('id', 'desc')->first();
         $next = $latest ? ((int) substr($latest->kode_user, 1)) + 1 : 1;
         $kode = 'D' . str_pad($next, 3, '0', STR_PAD_LEFT);
 
-        // Membuat pengguna baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -56,18 +55,15 @@ class RegisterController extends Controller
         // Kirim email verifikasi
         $user->sendEmailVerificationNotification();
 
-        // Login pengguna setelah pendaftaran
+        // Login pengguna
         auth()->login($user);
 
-        // Tampilkan halaman verifikasi email
-        // return view('auth.verify-email', ['email' => $user->email]);
         // Redirect ke halaman verifikasi email
         return redirect()->route('verification.notice');
     }
 
     public function registerPenerima(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -76,12 +72,10 @@ class RegisterController extends Controller
             'telepon' => 'required|string|max:15',
         ]);
 
-        // Menghasilkan kode_user otomatis
         $latest = User::where('role', 'penerima')->orderBy('id', 'desc')->first();
         $nextNumber = $latest ? (int) substr($latest->kode_user, 1) + 1 : 1;
         $kode = 'P' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        // Membuat pengguna baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -95,11 +89,9 @@ class RegisterController extends Controller
         // Kirim email verifikasi
         $user->sendEmailVerificationNotification();
 
-        // Login pengguna setelah pendaftaran
+        // Login pengguna
         auth()->login($user);
 
-        // Tampilkan halaman verifikasi email
-        //return view('auth.verify-email', ['email' => $user->email]);
         // Redirect ke halaman verifikasi email
         return redirect()->route('verification.notice');
     }

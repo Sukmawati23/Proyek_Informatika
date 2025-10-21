@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -19,7 +18,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'role',
         'kode_user',
-        'email_verified_at', // Tambahkan ini
+        'alamat', // Tambahkan field tambahan jika diperlukan
+        'telepon', // Tambahkan field tambahan jika diperlukan
+        'email_verified_at', // Penting untuk fitur verifikasi email
     ];
 
     protected $hidden = [
@@ -29,16 +30,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'string', // Perbaikan di sini
     ];
 
-    // Tambahkan relasi donasis
     public function donasis()
     {
         return $this->hasMany(Donasi::class);
     }
 
-    // Relasi dengan Pengajuan
     public function pengajuans()
     {
         return $this->hasMany(Pengajuan::class);
