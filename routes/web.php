@@ -38,13 +38,19 @@ Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showRese
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
-// Rute untuk verifikasi email
-//Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
-//Route::get('/email/verification-notification', [VerificationController::class, 'resend'])->name('verification.resend');
+// ... kode lainnya ...
+
+// Rute untuk verifikasi email (sudah ada)
 Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 Route::post('/email/verification-notification', [VerificationController::class, 'resend'])->name('verification.resend');
 
+// Rute BARU: Halaman notifikasi setelah verifikasi berhasil
+Route::get('/email/verification-success', function () {
+    // Ambil role user yang sedang login
+    $role = auth()->user()->role;
+    return view('auth.verification-success', compact('role'));
+})->middleware(['auth'])->name('verification.success');
 
 
 Route::middleware(['auth'])->group(function () {
