@@ -5,14 +5,13 @@
     <title>Daftar Sebagai Donatur</title>
     <style>
         body {
-            background-color: #f0f0f0;
+            background-color: #000080;
             font-family: 'Segoe UI', sans-serif;
         }
 
         .container {
             width: 280px;
             margin: 50px auto;
-            background-color: #000080;
             padding: 30px 20px;
             border-radius: 10px;
             color: white;

@@ -5,18 +5,18 @@
     <title>Lupa Kata Sandi</title>
     <style>
         body {
-            background-color: #f0f0f0;
+            background-color: #000080;
             font-family: 'Segoe UI', sans-serif;
             text-align: center;
             padding: 50px;
         }
         .container {
-            width: 300px;
-            margin: auto;
-            background-color: #000080;
+            width: 90%;
+            max-width: 400px; /* Batas lebar maksimal */
             padding: 30px;
-            border-radius: 10px;
             color: white;
+            text-align: center;
+            margin: auto;
         }
         .container h2 {
             margin-bottom: 20px;
