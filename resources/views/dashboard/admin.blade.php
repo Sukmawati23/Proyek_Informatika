@@ -516,7 +516,10 @@
                     <div class="user-dropdown">
                         <a href="#" id="profileLink"><i class="fas fa-fw fa-user"></i> Profil</a>
                         <a href="#" class="nav-link" data-page="pengaturan"><i class="fas fa-fw fa-cog"></i> Pengaturan</a>
-                        <a href="{{ route('logout') }}"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="#" onclick="event.preventDefault(); confirmLogout();"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
@@ -1618,9 +1621,8 @@
             });
         });
 
-    const reportTypeSelect = document.getElementById('reportType');
+        const reportTypeSelect = document.getElementById('reportType');
 const ulasanReportDiv = document.getElementById('ulasanReport');
-
 reportTypeSelect.addEventListener('change', function() {
     if (this.value === 'ulasan') {
         ulasanReportDiv.style.display = 'block';
@@ -1628,6 +1630,13 @@ reportTypeSelect.addEventListener('change', function() {
         ulasanReportDiv.style.display = 'none';
     }
 });
-    </script>
+
+// === Konfirmasi Logout ===
+function confirmLogout() {
+    if (confirm('Apakah Anda yakin ingin keluar?')) {
+        document.getElementById('logout-form').submit();
+    }
+}
+</script>
 </body>
 </html>
