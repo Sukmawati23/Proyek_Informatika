@@ -55,7 +55,6 @@ Route::get('/email/verification-success', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
 
     // 🟢 Tambahkan ini:
     Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
