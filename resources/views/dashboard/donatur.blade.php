@@ -260,37 +260,63 @@
         <img src="LOGO-SDB.png" alt="Logo" class="logo">
         <h1>Dashboard Donatur</h1>
         <p id="welcomeText">Selamat datang!</p>
+        
+        {{-- Pesan sukses --}}
+        @if(session('success'))
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
+            {{ session('success') }}
+        </div>
+        @endif
+
+
+        {{-- Pesan error validasi --}}
+        @if ($errors->any())
+        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
         <!-- Form Donasi -->
-        <form id="donationForm">
-            <label for="bookTitle">Judul Buku</label>
-            <input type="text" id="bookTitle" placeholder="Masukkan judul buku" required>
+        <form id="donationForm" action="{{ route('donasi.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
 
-            <label for="category">Kategori</label>
-            <select id="category" required>
-                <option value="">Pilih Kategori</option>
-                <option value="fiction">Fiksi</option>
-                <option value="non-fiction">Non-Fiksi</option>
-                <option value="children">Anak-anak</option>
-                <option value="mystery">Misteri</option>
-                <option value="fantasy">Fantasi</option>
-                <option value="biography">Biografi</option>
-                <option value="history">Sejarah</option>
-                <option value="science">Sains</option>
-                <option value="self-help">Pengembangan Diri</option>
-                <option value="cookbook">Buku Masak</option>
-                <option value="travel">Perjalanan</option>
-                <option value="poetry">Puisi</option>
-                <option value="graphic-novel">Novel Grafis</option>
-            </select>
+            <label for="judul_buku">Judul Buku</label>
+            <input type="text" id="judul_buku" name="judul_buku" placeholder="Masukkan judul buku" required>
 
-            <label for="condition">Kondisi Buku</label>
-            <input type="text" id="condition" placeholder="Masukkan kondisi buku" required>
+            <label for="kategori">Kategori</label>
+            <select id="kategori" name="kategori" required>
+            <option value="">Pilih Kategori</option>
+            <option value="fiksi">Fiksi</option>
+            <option value="non-fiksi">Non-Fiksi</option>
+            <option value="anak-anak">Anak-anak</option>
+            <option value="misteri">Misteri</option>
+            <option value="fantasi">Fantasi</option>
+            <option value="biografi">Biografi</option>
+            <option value="sejarah">Sejarah</option>
+            <option value="sains">Sains</option>
+            <option value="pengembangan-diri">Pengembangan Diri</option>
+            <option value="buku-masak">Buku Masak</option>
+            <option value="perjalanan">Perjalanan</option>
+            <option value="puisi">Puisi</option>
+            <option value="novel-grafis">Novel Grafis</option>
+        </select>
 
-            <label for="photo">Pilih Foto</label>
-            <input type="file" id="photo" accept="image/*">
-            <button type="submit">Donasikan Buku</button>
-        </form>
+        <label for="kondisi">Kondisi Buku</label>
+        <input type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
+
+        <label for="foto">Pilih Foto</label>
+        <input type="file" id="foto" name="foto" accept="image/*">
+
+        <label for="deskripsi">Deskripsi (Opsional)</label>
+        <textarea id="deskripsi" name="deskripsi" placeholder="Tambahkan deskripsi jika ada..."></textarea>
+
+        <button type="submit">Donasikan Buku</button>
+    </form>
+
 
         <div class="success-message" id="successMessage">
             <img src="checkmark.png" alt="Checkmark">
@@ -301,15 +327,25 @@
 
         <div class="donation-history">
             <h2>Riwayat Donasi</h2>
-            <div class="status-title">Diterima:</div>
-            <p id="receivedBooks"></p>
-            <div class="status-title">Dalam Proses:</div>
-            <p id="processingBooks"></p>
-            <div class="status-title">Dikirim:</div>
-            <p id="shippedBooks"></p>
+            <div class="status-title">Riwayat Donasi Anda:</div>
+            <ul>
+                @forelse($donasis as $donasi)
+                    <li>
+                        <strong>{{ $donasi->judul_buku }}</strong> — 
+                        <em>{{ ucfirst($donasi->status) }}</em> 
+                        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
+                    </li>
+                @empty
+                    <li>Belum ada donasi.</li>
+                @endforelse
+            </ul>
             <div class="status-title">Status Pengiriman:</div>
-            <p>Menunggu: <span id="waitingCount">0</span> buku</p>
-            <p>Diterima: <span id="receivedCount">0</span> buku</p>
+            @php
+                $waitingCount = $donasis->where('status', 'menunggu')->count();
+                $receivedCount = $donasis->where('status', 'diterima')->count();
+            @endphp
+            <p>Menunggu: {{ $waitingCount }} buku</p>
+            <p>Diterima: {{ $receivedCount }} buku</p>
         </div>
 
         <!-- Profil -->
@@ -550,7 +586,7 @@ if (namaDonatur) {
     document.getElementById("welcomeText").textContent = `Selamat datang, ${namaDonatur}!`;
 }
 
-        document.getElementById('donationForm').addEventListener('submit', function(event) {
+        /*document.getElementById('donationForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const bookTitle = document.getElementById('bookTitle').value;
             const timestamp = new Date().toLocaleString();
@@ -559,7 +595,7 @@ if (namaDonatur) {
             this.reset();
             addNotification(bookTitle, timestamp);
             updateDonationHistory();
-        });
+        });*/
 
     function addNotification(title, time, chatLink) {
     const notifContainer = document.getElementById('notifContainer');
