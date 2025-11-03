@@ -11,8 +11,9 @@ class DonasiController extends Controller
 {
     public function index()
     {
-        $donasis = Auth::user()->donasis()->latest()->get();
-        return view('donasi.index', compact('donasis'));
+        $donasis = Donasi::where('user_id', Auth::id())->latest()->get();
+        return view('dashboard.donatur', compact('donasis'));
+
     }
 
     public function create()
@@ -41,7 +42,7 @@ class DonasiController extends Controller
 
         Donasi::create($validated);
 
-        return redirect()->route('donasi.index')->with('success', 'Donasi buku berhasil diajukan!');
+        return redirect()->back()->with('success', 'Donasi buku berhasil diajukan!');
     }
 
     public function show(Donasi $donasi)
