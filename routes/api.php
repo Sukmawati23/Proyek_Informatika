@@ -2,15 +2,23 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController; // Import controller
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PengajuanController; 
+use App\Models\Buku;
 
-// Route POST untuk menyimpan status notifikasi
+// Buku tersedia (publik)
+Route::get('/buku-tersedia', function () {
+    return Buku::where('status_buku', 'tersedia')->get();
+});
+
+// Pengajuan buku (harus login)
+Route::middleware('auth:sanctum')->post('/ajukan-buku', [PengajuanController::class, 'store']);
+
+// Notifikasi
 Route::post('/update-email-notification', [UserController::class, 'updateNotification']);
-
-// Route GET untuk mengambil status notifikasi
 Route::middleware('auth:sanctum')->get('/get-email-notification', [UserController::class, 'getEmailNotification']);
 
-// Route default bawaan Laravel
+// User
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

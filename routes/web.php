@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DonasiController;
+use App\Http\Controllers\PengajuanController;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [LandingController::class, 'index']);
@@ -56,7 +57,10 @@ Route::get('/email/verification-success', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-});
+    Route::post('/pengajuan', [PengajuanController::class, 'store']);
+    Route::get('/admin/pengajuan', [PengajuanController::class, 'index'])->middleware('is_admin');
+    Route::post('/admin/pengajuan/{id}/status', [PengajuanController::class, 'updateStatus'])->middleware('is_admin')->name('admin.pengajuan.status');
+}); 
 
 // Donasi
 Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');

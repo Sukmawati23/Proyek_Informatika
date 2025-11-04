@@ -338,9 +338,25 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="requestStatus">
-                    <!-- Data akan diisi oleh JavaScript -->
-                </tbody>
+                <tbody>
+                @foreach ($bukus as $buku)
+                    <tr>
+                        <td>{{ $buku->id }}</td>
+                        <td>{{ $buku->judul_buku }}</td>
+                        <td>-</td> {{-- Penulis belum tersedia --}}
+                        <td>{{ $buku->kategori }}</td>
+                        <td>{{ ucfirst($buku->status) }}</td>
+                        <td>-</td> {{-- Penerbit belum tersedia --}}
+                        <td>{{ \Carbon\Carbon::parse($buku->tanggal)->format('Y') }}</td>
+                    </tr>
+                @endforeach
+
+                @if($bukus->isEmpty())
+                    <tr>
+                        <td colspan="7" class="text-center">Belum ada buku yang tersedia.</td>
+                    </tr>
+                @endif
+            </tbody>
             </table>
         </div>
     </div>
@@ -655,67 +671,87 @@
     </div>
 
     <script>
-        // Data dummy untuk simulasi
-        const books = [
-            { 
-                id: "B001", 
-                title: "Pemrograman JavaScript Modern", 
-                author: "Erik Wright", 
-                category: "Teknologi", 
-                status: "Tersedia", 
-                publisher: "Penerbit Informatika", 
-                year: 2022, 
-                image: "https://via.placeholder.com/150",
-                description: "Buku ini membahas konsep-konsep modern JavaScript dan penggunaannya dalam pengembangan web."
-            },
-            { 
-                id: "B002", 
-                title: "Belajar HTML & CSS", 
-                author: "Sarah Johnson", 
-                category: "Teknologi", 
-                status: "Tersedia", 
-                publisher: "Penerbit Digital", 
-                year: 2021, 
-                image: "https://via.placeholder.com/150",
-                description: "Panduan lengkap untuk pemula dalam mempelajari HTML dan CSS dasar hingga menengah."
-            },
-            { 
-                id: "B003", 
-                title: "Pengantar Data Science", 
-                author: "Michael Chen", 
-                category: "Sains", 
-                status: "Dipinjam", 
-                publisher: "Penerbit Sains", 
-                year: 2020, 
-                image: "https://via.placeholder.com/150",
-                description: "Pengenalan konsep data science untuk pemula dengan contoh-contoh praktis."
+                let books = [];
+        let requestStatus = [];
+        let notifications = [];
+        let currentBookId = null; // ✅ Simpan ID buku yang sedang dilihat
+
+        // ✅ Fungsi fetch dipindah ke luar DOMContentLoaded
+        function fetchBukuTersedia() {
+            fetch('/api/buku-tersedia')
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal mengambil data buku');
+                    return response.json();
+                })
+                .then(data => {
+                    books = data.map(buku => ({
+                        id: buku.id,
+                        title: buku.judul || 'Tanpa Judul',
+                        author: buku.penulis || '-',
+                        category: buku.kategori || '-',
+                        status: buku.status_buku || 'tersedia',
+                        publisher: buku.penerbit || '-',
+                        year: buku.tahun_terbit || '-',
+                        description: buku.deskripsi || '',
+                        image: buku.foto ? `/storage/${buku.foto}` : 'icon-daftar-buku.png'
+                    }));
+                    if (document.getElementById('bookListSection').style.display === 'block') {
+                        displayBooks(books);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal memuat daftar buku. Silakan coba lagi nanti.');
+                });
+        }
+
+        // ✅ Fungsi ajukan buku ke API
+        function ajukanBuku() {
+            const book = books.find(b => b.id === currentBookId);
+            if (!book) {
+                alert("Buku tidak ditemukan.");
+                return;
             }
-        ];
 
-        const requestStatus = [
-            { title: "Pemrograman JavaScript Modern", response: "Silakan ambil buku di perpustakaan", status: "Disetujui" },
-            { title: "Belajar HTML & CSS", response: "Menunggu konfirmasi", status: "Proses" },
-            { title: "Pengantar Data Science", response: "Buku sedang dipinjam", status: "Ditolak" }
-        ];
+            fetch('/api/ajukan-buku', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') // Jika pakai Sanctum SPA
+                },
+                body: JSON.stringify({
+                    buku_id: book.id,
+                    jumlah: 1
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Gagal mengajukan buku');
+                return response.json();
+            })
+            .then(data => {
+                hideAllSections();
+                document.getElementById('notificationSection').style.display = 'block';
+                setTimeout(() => {
+                    alert(data.message || "Permintaan buku berhasil diajukan!");
+                    showDashboard();
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Gagal mengajukan buku. Pastikan Anda login.");
+            });
+        }
 
-        const notifications = [
-            { title: "Permintaan buku disetujui", message: "Permintaan Anda untuk buku 'Pemrograman JavaScript Modern' telah disetujui", time: "2 jam yang lalu" },
-            { title: "Buku baru tersedia", message: "Buku 'Machine Learning untuk Pemula' sekarang tersedia", time: "1 hari yang lalu" },
-            { title: "Pengingat", message: "Jangan lupa untuk mengambil buku yang sudah disetujui", time: "3 hari yang lalu" }
-        ];
-
-        // Inisialisasi halaman
         document.addEventListener('DOMContentLoaded', function() {
-            // Ambil data user dari localStorage
             const userData = JSON.parse(localStorage.getItem('userData')) || {
-                namaLengkap: "Pengguna",
-                email: "user@example.com",
+                namaLengkap: "{{ Auth::user()->name }}",
+                email: "{{ Auth::user()->email }}",
                 alamat: "",
                 telepon: "",
                 fotoProfil: "profile-placeholder.jpg"
             };
 
-            // Tampilkan data user
             document.getElementById("userName").textContent = `Halo, ${userData.namaLengkap}!`;
             document.getElementById("profileName").textContent = userData.namaLengkap;
             document.getElementById("fotoProfilPreview").src = userData.fotoProfil;
@@ -725,128 +761,63 @@
             document.getElementById("editTelepon").value = userData.telepon;
             document.getElementById("currentEmail").value = userData.email;
 
-            // Isi status permintaan
-            const requestStatusTable = document.getElementById("requestStatus");
-            requestStatus.forEach(request => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${request.title}</td>
-                    <td>${request.response}</td>
-                    <td>${request.status}</td>
-                `;
-                requestStatusTable.appendChild(row);
-            });
-
-            // Isi notifikasi
-            const notifContainer = document.getElementById("notifContainer");
-            notifications.forEach(notif => {
-                const notifCard = document.createElement("div");
-                notifCard.className = "notif-card";
-                notifCard.innerHTML = `
-                    <strong>${notif.title}</strong>
-                    <p>${notif.message}</p>
-                    <small>${notif.date} (${notif.time})</small>
-                `;
-                notifContainer.appendChild(notifCard);
-            });
-
-            // Load preferensi notifikasi email
             const emailNotif = localStorage.getItem('emailNotif') === 'true';
             document.getElementById('emailNotifCheckbox').checked = emailNotif;
+
+            // ✅ Panggil setelah semua siap
+            fetchBukuTersedia();
         });
 
-        // Fungsi untuk navigasi
+        // === Fungsi navigasi dan tampilan ===
         function showDashboard() {
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
         }
-
         function showBookList() {
             hideAllSections();
             document.getElementById('bookListSection').style.display = 'block';
             displayBooks(books);
         }
-
         function hideBookList() {
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
         }
-
         function showBookDetail(bookId) {
+            currentBookId = bookId; // ✅ Simpan ID
             hideAllSections();
             const book = books.find(b => b.id === bookId);
-            
             if (book) {
                 const detailContent = document.getElementById("bookDetailContent");
                 detailContent.innerHTML = `
-                    <tr>
-                        <th colspan="2"><img src="${book.image}" alt="${book.title}" style="max-width:150px;"></th>
-                    </tr>
-                    <tr>
-                        <th>Judul</th>
-                        <td>${book.title}</td>
-                    </tr>
-                    <tr>
-                        <th>Penulis</th>
-                        <td>${book.author}</td>
-                    </tr>
-                    <tr>
-                        <th>Kategori</th>
-                        <td>${book.category}</td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>${book.status}</td>
-                    </tr>
-                    <tr>
-                        <th>Penerbit</th>
-                        <td>${book.publisher}</td>
-                    </tr>
-                    <tr>
-                        <th>Tahun Terbit</th>
-                        <td>${book.year}</td>
-                    </tr>
-                    <tr>
-                        <th>Deskripsi</th>
-                        <td>${book.description}</td>
-                    </tr>
+                    <tr><th colspan="2"><img src="${book.image}" alt="${book.title}" style="max-width:150px;"></th></tr>
+                    <tr><th>Judul</th><td>${book.title}</td></tr>
+                    <tr><th>Penulis</th><td>${book.author}</td></tr>
+                    <tr><th>Kategori</th><td>${book.category}</td></tr>
+                    <tr><th>Status</th><td>${book.status}</td></tr>
+                    <tr><th>Penerbit</th><td>${book.publisher}</td></tr>
+                    <tr><th>Tahun Terbit</th><td>${book.year}</td></tr>
+                    <tr><th>Deskripsi</th><td>${book.description}</td></tr>
                 `;
                 document.getElementById('bookDetailSection').style.display = 'block';
             }
         }
-
         function hideBookDetail() {
             hideAllSections();
             document.getElementById('bookListSection').style.display = 'block';
         }
-
         function confirmAjukanBuku() {
             if (confirm("Apakah Anda yakin ingin mengajukan buku ini?")) {
                 ajukanBuku();
             }
         }
-
-        function ajukanBuku() {
-            hideAllSections();
-            document.getElementById('notificationSection').style.display = 'block';
-            
-            // Simpan status permintaan (dummy)
-            setTimeout(() => {
-                alert("Permintaan buku berhasil diajukan!");
-                showDashboard();
-            }, 2000);
-        }
-
         function kembaliKeBeranda() {
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
         }
-
         function displayBooks(booksToDisplay) {
             const tbody = document.getElementById("bookTableBody");
             tbody.innerHTML = "";
             const noResults = document.getElementById("noResults");
-            
             if (booksToDisplay.length === 0) {
                 noResults.style.display = "block";
             } else {
@@ -867,7 +838,6 @@
                 });
             }
         }
-
         function filterBooks() {
             const searchInput = document.getElementById("searchInput").value.toLowerCase();
             const filteredBooks = books.filter(book => 
@@ -1020,25 +990,17 @@
         function saveNotifPreference() {
             const isChecked = document.getElementById('emailNotifCheckbox').checked;
             localStorage.setItem('emailNotif', isChecked);
-            
-            // Kirim ke backend (AJAX)
             fetch('/api/update-email-notification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
                 },
-                body: JSON.stringify({
-                    notif_email: isChecked
-                })
+                body: JSON.stringify({ notif_email: isChecked })
             })
             .then(response => response.json())
-            .then(data => {
-                console.log("Status notifikasi disimpan:", data);
-            })
-            .catch(error => {
-                console.error("Gagal menyimpan status notifikasi:", error);
-            });
+            .then(data => console.log("Status notifikasi disimpan:", data))
+            .catch(error => console.error("Gagal menyimpan status notifikasi:", error));
         }
 
         function showDeleteAccountConfirm() {
@@ -1066,7 +1028,7 @@
             }
         }
 
-        function hideAllSections() {
+                function hideAllSections() {
             const sections = [
                 'dashboardSection', 'bookListSection', 'bookDetailSection', 
                 'notificationSection', 'profileSection', 'notificationsSection',
@@ -1075,12 +1037,12 @@
                 'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
                 'deleteSuccess'
             ];
-            
             sections.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
         }
+
     </script>
 </body>
 </html>
