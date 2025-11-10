@@ -314,6 +314,9 @@
         <label for="deskripsi">Deskripsi (Opsional)</label>
         <textarea id="deskripsi" name="deskripsi" placeholder="Tambahkan deskripsi jika ada..."></textarea>
 
+        <label for="jumlah">Jumlah Buku</label>
+<input type="number" id="jumlah" name="jumlah" value="1" min="1" required>
+
         <button type="submit">Donasikan Buku</button>
     </form>
 

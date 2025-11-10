@@ -60,9 +60,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengajuan', [PengajuanController::class, 'store']);
     Route::get('/admin/pengajuan', [PengajuanController::class, 'index'])->middleware('is_admin');
     Route::post('/admin/pengajuan/{id}/status', [PengajuanController::class, 'updateStatus'])->middleware('is_admin')->name('admin.pengajuan.status');
-}); 
+    Route::get('/admin/donasi', [DonasiController::class, 'indexAdmin'])
+        ->name('admin.donasi.index')
+        ->middleware('is_admin');
+
+    Route::post('/admin/donasi/{id}/verify', [DonasiController::class, 'verify'])
+        ->name('admin.donasi.verify')
+        ->middleware('is_admin');
+});
 
 // Donasi
 Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
 Route::post('/donasi', [DonasiController::class, 'store'])->name('donasi.store');
-

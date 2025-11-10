@@ -14,6 +14,7 @@ class Donasi extends Model
         'judul_buku',
         'kategori',
         'kondisi',
+        'jumlah',
         'foto',
         'tanggal',
         'status',
@@ -28,5 +29,15 @@ class Donasi extends Model
     public function bukus()
     {
         return $this->belongsToMany(Buku::class, 'buku_donasis');
+    }
+
+    public function donatur()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function penerima()
+    {
+        return $this->belongsTo(User::class, 'penerima_id');
     }
 }
