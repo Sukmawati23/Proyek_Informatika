@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Donasi;
 
 class Buku extends Model
 {
@@ -23,11 +24,11 @@ class Buku extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id'); // ← donatur
     }
 
-    public function donasis()
+    public function donasi()
     {
-        return $this->belongsToMany(Donasi::class, 'buku_donasis');
+        return $this->belongsTo(Donasi::class);
     }
 }

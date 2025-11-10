@@ -341,8 +341,8 @@
                 <tbody>
                 @foreach ($bukus as $buku)
                     <tr>
-                        <td>{{ $buku->id }}</td>
-                        <td>{{ $buku->judul_buku }}</td>
+                        <td>{{ $buku->judul }}</td>  <!-- bukan judul_buku -->
+                        <td>{{ ucfirst($buku->status_buku) }}</td>  <!-- bukan $buku->status -->
                         <td>-</td> {{-- Penulis belum tersedia --}}
                         <td>{{ $buku->kategori }}</td>
                         <td>{{ ucfirst($buku->status) }}</td>

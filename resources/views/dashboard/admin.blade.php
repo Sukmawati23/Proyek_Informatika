@@ -590,36 +590,14 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($activities as $activity)
                             <tr>
-                                <td>10 menit lalu</td>
-                                <td>Donasi buku baru</td>
-                                <td>John Doe</td>
-                                <td><span class="badge badge-warning">Pending</span></td>
+                                <td>{{ $activity->created_at }}</td>
+                                <td>{{ $activity->description }}</td>
+                                <td>{{ $activity->user->name }}</td>
+                                <td>{{ $activity->status }}</td>
                             </tr>
-                            <tr>
-                                <td>30 menit lalu</td>
-                                <td>Pendaftaran penerima baru</td>
-                                <td>Jane Smith</td>
-                                <td><span class="badge badge-success">Disetujui</span></td>
-                            </tr>
-                            <tr>
-                                <td>1 jam lalu</td>
-                                <td>Verifikasi donasi</td>
-                                <td>Admin</td>
-                                <td><span class="badge badge-success">Selesai</span></td>
-                            </tr>
-                            <tr>
-                                <td>2 jam lalu</td>
-                                <td>Pengiriman buku</td>
-                                <td>System</td>
-                                <td><span class="badge badge-success">Dikirim</span></td>
-                            </tr>
-                            <tr>
-                                <td>5 jam lalu</td>
-                                <td>Donasi ditolak</td>
-                                <td>Admin</td>
-                                <td><span class="badge badge-danger">Ditolak</span></td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -654,48 +632,28 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($donaturs as $donatur)
                             <tr>
-                                <td>D001</td>
-                                <td>John Doe</td>
-                                <td>john@example.com</td>
-                                <td>08123456789</td>
-                                <td>15 buku</td>
-                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>{{ $donatur->id }}</td>
+                                <td>{{ $donatur->name }}</td>
+                                <td>{{ $donatur->email }}</td>
+                                <td>{{ $donatur->phone }}</td>
+                                <td>{{ $donatur->total_donations }} buku</td>
+                                <td>
+                                    @if($donatur->is_active)
+                                        <span class="badge badge-success">Aktif</span>
+                                    @else
+                                        <span class="badge badge-warning">Nonaktif</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-primary btn-sm">Edit</button>
                                         <button class="btn btn-danger btn-sm">Hapus</button>
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>D002</td>
-                                <td>Jane Smith</td>
-                                <td>jane@example.com</td>
-                                <td>08234567890</td>
-                                <td>8 buku</td>
-                                <td><span class="badge badge-success">Aktif</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>D003</td>
-                                <td>Robert Johnson</td>
-                                <td>robert@example.com</td>
-                                <td>08345678901</td>
-                                <td>3 buku</td>
-                                <td><span class="badge badge-warning">Nonaktif</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
+                                
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -730,13 +688,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($penerimas as $penerima)
                             <tr>
-                                <td>P001</td>
-                                <td>SD Negeri 1 Jakarta</td>
-                                <td>Jl. Merdeka No.1, Jakarta</td>
-                                <td>0211234567</td>
-                                <td>25 buku</td>
-                                <td><span class="badge badge-success">Aktif</span></td>
+                                <td>{{ $penerima->id }}</td>
+                                <td>{{ $penerima->name }}</td>
+                                <td>{{ $penerima->address }}</td>
+                                <td>{{ $penerima->phone }}</td>
+                                <td>{{ $penerima->total_received }} buku</td>
+                                <td>
+                                    @if($penerima->is_active)
+                                        <span class="badge badge-success">Aktif</span>
+                                    @else
+                                        <span class="badge badge-warning">Nonaktif</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-primary btn-sm">Edit</button>
@@ -744,34 +709,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>P002</td>
-                                <td>Panti Asuhan Kasih Bunda</td>
-                                <td>Jl. Bahagia No.10, Bandung</td>
-                                <td>0227654321</td>
-                                <td>18 buku</td>
-                                <td><span class="badge badge-success">Aktif</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>P003</td>
-                                <td>Taman Bacaan Pelangi</td>
-                                <td>Jl. Ceria No.5, Surabaya</td>
-                                <td>0319876543</td>
-                                <td>12 buku</td>
-                                <td><span class="badge badge-warning">Nonaktif</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -808,13 +746,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($donasis as $donasi)
                             <tr>
-                                <td>DN001</td>
-                                <td>Buku Cerita Anak</td>
-                                <td>John Doe</td>
-                                <td>SD Negeri 1 Jakarta</td>
-                                <td>15 Jan 2023</td>
-                                <td><span class="badge badge-success">Terkirim</span></td>
+                                <td>{{ $donasi->id }}</td>
+                                <td>{{ $donasi->book_title }}</td>
+                                <td>{{ $donasi->donatur?->name ?? '-' }}</td>
+                               <td>
+    @php
+        $pengajuan = $donasi->bukus->first()?->pengajuans()->where('status', 'disetujui')->first();
+    @endphp
+    {{ optional($pengajuan?->user)->name ?: '-' }}
+</td>
+                                <td>{{ $donasi->date }}</td>
+                                <td>
+                                    @if($donasi->status == 'pending')
+                                        <span class="badge badge-warning">Pending</span>
+                                    @elseif($donasi->status == 'verified')
+                                        <span class="badge badge-success">Diverifikasi</span>
+                                    @elseif($donasi->status == 'rejected')
+                                        <span class="badge badge-danger">Ditolak</span>
+                                    @elseif($donasi->status == 'delivered')
+                                        <span class="badge badge-primary">Terkirim</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-primary btn-sm">Detail</button>
@@ -822,34 +776,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>DN002</td>
-                                <td>Ensiklopedia Sains</td>
-                                <td>Jane Smith</td>
-                                <td>Panti Asuhan Kasih Bunda</td>
-                                <td>20 Feb 2023</td>
-                                <td><span class="badge badge-success">Terkirim</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Detail</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>DN003</td>
-                                <td>Novel Petualangan</td>
-                                <td>Robert Johnson</td>
-                                <td>Taman Bacaan Pelangi</td>
-                                <td>5 Mar 2023</td>
-                                <td><span class="badge badge-warning">Pending</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Detail</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -873,48 +800,29 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($verifications as $verification)
                             <tr>
-                                <td>V001</td>
-                                <td>Kamus Bahasa Inggris</td>
-                                <td>Michael Brown</td>
-                                <td>10 Apr 2023</td>
-                                <td><span class="badge badge-warning">Menunggu</span></td>
+                                <td>{{ $verification->id }}</td>
+                                <td>{{ $verification->book_title }}</td>
+                                <td>{{ $verification->donatur->name }}</td>
+                                <td>{{ $verification->date }}</td>
+                                <td>
+                                    @if($verification->status == 'pending')
+                                        <span class="badge badge-warning">Pending</span>
+                                    @elseif($verification->status == 'verified')
+                                        <span class="badge badge-success">Diverifikasi</span>
+                                    @elseif($verification->status == 'rejected')
+                                        <span class="badge badge-danger">Ditolak</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-success btn-sm">Setujui</button>
+                                        <button class="btn btn-primary btn-sm">Verifikasi</button>
                                         <button class="btn btn-danger btn-sm">Tolak</button>
-                                        <button class="btn btn-primary btn-sm">Detail</button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>V002</td>
-                                <td>Buku Matematika SD</td>
-                                <td>Sarah Wilson</td>
-                                <td>12 Apr 2023</td>
-                                <td><span class="badge badge-warning">Menunggu</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-success btn-sm">Setujui</button>
-                                        <button class="btn btn-danger btn-sm">Tolak</button>
-                                        <button class="btn btn-primary btn-sm">Detail</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>V003</td>
-                                <td>Buku Cerita Rakyat</td>
-                                <td>David Lee</td>
-                                <td>15 Apr 2023</td>
-                                <td><span class="badge badge-warning">Menunggu</span></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-success btn-sm">Setujui</button>
-                                        <button class="btn btn-danger btn-sm">Tolak</button>
-                                        <button class="btn btn-primary btn-sm">Detail</button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -973,54 +881,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($reports as $report)
                             <tr>
-                                <td>Laporan_Donasi_Maret_2023.pdf</td>
-                                <td>Donasi</td>
-                                <td>1 Apr 2023</td>
-                                <td>PDF</td>
+                                <td>{{ $report->file_name }}</td>
+                                <td>{{ $report->type }}</td>
+                                <td>{{ $report->date }}</td>
+                                <td>{{ strtoupper($report->format) }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Unduh</button>
+                                        <button class="btn btn-success btn-sm">Download</button>
                                         <button class="btn btn-danger btn-sm">Hapus</button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Laporan_Penerima_Februari_2023.xlsx</td>
-                                <td>Penerima</td>
-                                <td>1 Mar 2023</td>
-                                <td>Excel</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Unduh</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Laporan_Verifikasi_Januari_2023.pdf</td>
-                                <td>Verifikasi</td>
-                                <td>1 Feb 2023</td>
-                                <td>PDF</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Unduh</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <tr>
-    <td>Laporan_Ulasan_Maret_2023.pdf</td>
-    <td>Ulasan & Rating</td>
-    <td>20 Mar 2023</td>
-    <td>PDF</td>
-    <td>
-        <div class="action-buttons">
-            <button class="btn btn-primary btn-sm">Unduh</button>
-            <button class="btn btn-danger btn-sm">Hapus</button>
-        </div>
-    </td>
-</tr> 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -1048,34 +922,15 @@
                 </tr>
             </thead>
             <tbody id="ulasanTableBody">
+                @foreach($reviews as $review)
                 <tr>
-                    <td><span class="badge badge-primary">Donatur</span></td>
-                    <td>John Doe</td>
-                    <td>Buku dikirim tepat waktu, terima kasih!</td>
-                    <td>★★★★★ (5)</td>
-                    <td>10 Mar 2023</td>
+                    <td>{{ $review->type }}</td>
+                    <td>{{ $review->name }}</td>
+                    <td>{{ $review->comment }}</td>
+                    <td>{{ $review->rating }} / 5</td>
+                    <td>{{ $review->date }}</td>
                 </tr>
-                <tr>
-                    <td><span class="badge badge-success">Penerima</span></td>
-                    <td>SD Negeri 1 Jakarta</td>
-                    <td>Buku dalam kondisi sangat baik, anak-anak senang.</td>
-                    <td>★★★★☆ (4)</td>
-                    <td>12 Mar 2023</td>
-                </tr>
-                <tr>
-                    <td><span class="badge badge-primary">Donatur</span></td>
-                    <td>Jane Smith</td>
-                    <td>Proses verifikasi cepat, sistem sangat membantu.</td>
-                    <td>★★★★★ (5)</td>
-                    <td>15 Mar 2023</td>
-                </tr>
-                <tr>
-                    <td><span class="badge badge-success">Penerima</span></td>
-                    <td>Panti Asuhan Kasih Bunda</td>
-                    <td>Butuh lebih banyak buku cerita anak.</td>
-                    <td>★★★☆☆ (3)</td>
-                    <td>18 Mar 2023</td>
-                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -1205,26 +1060,54 @@
                             <div class="settings-section">
                                 <h4>Notifikasi Terakhir</h4>
                                 <div class="notification-item">
-                                    <div>
-                                        <strong>Donasi baru diterima</strong>
-                                        <p>John Doe mendonasikan 3 buku</p>
-                                    </div>
-                                    <span>2 jam lalu</span>
-                                </div>
+    <div>
+        @if($donasis->isNotEmpty())
+            @php
+                $donasi = $donasis->first();
+            @endphp
+            <strong>Donasi baru</strong>
+            <p>{{ $donasi->judul_buku }} oleh {{ optional($donasi->user)->name ?? '-' }}</p>
+            <p>1 buku</p> {{-- karena saat ini tabel donasi belum punya field jumlah, anggap 1 --}}
+        @else
+            <p>Tidak ada donasi terbaru.</p>
+        @endif
+    </div>
+    <span>
+        @if($donasis->isNotEmpty())
+            {{ $donasis->first()->created_at->diffForHumans() }}
+        @else
+            -
+        @endif
+    </span>
+</div>
                                 <div class="notification-item">
-                                    <div>
-                                        <strong>Penerima baru terdaftar</strong>
-                                        <p>SD Negeri 5 Bandung mendaftar</p>
-                                    </div>
-                                    <span>5 jam lalu</span>
-                                </div>
-                                <div class="notification-item">
-                                    <div>
-                                        <strong>Verifikasi diperlukan</strong>
-                                        <p>3 donasi menunggu verifikasi</p>
-                                    </div>
-                                    <span>1 hari lalu</span>
-                                </div>
+    <div>
+        @if($penerimas->isNotEmpty())
+            @php $penerima = $penerimas->first(); @endphp
+            <strong>Penerima baru</strong>
+            <p>{{ $penerima->name }} telah bergabung</p>
+        @else
+            <p>Tidak ada penerima baru.</p>
+        @endif
+    </div>
+    <span>
+        @if($penerimas->isNotEmpty())
+            {{ $penerimas->first()->created_at->diffForHumans() }}
+        @else
+            -
+        @endif
+    </span>
+</div>
+                               <div class="notification-item">
+    <div>
+        @if($verifications->isNotEmpty())
+            <strong>{{ $verifications->count() }} donasi menunggu verifikasi</strong>
+        @else
+            <strong>Tidak ada donasi menunggu verifikasi</strong>
+        @endif
+    </div>
+    <span>Baru saja</span>
+</div>
                             </div>
                         </div>
                         
@@ -1260,18 +1143,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($sessions as $session)
                                         <tr>
-                                            <td>Chrome, Windows 10</td>
-                                            <td>192.168.1.1</td>
-                                            <td>Sekarang</td>
-                                            <td><button class="btn btn-danger btn-sm">Keluar</button></td>
+                                            <td>{{ $session->device }}</td>
+                                            <td>{{ $session->ip_address }}</td>
+                                            <td>{{ $session->last_active }}</td>
+                                            <td>
+                                                <button class="btn btn-danger btn-sm">Logout</button>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                            <td>Firefox, Android</td>
-                                            <td>192.168.1.2</td>
-                                            <td>2 jam lalu</td>
-                                            <td><button class="btn btn-danger btn-sm">Keluar</button></td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -1421,21 +1302,20 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="donasiDonatur">Donatur</label>
-                        <select id="donasiDonatur" class="form-control">
-                            <option value="">Pilih Donatur</option>
-                            <option value="D001">John Doe</option>
-                            <option value="D002">Jane Smith</option>
-                            <option value="D003">Robert Johnson</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="donasiPenerima">Penerima</label>
-                        <select id="donasiPenerima" class="form-control">
-                            <option value="">Pilih Penerima</option>
-                            <option value="P001">SD Negeri 1 Jakarta</option>
-                            <option value="P002">Panti Asuhan Kasih Bunda</option>
-                            <option value="P003">Taman Bacaan Pelangi</option>
-                        </select>
+                        <!-- ✅ Benar: $donaturs (plurals) -->
+<select id="donasiDonatur" class="form-control">
+    <option value="">Pilih Donatur</option>
+    @foreach ($donaturs as $donatur)
+        <option value="{{ $donatur->id }}">{{ $donatur->name }}</option>
+    @endforeach
+</select>
+
+<select id="donasiPenerima" class="form-control">
+    <option value="">Pilih Penerima</option>
+    @foreach ($penerimas as $penerima)
+        <option value="{{ $penerima->id }}">{{ $penerima->name }}</option>
+    @endforeach
+</select>
                     </div>
                 </div>
                 <div class="form-group">
