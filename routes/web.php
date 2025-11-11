@@ -10,6 +10,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [LandingController::class, 'index']);
@@ -72,3 +73,26 @@ Route::middleware(['auth'])->group(function () {
 // Donasi
 Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
 Route::post('/donasi', [DonasiController::class, 'store'])->name('donasi.store');
+
+ // asumsi donatur disimpan di tabel users dengan role='donatur'
+
+Route::delete('/donatur/{id}', function ($id) {
+    $user = User::where('id', $id)->where('role', 'donatur')->first();
+    if ($user) {
+        $user->delete();
+        return response()->json(['success' => true]);
+    }
+    return response()->json(['success' => false], 404);
+})->name('donatur.destroy');
+
+
+ // asumsi penerima disimpan di tabel users dengan role = 'penerima'
+
+Route::delete('/penerima/{id}', function ($id) {
+    $user = User::where('id', $id)->where('role', 'penerima')->first();
+    if ($user) {
+        $user->delete();
+        return response()->json(['success' => true]);
+    }
+    return response()->json(['success' => false], 404);
+});
