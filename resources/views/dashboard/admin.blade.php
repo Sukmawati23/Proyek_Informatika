@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -516,19 +517,10 @@
                     <div class="user-dropdown">
                         <a href="#" id="profileLink"><i class="fas fa-fw fa-user"></i> Profil</a>
                         <a href="#" class="nav-link" data-page="pengaturan"><i class="fas fa-fw fa-cog"></i> Pengaturan</a>
-
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
                         <a href="#" onclick="event.preventDefault(); confirmLogout();"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
-
-                        <form action="{{ route('logout') }}" method="POST" style="margin: 0; padding: 0;">
-                            @csrf
-                            <button type="submit" style="background: none; border: none; padding: 8px 20px; text-align: left; width: 100%; color: #333; text-decoration: none; cursor: pointer;">
-                                <i class="fas fa-fw fa-sign-out-alt"></i> Logout
-                            </button>
-                        </form>
-
                     </div>
                 </div>
             </div>
@@ -648,12 +640,26 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                                
-                            @endforeach
+                                    <!-- Tombol Edit dengan onclick -->
+                                    <button class="btn btn-primary btn-sm"
+                                            onclick="openEditDonaturModal(
+                                                {{ $donatur->id }},
+                                                '{{ $donatur->name }}',
+                                                '{{ $donatur->email }}',
+                                                '{{ $donatur->phone }}',
+                                                '{{ $donatur->is_active ? 'active' : 'inactive' }}',
+                                                '{{ $donatur->address }}'
+                                            )">
+                                        Edit
+                                    </button>
+                                    <!-- Ganti tombol Hapus dengan form submission -->
+                                    <button class="btn btn-danger btn-sm" onclick="deleteDonatur({{ $donatur->id }})">
+                                        Hapus
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -704,8 +710,25 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                        <!-- Tombol Edit dengan onclick -->
+                                        <button class="btn btn-primary btn-sm"
+                                                onclick="openEditPenerimaModal(
+                                                    {{ $penerima->id }},
+                                                    '{{ $penerima->name }}',
+                                                    '{{ $penerima->type }}',
+                                                    '{{ $penerima->contact_person }}',
+                                                    '{{ $penerima->phone }}',
+                                                    '{{ $penerima->address }}',
+                                                    '{{ $penerima->needs }}',
+                                                    '{{ $penerima->is_active ? 'active' : 'inactive' }}'
+                                                )">
+                                            Edit
+                                        </button>
+                                        <!-- Tombol Hapus dengan onclick -->
+                                        <button class="btn btn-danger btn-sm"
+                                                onclick="deletePenerima({{ $penerima->id }})">
+                                            Hapus
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -1200,43 +1223,44 @@
     </div>
     
     <!-- Add Donatur Modal -->
-    <div id="addDonaturModal" class="modal">
+    <div id="editDonaturModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Tambah Donatur Baru</h3>
+                <h3>Edit Donatur</h3>
                 <span class="close">&times;</span>
             </div>
             <form>
+                <input type="hidden" id="editDonaturId" value="">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="donaturName">Nama Lengkap</label>
-                        <input type="text" id="donaturName" class="form-control">
+                        <label for="editDonaturName">Nama Lengkap</label>
+                        <input type="text" id="editDonaturName" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="donaturEmail">Email</label>
-                        <input type="email" id="donaturEmail" class="form-control">
+                        <label for="editDonaturEmail">Email</label>
+                        <input type="email" id="editDonaturEmail" class="form-control">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="donaturPhone">Telepon</label>
-                        <input type="text" id="donaturPhone" class="form-control">
+                        <label for="editDonaturPhone">Telepon</label>
+                        <input type="text" id="editDonaturPhone" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="donaturStatus">Status</label>
-                        <select id="donaturStatus" class="form-control">
+                        <label for="editDonaturStatus">Status</label>
+                        <select id="editDonaturStatus" class="form-control">
                             <option value="active">Aktif</option>
                             <option value="inactive">Nonaktif</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="donaturAddress">Alamat</label>
-                    <textarea id="donaturAddress" class="form-control" rows="3"></textarea>
+                    <label for="editDonaturAddress">Alamat</label>
+                    <textarea id="editDonaturAddress" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -1290,7 +1314,9 @@
             </form>
         </div>
     </div>
+
     
+
     <!-- Add Donasi Modal -->
     <div id="addDonasiModal" class="modal">
         <div class="modal-content">
@@ -1525,6 +1551,77 @@ function confirmLogout() {
     if (confirm('Apakah Anda yakin ingin keluar?')) {
         document.getElementById('logout-form').submit();
     }
+}
+// === Fungsi untuk membuka modal edit donatur ===
+function openEditDonaturModal(id, name, email, phone, status, address) {
+    document.getElementById('editDonaturId').value = id;
+    document.getElementById('editDonaturName').value = name;
+    document.getElementById('editDonaturEmail').value = email;
+    document.getElementById('editDonaturPhone').value = phone;
+    document.getElementById('editDonaturStatus').value = status;
+    document.getElementById('editDonaturAddress').value = address;
+    document.getElementById('editDonaturModal').style.display = 'block';
+}
+
+function deleteDonatur(id) {
+    if (!confirm('Yakin hapus donatur ini?')) return;
+
+    fetch(`/donatur/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // ✅ Hapus baris dari DOM (tanpa reload halaman)
+            const row = event.target.closest('tr');
+            if (row) row.remove();
+            alert('Donatur berhasil dihapus.');
+        } else {
+            alert('Gagal menghapus donatur.');
+        }
+    })
+    .catch(() => alert('Terjadi kesalahan.'));
+}
+// === Fungsi untuk membuka modal edit penerima ===
+function openEditPenerimaModal(id, name, type, contact, phone, address, needs, status) {
+    document.getElementById('editPenerimaId').value = id;
+    document.getElementById('editPenerimaName').value = name;
+    document.getElementById('editPenerimaType').value = type;
+    document.getElementById('editPenerimaContact').value = contact;
+    document.getElementById('editPenerimaPhone').value = phone;
+    document.getElementById('editPenerimaAddress').value = address;
+    document.getElementById('editPenerimaNeeds').value = needs;
+    document.getElementById('editPenerimaStatus').value = status;
+    document.getElementById('editPenerimaModal').style.display = 'block';
+}
+
+// === Fungsi untuk menghapus penerima via AJAX ===
+function deletePenerima(id) {
+    if (!confirm('Yakin hapus penerima ini?')) return;
+
+    fetch(`/penerima/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Hapus baris dari DOM
+            const row = event.target.closest('tr');
+            if (row) row.remove();
+            alert('Penerima berhasil dihapus.');
+        } else {
+            alert('Gagal menghapus penerima.');
+        }
+    })
+    .catch(() => alert('Terjadi kesalahan.'));
 }
 </script>
 </body>
