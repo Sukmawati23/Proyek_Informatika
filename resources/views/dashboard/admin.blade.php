@@ -726,9 +726,9 @@
                                         </button>
                                         <!-- Tombol Hapus dengan onclick -->
                                         <button class="btn btn-danger btn-sm"
-                                                onclick="deletePenerima({{ $penerima->id }})">
-                                            Hapus
-                                        </button>
+                                            onclick="deletePenerima({{ $penerima->id }}, event)">
+                                        Hapus
+                                    </button>
                                     </div>
                                 </td>
                             </tr>
@@ -1315,33 +1315,31 @@
         </div>
     </div>
 
-    
+            <!-- Add Donasi Modal -->
+            <div id="addDonasiModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Tambah Donasi Buku Baru</h3>
+                        <span class="close">&times;</span>
+                    </div>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="donasiDonatur">Donatur</label>
+                                <!-- ✅ Benar: $donaturs (plurals) -->
+        <select id="donasiDonatur" class="form-control">
+            <option value="">Pilih Donatur</option>
+            @foreach ($donaturs as $donatur)
+                <option value="{{ $donatur->id }}">{{ $donatur->name }}</option>
+            @endforeach
+        </select>
 
-    <!-- Add Donasi Modal -->
-    <div id="addDonasiModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Tambah Donasi Buku Baru</h3>
-                <span class="close">&times;</span>
-            </div>
-            <form>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="donasiDonatur">Donatur</label>
-                        <!-- ✅ Benar: $donaturs (plurals) -->
-<select id="donasiDonatur" class="form-control">
-    <option value="">Pilih Donatur</option>
-    @foreach ($donaturs as $donatur)
-        <option value="{{ $donatur->id }}">{{ $donatur->name }}</option>
-    @endforeach
-</select>
-
-<select id="donasiPenerima" class="form-control">
-    <option value="">Pilih Penerima</option>
-    @foreach ($penerimas as $penerima)
-        <option value="{{ $penerima->id }}">{{ $penerima->name }}</option>
-    @endforeach
-</select>
+        <select id="donasiPenerima" class="form-control">
+            <option value="">Pilih Penerima</option>
+            @foreach ($penerimas as $penerima)
+                <option value="{{ $penerima->id }}">{{ $penerima->name }}</option>
+            @endforeach
+        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -1383,6 +1381,64 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal Edit Penerima -->
+<div id="editPenerimaModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Penerima</h3>
+            <span class="close">&times;</span>
+        </div>
+        <form id="editPenerimaForm">
+            <!-- Hidden input to store the ID of the recipient being edited -->
+            <input type="hidden" id="editPenerimaId" name="id" value="">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editPenerimaName">Nama Penerima</label>
+                    <input type="text" id="editPenerimaName" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPenerimaType">Jenis Penerima</label>
+                    <select id="editPenerimaType" name="type" class="form-control" required>
+                        <option value="school">Sekolah</option>
+                        <option value="orphanage">Panti Asuhan</option>
+                        <option value="library">Taman Bacaan</option>
+                        <option value="other">Lainnya</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editPenerimaContact">Kontak Person</label>
+                    <input type="text" id="editPenerimaContact" name="contact_person" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPenerimaPhone">Telepon</label>
+                    <input type="text" id="editPenerimaPhone" name="phone" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="editPenerimaAddress">Alamat Lengkap</label>
+                <textarea id="editPenerimaAddress" name="address" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="editPenerimaNeeds">Kebutuhan Buku</label>
+                <textarea id="editPenerimaNeeds" name="needs" class="form-control" rows="2" placeholder="Jenis buku yang dibutuhkan"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="editPenerimaStatus">Status</label>
+                <select id="editPenerimaStatus" name="is_active" class="form-control">
+                    <option value="1">Aktif</option>
+                    <option value="0">Nonaktif</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editPenerimaModal').style.display='none';">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
     
     <script>
         // Initialize chart
@@ -1595,14 +1651,14 @@ function openEditPenerimaModal(id, name, type, contact, phone, address, needs, s
     document.getElementById('editPenerimaPhone').value = phone;
     document.getElementById('editPenerimaAddress').value = address;
     document.getElementById('editPenerimaNeeds').value = needs;
-    document.getElementById('editPenerimaStatus').value = status;
+    // Ubah string 'active'/'inactive' menjadi angka 1/0 untuk select
+    document.getElementById('editPenerimaStatus').value = status === 'active' ? '1' : '0';
     document.getElementById('editPenerimaModal').style.display = 'block';
 }
 
 // === Fungsi untuk menghapus penerima via AJAX ===
-function deletePenerima(id) {
+function deletePenerima(id, event) {
     if (!confirm('Yakin hapus penerima ini?')) return;
-
     fetch(`/penerima/${id}`, {
         method: 'DELETE',
         headers: {
