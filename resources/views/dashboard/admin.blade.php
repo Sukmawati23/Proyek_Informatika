@@ -806,48 +806,119 @@
             </div>
             
             <!-- Verifikasi Page -->
-            <div id="verifikasi" class="page">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Verifikasi Pengajuan Donasi</h3>
+<div id="verifikasi" class="page">
+    <!-- Bagian 1: Verifikasi Pengajuan Donasi -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Verifikasi Pengajuan Donasi</h3>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID Pengajuan</th>
+                    <th>Judul Buku</th>
+                    <th>Donatur</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($verifications as $verification)
+                <tr>
+                    <td>{{ $verification->id }}</td>
+                    <td>{{ $verification->book_title }}</td>
+                    <td>{{ $verification->donatur->name }}</td>
+                    <td>{{ $verification->date }}</td>
+                    <td>
+                        @if($verification->status == 'pending')
+                            <span class="badge badge-warning">Pending</span>
+                        @elseif($verification->status == 'verified')
+                            <span class="badge badge-success">Diverifikasi</span>
+                        @elseif($verification->status == 'rejected')
+                            <span class="badge badge-danger">Ditolak</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm">Verifikasi</button>
+                            <button class="btn btn-danger btn-sm">Tolak</button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+              <!-- Bagian 2: Daftar Buku yang Didonasikan -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Daftar Buku yang Didonasikan</h3>
+    </div>
+    <div class="search-filter">
+        <input type="text" placeholder="Cari buku..." class="form-control">
+        <select class="form-control">
+            <option>Semua Status</option>
+            <option>Pending</option>
+            <option>Diverifikasi</option>
+            <option>Ditolak</option>
+            <option>Terkirim</option>
+        </select>
+        <button class="btn btn-secondary">Filter</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Donasi</th>
+                <th>Judul Buku</th>
+                <th>Donatur</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($donasis as $donasi)
+            <tr data-donasi-id="{{ $donasi->id }}">
+                <td>{{ $donasi->id }}</td>
+                <td>{{ $donasi->judul_buku }}</td>
+                <td>{{ $donasi->donatur?->name ?? '-' }}</td>
+                <td>{{ $donasi->tanggal }}</td>
+                <td>
+                    <!-- Dropdown Status -->
+                    <select class="form-control status-dropdown" onchange="updateDonationStatus(this, {{ $donasi->id }})">
+                        <option value="menunggu" {{ $donasi->status == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="diverifikasi" {{ $donasi->status == 'diverifikasi' ? 'selected' : '' }}>Diverifikasi</option>
+                        <option value="ditolak" {{ $donasi->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="terkirim" {{ $donasi->status == 'terkirim' ? 'selected' : '' }}>Terkirim</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm" onclick="showDonationDetail({{ $donasi->id }})">Detail</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteDonation({{ $donasi->id }})">Hapus</button>
                     </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID Pengajuan</th>
-                                <th>Judul Buku</th>
-                                <th>Donatur</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($verifications as $verification)
-                            <tr>
-                                <td>{{ $verification->id }}</td>
-                                <td>{{ $verification->book_title }}</td>
-                                <td>{{ $verification->donatur->name }}</td>
-                                <td>{{ $verification->date }}</td>
-                                <td>
-                                    @if($verification->status == 'pending')
-                                        <span class="badge badge-warning">Pending</span>
-                                    @elseif($verification->status == 'verified')
-                                        <span class="badge badge-success">Diverifikasi</span>
-                                    @elseif($verification->status == 'rejected')
-                                        <span class="badge badge-danger">Ditolak</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Verifikasi</button>
-                                        <button class="btn btn-danger btn-sm">Tolak</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+            <!-- Modal Detail Donasi -->
+            <div id="donationDetailModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Detail Donasi Buku</h3>
+                        <span class="close">&times;</span>
+                    </div>
+                    <div id="donationDetailContent">
+                        <!-- Konten detail akan dimuat di sini oleh JavaScript -->
+                        <p>Loading...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeDonationDetailModal()">Tutup</button>
+                    </div>
                 </div>
             </div>
             
@@ -1623,6 +1694,178 @@ function deletePenerima(id) {
     })
     .catch(() => alert('Terjadi kesalahan.'));
 }
+function showDonationDetail(donasiId) {
+    const modal = document.getElementById('donationDetailModal');
+    const content = document.getElementById('donationDetailContent');
+
+    // Tampilkan modal
+    modal.style.display = 'block';
+
+    // Cari baris tabel yang sesuai dengan ID donasi
+    const row = document.querySelector(`tr[data-donasi-id="${donasiId}"]`);
+
+    if (!row) {
+        content.innerHTML = `<p style="color: red;">Data donasi tidak ditemukan.</p>`;
+        return;
+    }
+
+    // Ambil data dari kolom-kolom dalam baris tersebut
+    const cells = row.querySelectorAll('td');
+    const judulBuku = cells[1].textContent.trim();
+    const donatur = cells[2].textContent.trim();
+    const tanggal = cells[3].textContent.trim(); // Perhatikan indeks kolom
+
+    // --- PERBAIKAN UTAMA ---
+    // Ambil nilai status dari dropdown, bukan dari badge
+    const statusDropdown = cells[4].querySelector('.status-dropdown'); // Ambil elemen select di kolom Status
+    let statusValue = '';
+
+    // Di dalam fungsi showDonationDetail
+    if (statusDropdown) {
+        statusValue = statusDropdown.value;
+        // Konversi ke teks yang sama dengan yang ditampilkan di badge
+        switch(statusValue) {
+            case 'menunggu':
+                statusValue = 'Menunggu';
+                break;
+            case 'diverifikasi':
+                statusValue = 'Diverifikasi';
+                break;
+            case 'ditolak':
+                statusValue = 'Ditolak';
+                break;
+            case 'terkirim':
+                statusValue = 'Terkirim';
+                break;
+            default:
+                statusValue = 'Status Tidak Dikenal';
+        }
+    } else {
+        // Jika tidak ada dropdown (fallback), ambil dari badge atau teks
+        const badge = cells[4].querySelector('.badge');
+        if (badge) {
+            statusValue = badge.textContent.trim();
+        } else {
+            statusValue = cells[4].textContent.trim();
+        }
+    }
+
+    // Render konten detail
+    content.innerHTML = `
+        <div class="form-group">
+            <label><strong>ID Donasi:</strong></label>
+            <p>${donasiId}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Judul Buku:</strong></label>
+            <p>${judulBuku}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Donatur:</strong></label>
+            <p>${donatur}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Tanggal:</strong></label>
+            <p>${tanggal}</p>
+        </div>
+        <div class="form-group">
+            <label><strong>Status:</strong></label>
+            <p>${statusValue}</p>
+        </div>
+        <!-- Jika Anda ingin menambahkan catatan atau deskripsi, tambahkan di sini -->
+        <div class="form-group">
+            <label><strong>Catatan:</strong></label>
+            <p>Tidak ada catatan tambahan.</p>
+        </div>
+    `;
+}
+// === Fungsi untuk memperbarui status donasi via AJAX ===
+function updateDonationStatus(selectElement, donasiId) {
+    const newStatus = selectElement.value;
+
+    // Konfirmasi perubahan status
+    if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
+        selectElement.value = selectElement.getAttribute('data-original-status') || 'menunggu';
+        return;
+    }
+
+    selectElement.setAttribute('data-original-status', selectElement.value);
+
+
+    // --- Selalu tampilkan badge ---
+    const row = selectElement.closest('tr');
+    const statusCell = row.querySelector('td:nth-child(5)'); // Kolom status
+
+    let badgeClass = '';
+    let badgeText = '';
+
+    switch(newStatus) {
+        case 'menunggu':
+            badgeClass = 'badge-warning';
+            badgeText = 'Menunggu';
+            break;
+        case 'diverifikasi':
+            badgeClass = 'badge-success';
+            badgeText = 'Diverifikasi';
+            break;
+        case 'ditolak':
+            badgeClass = 'badge-danger';
+            badgeText = 'Ditolak';
+            break;
+        case 'terkirim':
+            badgeClass = 'badge-primary';
+            badgeText = 'Terkirim';
+            break;
+        default:
+            badgeClass = 'badge-secondary';
+            badgeText = newStatus;
+    }
+
+    statusCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+    alert('Status donasi berhasil diperbarui.');
+}
+// === Fungsi untuk menghapus donasi via AJAX ===
+function deleteDonation(id) {
+    if (!confirm('Yakin hapus donasi ini?')) return;
+
+    fetch(`/api/donasi/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Hapus baris dari DOM
+            const row = event.target.closest('tr');
+            if (row) row.remove();
+            alert('Donasi berhasil dihapus.');
+        } else {
+            alert('Gagal menghapus donasi.');
+        }
+    })
+    .catch(() => alert('Terjadi kesalahan.'));
+}
+
+    // Fungsi untuk menutup modal detail
+    function closeDonationDetailModal() {
+        document.getElementById('donationDetailModal').style.display = 'none';
+    }
+
+    // Tutup modal jika klik di luar
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('donationDetailModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Tutup modal jika klik tombol X
+    document.querySelector('.modal-content .close').addEventListener('click', function() {
+        document.getElementById('donationDetailModal').style.display = 'none';
+    });
 </script>
 </body>
 </html>
