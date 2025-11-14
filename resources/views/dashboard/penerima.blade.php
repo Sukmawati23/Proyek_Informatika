@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Penerima</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -911,24 +912,47 @@
         }
 
         function saveAccountChanges() {
-            const nama = document.getElementById('editNama').value;
-            const alamat = document.getElementById('editAlamat').value;
-            const telepon = document.getElementById('editTelepon').value;
-            
-            // Simpan ke localStorage (simulasi)
+    const nama = document.getElementById('editNama').value;
+    const alamat = document.getElementById('editAlamat').value;
+    const telepon = document.getElementById('editTelepon').value;
+
+    fetch('/profile/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Authorization': 'Bearer ' + localStorage.getItem('auth_token') // Jika pakai Sanctum
+        },
+        body: JSON.stringify({
+            name: nama,
+            alamat: alamat,
+            telepon: telepon
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui localStorage jika masih digunakan untuk tampilan
             const userData = JSON.parse(localStorage.getItem('userData')) || {};
             userData.namaLengkap = nama;
             userData.alamat = alamat;
             userData.telepon = telepon;
             localStorage.setItem('userData', JSON.stringify(userData));
-            
-            // Update tampilan
+
+            // Perbarui tampilan
             document.getElementById("userName").textContent = `Halo, ${nama}!`;
             document.getElementById("profileName").textContent = nama;
-            
-            alert("Perubahan berhasil disimpan!");
+            alert(data.message);
             showSettings();
+        } else {
+            alert(data.message || 'Gagal memperbarui profil.');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+    });
+}
 
         function showChangeEmail() {
             hideAllSections();
@@ -936,72 +960,144 @@
         }
 
         function submitEmailChange() {
-            const currentEmail = document.getElementById('currentEmail').value;
-            const newEmail = document.getElementById('newEmail').value;
+    const currentEmail = document.getElementById('currentEmail').value;
+    const newEmail = document.getElementById('newEmail').value;
+    if (!currentEmail || !newEmail) {
+        alert("Harap isi semua field.");
+        return;
+    }
 
-            if (!currentEmail || !newEmail) {
-                alert("Harap isi semua field.");
-                return;
-            }
-
-            // Simpan ke localStorage (simulasi)
+    fetch('/profile/change-email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            current_email: currentEmail,
+            new_email: newEmail
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui localStorage & tampilan
             const userData = JSON.parse(localStorage.getItem('userData')) || {};
             userData.email = newEmail;
             localStorage.setItem('userData', JSON.stringify(userData));
-            
+            document.getElementById('currentEmail').value = newEmail;
+            // Tampilkan sukses
             hideAllSections();
             document.getElementById('emailSuccessSection').style.display = 'block';
+        } else {
+            alert(data.message || 'Gagal mengubah email.');
         }
-
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan. Cek koneksi dan coba lagi.');
+    });
+}
         function showChangePassword() {
             hideAllSections();
             document.getElementById('changePasswordSection').style.display = 'block';
         }
 
         function submitPasswordChange() {
-            const current = document.getElementById('currentPassword').value;
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-            if (!current || !newPass || !confirmPass) {
-                alert("Harap isi semua kolom.");
-                return;
-            }
+    // Validasi input
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert("Harap isi semua kolom.");
+        return;
+    }
 
-            if (newPass !== confirmPass) {
-                alert("Kata sandi baru dan konfirmasi tidak cocok.");
-                return;
-            }
+    if (newPassword !== confirmPassword) {
+        alert("Kata sandi baru dan konfirmasi tidak cocok.");
+        return;
+    }
 
-            // Simpan ke localStorage (simulasi)
+    if (newPassword.length < 6) {
+        alert("Kata sandi baru minimal 6 karakter.");
+        return;
+    }
+
+    // Kirim ke backend
+    fetch('/profile/change-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+            new_password_confirmation: confirmPassword // opsional, tapi aman
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // ✅ Update localStorage hanya untuk tampilan (opsional)
             const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData.password = newPass; // Note: Dalam aplikasi nyata, password harus di-hash
+            // 🔐 Jangan simpan password dalam bentuk teks! Cukup bersihkan/abaikan.
+            // userData.password = null; // jangan simpan
             localStorage.setItem('userData', JSON.stringify(userData));
-            
+
+            // Tampilkan sukses
             hideAllSections();
             document.getElementById('passwordSuccessSection').style.display = 'block';
+            alert(data.message || 'Kata sandi berhasil diperbarui.');
+        } else {
+            alert(data.message || 'Gagal mengganti kata sandi.');
         }
-
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const msg = error.message || error.error || 'Terjadi kesalahan. Silakan coba lagi.';
+        alert(`Gagal mengganti kata sandi: ${msg}`);
+    });
+}
         function showPrivacy() {
             hideAllSections();
             document.getElementById('privacySection').style.display = 'block';
         }
 
         function saveNotifPreference() {
-            const isChecked = document.getElementById('emailNotifCheckbox').checked;
-            localStorage.setItem('emailNotif', isChecked);
-            fetch('/api/update-email-notification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-                },
-                body: JSON.stringify({ notif_email: isChecked })
-            })
-            .then(response => response.json())
-            .then(data => console.log("Status notifikasi disimpan:", data))
-            .catch(error => console.error("Gagal menyimpan status notifikasi:", error));
-        }
+    const checkbox = document.getElementById('emailNotifCheckbox');
+    const isChecked = checkbox.checked;
+
+    // Simpan ke localStorage
+    localStorage.setItem('emailNotif', isChecked);
+
+    // Kirim ke backend
+    fetch('/api/update-email-notification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+        },
+        body: JSON.stringify({
+            notif_email: isChecked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Status notifikasi disimpan:", data);
+        alert(isChecked ? "Notifikasi via email diaktifkan." : "Notifikasi via email dimatikan.");
+    })
+    .catch(error => {
+        console.error("Gagal menyimpan status notifikasi:", error);
+        alert("Gagal menyimpan preferensi notifikasi. Silakan coba lagi.");
+    });
+}
 
         function showDeleteAccountConfirm() {
             hideAllSections();

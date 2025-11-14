@@ -1692,7 +1692,6 @@ function openEditDonaturModal(id, name, email, phone, status, address) {
 
 function deleteDonatur(id) {
     if (!confirm('Yakin hapus donatur ini?')) return;
-
     fetch(`/donatur/${id}`, {
         method: 'DELETE',
         headers: {
@@ -1703,16 +1702,17 @@ function deleteDonatur(id) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            // ✅ Hapus baris dari DOM (tanpa reload halaman)
-            const row = event.target.closest('tr');
+            // Hapus baris dari DOM
+            const row = event.target.closest('tr'); // ✅ Ini penting!
             if (row) row.remove();
             alert('Donatur berhasil dihapus.');
         } else {
-            alert('Gagal menghapus donatur.');
+            alert(data.message || 'Gagal menghapus donatur.');
         }
     })
     .catch(() => alert('Terjadi kesalahan.'));
 }
+
 // === Fungsi untuk membuka modal edit penerima ===
 function openEditPenerimaModal(id, name, type, contact, phone, address, needs, status) {
     document.getElementById('editPenerimaId').value = id;
@@ -1729,27 +1729,37 @@ function openEditPenerimaModal(id, name, type, contact, phone, address, needs, s
 
 // === Fungsi untuk menghapus penerima via AJAX ===
 function deletePenerima(id, event) {
-    if (!confirm('Yakin hapus penerima ini?')) return;
+    if (!confirm('Yakin hapus penerima ini? Data tidak dapat dipulihkan.')) return;
+
     fetch(`/penerima/${id}`, {
         method: 'DELETE',
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json'
         }
     })
-    .then(res => res.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Hapus baris dari DOM
             const row = event.target.closest('tr');
             if (row) row.remove();
-            alert('Penerima berhasil dihapus.');
+            alert(data.message || 'Penerima berhasil dihapus.');
         } else {
-            alert('Gagal menghapus penerima.');
+            alert(data.message || 'Gagal menghapus penerima.');
         }
     })
-    .catch(() => alert('Terjadi kesalahan.'));
+    .catch(error => {
+        console.error('Error:', error);
+        alert(`Terjadi kesalahan: ${error.message}`);
+    });
 }
+
 function showDonationDetail(donasiId) {
     const modal = document.getElementById('donationDetailModal');
     const content = document.getElementById('donationDetailContent');
