@@ -596,74 +596,71 @@
             </div>
             
             <!-- Donatur Page -->
-            <div id="donatur" class="page">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Daftar Donatur</h3>
-                        <button class="btn btn-primary" id="addDonaturBtn">Tambah Donatur</button>
-                    </div>
-                    <div class="search-filter">
-                        <input type="text" placeholder="Cari donatur..." class="form-control">
-                        <select class="form-control">
-                            <option>Semua Status</option>
-                            <option>Aktif</option>
-                            <option>Nonaktif</option>
-                        </select>
-                        <button class="btn btn-secondary">Filter</button>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Telepon</th>
-                                <th>Total Donasi</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($donaturs as $donatur)
-                            <tr>
-                                <td>{{ $donatur->id }}</td>
-                                <td>{{ $donatur->name }}</td>
-                                <td>{{ $donatur->email }}</td>
-                                <td>{{ $donatur->phone }}</td>
-                                <td>{{ $donatur->total_donations }} buku</td>
-                                <td>
-                                    @if($donatur->is_active)
-                                        <span class="badge badge-success">Aktif</span>
-                                    @else
-                                        <span class="badge badge-warning">Nonaktif</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                    <!-- Tombol Edit dengan onclick -->
-                                    <button class="btn btn-primary btn-sm"
-                                            onclick="openEditDonaturModal(
-                                                {{ $donatur->id }},
-                                                '{{ $donatur->name }}',
-                                                '{{ $donatur->email }}',
-                                                '{{ $donatur->phone }}',
-                                                '{{ $donatur->is_active ? 'active' : 'inactive' }}',
-                                                '{{ $donatur->address }}'
-                                            )">
-                                        Edit
-                                    </button>
-                                    <!-- Ganti tombol Hapus dengan form submission -->
-                                    <button class="btn btn-danger btn-sm" onclick="deleteDonatur({{ $donatur->id }})">
-                                        Hapus
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div id="donatur" class="page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Daftar Donatur</h3>
+            <button class="btn btn-primary" onclick="showAddDonaturForm()">Tambah Donatur</button>
+        </div>
+        <div class="search-filter">
+            <input type="text" placeholder="Cari donatur..." class="form-control" id="searchDonatur">
+            <select class="form-control" id="filterStatus">
+                <option value="">Semua Status</option>
+                <option value="active">Aktif</option>
+                <option value="inactive">Nonaktif</option>
+            </select>
+            <button class="btn btn-secondary" onclick="applyFilter()">Filter</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Telepon</th> <!-- ✅ Kolom Telepon DI TAMPILKAN -->
+                    <th>Total Donasi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="donaturTableBody">
+                @foreach($donaturs as $donatur)
+                    <tr data-donatur-id="{{ $donatur->id }}">
+                        <td>{{ $donatur->id }}</td>
+                        <td>{{ $donatur->name }}</td>
+                        <td>{{ $donatur->email }}</td>
+                        <td>{{ $donatur->telepon }}</td> <!-- ✅ Menampilkan nomor telepon dari database -->
+                        <td>{{ $donatur->total_donations ?? 0 }} buku</td>
+                        <td>
+                            @if($donatur->is_active)
+                                <span class="badge badge-success">Aktif</span>
+                            @else
+                                <span class="badge badge-warning">Nonaktif</span>
+                            @endif
+                        </td>
+                        <td>
+                            <button class="btn btn-primary btn-sm"
+                                    onclick="openEditDonaturModal(
+                                        {{ $donatur->id }},
+                                        '{{ $donatur->name }}',
+                                        '{{ $donatur->email }}',
+                                        '{{ $donatur->telepon }}', <!-- ✅ Mengirim nilai telepon ke modal -->
+                                        '{{ $donatur->alamat }}',
+                                        '{{ $donatur->is_active ? 'active' : 'inactive' }}'
+                                    )">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm"
+                                    onclick="deleteDonatur({{ $donatur->id }})">
+                                Hapus
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
             
             <!-- Penerima Page -->
             <div id="penerima" class="page">
@@ -698,8 +695,8 @@
                             <tr>
                                 <td>{{ $penerima->id }}</td>
                                 <td>{{ $penerima->name }}</td>
-                                <td>{{ $penerima->address }}</td>
-                                <td>{{ $penerima->phone }}</td>
+                                <td>{{ $penerima->alamat }}</td>
+                                <td>{{ $penerima->telepon }}</td>
                                 <td>{{ $penerima->total_received }} buku</td>
                                 <td>
                                     @if($penerima->is_active)
@@ -717,8 +714,8 @@
                                                     '{{ $penerima->name }}',
                                                     '{{ $penerima->type }}',
                                                     '{{ $penerima->contact_person }}',
-                                                    '{{ $penerima->phone }}',
-                                                    '{{ $penerima->address }}',
+                                                    '{{ $penerima->telepon }}',
+                                                    '{{ $penerima->alamat }}',
                                                     '{{ $penerima->needs }}',
                                                     '{{ $penerima->is_active ? 'active' : 'inactive' }}'
                                                 )">
@@ -1293,49 +1290,94 @@
         </div>
     </div>
     
-    <!-- Add Donatur Modal -->
-    <div id="editDonaturModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Edit Donatur</h3>
-                <span class="close">&times;</span>
-            </div>
-            <form>
-                <input type="hidden" id="editDonaturId" value="">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editDonaturName">Nama Lengkap</label>
-                        <input type="text" id="editDonaturName" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="editDonaturEmail">Email</label>
-                        <input type="email" id="editDonaturEmail" class="form-control">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="editDonaturPhone">Telepon</label>
-                        <input type="text" id="editDonaturPhone" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="editDonaturStatus">Status</label>
-                        <select id="editDonaturStatus" class="form-control">
-                            <option value="active">Aktif</option>
-                            <option value="inactive">Nonaktif</option>
-                        </select>
-                    </div>
+    <!-- Modal Tambah Donatur -->
+<div id="addDonaturModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Tambah Donatur Baru</h3>
+            <span class="close" onclick="closeModal('addDonaturModal')">&times;</span>
+        </div>
+        <form id="addDonaturForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="newDonaturName">Nama Lengkap</label>
+                    <input type="text" id="newDonaturName" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="editDonaturAddress">Alamat</label>
-                    <textarea id="editDonaturAddress" class="form-control" rows="3"></textarea>
+                    <label for="newDonaturEmail">Email</label>
+                    <input type="email" id="newDonaturEmail" class="form-control" required>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="newDonaturtelepon">Telepon</label>
+                    <input type="text" id="newDonaturtelepon" class="form-control" required>
                 </div>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label for="newDonaturStatus">Status</label>
+                    <select id="newDonaturStatus" class="form-control" required>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Nonaktif</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Kolom Alamat dihapus karena tidak ada di gambar -->
+            <!-- <div class="form-group">
+                <label for="newDonaturAddress">Alamat</label>
+                <textarea id="newDonaturAddress" class="form-control" rows="3"></textarea>
+            </div> -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addDonaturModal')">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
     </div>
+</div>
+
+<!-- Modal Edit Donatur -->
+<div id="editDonaturModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Donatur</h3>
+            <span class="close" onclick="closeModal('editDonaturModal')">&times;</span>
+        </div>
+        <form id="editDonaturForm">
+            <input type="hidden" id="editDonaturId" value="">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editDonaturName">Nama Lengkap</label>
+                    <input type="text" id="editDonaturName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDonaturEmail">Email</label>
+                    <input type="email" id="editDonaturEmail" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editDonaturtelepon">Telepon</label>
+                    <input type="text" id="editDonaturtelepon" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDonaturStatus">Status</label>
+                    <select id="editDonaturStatus" class="form-control" required>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Nonaktif</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Kolom Alamat -->
+            <div class="form-group">
+                <label for="editDonaturalamat">Alamat</label>
+                <textarea id="editDonaturalamat" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editDonaturModal')">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
     
     <!-- Add Penerima Modal -->
     <div id="addPenerimaModal" class="modal">
@@ -1366,13 +1408,13 @@
                         <input type="text" id="penerimaContact" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="penerimaPhone">Telepon</label>
-                        <input type="text" id="penerimaPhone" class="form-control">
+                        <label for="penerimatelepon">Telepon</label>
+                        <input type="text" id="penerimatelepon" class="form-control">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="penerimaAddress">Alamat Lengkap</label>
-                    <textarea id="penerimaAddress" class="form-control" rows="3"></textarea>
+                    <label for="penerimaalamat">Alamat Lengkap</label>
+                    <textarea id="penerimaalamat" class="form-control" rows="3"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="penerimaNeeds">Kebutuhan Buku</label>
@@ -1484,13 +1526,13 @@
                     <input type="text" id="editPenerimaContact" name="contact_person" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="editPenerimaPhone">Telepon</label>
-                    <input type="text" id="editPenerimaPhone" name="phone" class="form-control" required>
+                    <label for="editPenerimatelepon">Telepon</label>
+                    <input type="text" id="editPenerimatelepon" name="telepon" class="form-control" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="editPenerimaAddress">Alamat Lengkap</label>
-                <textarea id="editPenerimaAddress" name="address" class="form-control" rows="3" required></textarea>
+                <label for="editPenerimaalamat">Alamat Lengkap</label>
+                <textarea id="editPenerimaalamat" name="alamat" class="form-control" rows="3" required></textarea>
             </div>
             <div class="form-group">
                 <label for="editPenerimaNeeds">Kebutuhan Buku</label>
@@ -1679,14 +1721,17 @@ function confirmLogout() {
         document.getElementById('logout-form').submit();
     }
 }
-// === Fungsi untuk membuka modal edit donatur ===
-function openEditDonaturModal(id, name, email, phone, status, address) {
+// === Fungsi untuk membuka modal edit donatur (DIPERBAIKI) ===
+function openEditDonaturModal(id, name, email, telepon, alamat, status) {
+    // Isi nilai-nilai ke dalam form modal
     document.getElementById('editDonaturId').value = id;
     document.getElementById('editDonaturName').value = name;
     document.getElementById('editDonaturEmail').value = email;
-    document.getElementById('editDonaturPhone').value = phone;
+    document.getElementById('editDonaturtelepon').value = telepon; // ✅ Tambahkan ini
+    document.getElementById('editDonaturalamat').value = alamat; // ✅ Tambahkan ini
     document.getElementById('editDonaturStatus').value = status;
-    document.getElementById('editDonaturAddress').value = address;
+
+    // Tampilkan modal
     document.getElementById('editDonaturModal').style.display = 'block';
 }
 
@@ -1714,13 +1759,13 @@ function deleteDonatur(id) {
 }
 
 // === Fungsi untuk membuka modal edit penerima ===
-function openEditPenerimaModal(id, name, type, contact, phone, address, needs, status) {
+function openEditPenerimaModal(id, name, type, contact, telepon, alamat, needs, status) {
     document.getElementById('editPenerimaId').value = id;
     document.getElementById('editPenerimaName').value = name;
     document.getElementById('editPenerimaType').value = type;
     document.getElementById('editPenerimaContact').value = contact;
-    document.getElementById('editPenerimaPhone').value = phone;
-    document.getElementById('editPenerimaAddress').value = address;
+    document.getElementById('editPenerimatelepon').value = telepon;
+    document.getElementById('editPenerimaalamat').value = alamat;
     document.getElementById('editPenerimaNeeds').value = needs;
     // Ubah string 'active'/'inactive' menjadi angka 1/0 untuk select
     document.getElementById('editPenerimaStatus').value = status === 'active' ? '1' : '0';
@@ -1932,6 +1977,107 @@ function deleteDonation(id) {
     document.querySelector('.modal-content .close').addEventListener('click', function() {
         document.getElementById('donationDetailModal').style.display = 'none';
     });
+    // --- Fungsi Donatur ---
+function showAddDonaturForm() {
+    document.getElementById('addDonaturModal').style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+/*function openEditDonaturModal(id, name, email, phone, address, status) {
+    document.getElementById('editDonaturId').value = id;
+    document.getElementById('editDonaturName').value = name;
+    document.getElementById('editDonaturEmail').value = email;
+    document.getElementById('editDonaturPhone').value = phone;
+    document.getElementById('editDonaturAddress').value = address; // ✅ Isi alamat
+    document.getElementById('editDonaturStatus').value = status;
+    document.getElementById('editDonaturModal').style.display = 'block';
+}
+    */
+
+function deleteDonatur(id) {
+    if (!confirm('Yakin hapus donatur ini?')) return;
+    fetch(`/donatur/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const row = event.target.closest('tr');
+            if (row) row.remove();
+            alert('Donatur berhasil dihapus.');
+        } else {
+            alert(data.message || 'Gagal menghapus donatur.');
+        }
+    })
+    .catch(() => alert('Terjadi kesalahan.'));
+}
+
+function applyFilter() {
+    const searchTerm = document.getElementById('searchDonatur').value.toLowerCase();
+    const statusFilter = document.getElementById('filterStatus').value;
+    const rows = document.querySelectorAll('#donaturTableBody tr');
+    rows.forEach(row => {
+        // Ambil teks dari kolom Nama (index 1), Email (index 2), dan Telepon (index 3)
+        const name = row.cells[1]?.textContent.toLowerCase() || '';
+        const email = row.cells[2]?.textContent.toLowerCase() || '';
+        const telepon = row.cells[3]?.textContent.toLowerCase() || ''; // ✅ Sekarang kita gunakan lagi
+
+        // Status sekarang ada di cells[5]
+        const status = row.cells[5]?.querySelector('.badge')?.classList.contains('badge-success') ? 'active' : 'inactive';
+
+        // Filter berdasarkan nama, email, DAN telepon
+        const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm) || telepon.includes(searchTerm);
+        const matchesStatus = statusFilter === '' || status === statusFilter;
+
+        // Tampilkan atau sembunyikan baris
+        row.style.display = (matchesSearch && matchesStatus) ? 'table-row' : 'none';
+    });
+}
+
+// Submit form tambah donatur
+document.getElementById('addDonaturForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Donatur baru berhasil ditambahkan!');
+    closeModal('addDonaturModal');
+});
+
+// Submit form edit donatur (DIPERBAIKI)
+document.getElementById('editDonaturForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const id = document.getElementById('editDonaturId').value;
+    const name = document.getElementById('editDonaturName').value;
+    const email = document.getElementById('editDonaturEmail').value;
+    const telepon = document.getElementById('editDonaturtelepon').value;
+    const alamat = document.getElementById('editDonaturalamat').value; // tetap dikirim ke backend
+    const status = document.getElementById('editDonaturStatus').value;
+
+    // Simulasi update
+    alert(`Data donatur dengan ID ${id} berhasil diperbarui!`);
+
+    // Update hanya kolom yang ADA di tabel: Nama, Email, Telepon, Status
+    const row = document.querySelector(`tr[data-donatur-id="${id}"]`);
+    if (row) {
+        row.cells[1].textContent = name;      // Nama
+        row.cells[2].textContent = email;     // Email
+        row.cells[3].textContent = telepon;     // Telepon
+        row.cells[5].textContent = alamat;
+        // TIDAK ADA cells[4] = address → skip!
+        const statusCell = row.cells[5];      // Status
+        if (status === 'active') {
+            statusCell.innerHTML = '<span class="badge badge-success">Aktif</span>';
+        } else {
+            statusCell.innerHTML = '<span class="badge badge-warning">Nonaktif</span>';
+        }
+    }
+    closeModal('editDonaturModal');
+});
 </script>
 </body>
 </html>
