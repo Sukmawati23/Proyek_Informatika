@@ -2,24 +2,21 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}">` di `<head></head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Donatur</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f0f0f0;
+            background-color: #000080;
             margin: 0;
             padding: 0;
         }
+        
         .container {
-            width: 90%;
-            max-width: 600px;
             margin: auto;
-            padding: 20px;
             background-color: white;
-            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
@@ -34,7 +31,7 @@
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
         }
         button {
             padding: 10px;
@@ -334,14 +331,14 @@
             <div class="status-title">Riwayat Donasi Anda:</div>
             <ul>
                 @forelse($donasis as $donasi)
-                    <li>
-                        <strong>{{ $donasi->judul_buku }}</strong> — 
-                        <em>{{ ucfirst($donasi->status) }}</em> 
-                        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
-                    </li>
-                @empty
-                    <li>Belum ada donasi.</li>
-                @endforelse
+    <li>
+        <strong>{{ $donasi->judul_buku }}</strong> — 
+        <em>{{ ucfirst($donasi->status) }}</em>
+        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
+    </li>
+@empty
+    <li>Belum ada donasi.</li>
+@endforelse
             </ul>
             <div class="status-title">Status Pengiriman:</div>
             @php
@@ -374,12 +371,22 @@
             </div>
         </div>
 
-        <!-- Notifikasi -->
-        <div id="notificationSection">
+        <!-- Notifikasi (SERVER-SIDE) -->
+        <div id="notificationSection" style="display:none;">
             <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
             <h2>Notifikasi</h2>
-            <div id="notifContainer"></div> 
-
+            <div id="notifContainer">
+                @forelse($notifications as $notif)
+                <div class="notif-card">
+                    <p>• {{ $notif->pesan }}</p>
+                    <div class="notif-footer">
+                        <small>{{ $notif->created_at->diffForHumans() }}</small>
+                    </div>
+                </div>
+                @empty
+                <p>Tidak ada notifikasi baru.</p>
+                @endforelse
+            </div>
         </div> 
 
 

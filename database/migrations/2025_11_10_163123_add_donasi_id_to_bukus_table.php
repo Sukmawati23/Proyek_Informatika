@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('bukus', function (Blueprint $table) {
-            $table->unsignedBigInteger('donasi_id')->nullable()->after('user_id');
-            $table->foreign('donasi_id')->references('id')->on('donasis')->onDelete('set null');
+            // Hanya tambah jika belum ada
+            if (!Schema::hasColumn('bukus', 'donasi_id')) {
+                $table->unsignedBigInteger('donasi_id')->nullable()->after('user_id');
+                $table->foreign('donasi_id')->references('id')->on('donasis')->nullOnDelete();
+            }
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Buku;
 use App\Models\Notifikasi;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -16,40 +17,26 @@ class PengajuanController extends Controller
     {
         $request->validate([
             'buku_id' => 'required|exists:bukus,id',
-            'jumlah'  => 'required|integer|min:1',
+            'jumlah' => 'required|integer|min:1',
         ]);
 
         $buku = Buku::findOrFail($request->buku_id);
 
-        // 🔒 Cek apakah buku tersedia & belum diajukan/disetujui
+        // ❌ Jangan izinkan ajukan buku yang bukan 'tersedia'
         if ($buku->status_buku !== 'tersedia') {
-            throw ValidationException::withMessages([
-                'buku_id' => 'Buku tidak tersedia untuk diajukan saat ini.'
-            ]);
+            return response()->json(['error' => 'Buku tidak tersedia untuk diajukan.'], 400);
         }
 
-        // 🔍 Cek apakah user sudah pernah mengajukan buku ini (opsional, bisa di-skip jika boleh ajukan ulang)
-        $existing = Pengajuan::where('user_id', Auth::id())
-            ->where('buku_id', $buku->id)
-            ->whereIn('status', ['menunggu', 'disetujui'])
-            ->first();
-
-        if ($existing) {
-            throw ValidationException::withMessages([
-                'buku_id' => 'Anda sudah mengajukan buku ini sebelumnya.'
-            ]);
-        }
-
-        // ✅ Simpan pengajuan
+        // ✅ Buat pengajuan
         $pengajuan = Pengajuan::create([
             'user_id' => Auth::id(),
             'buku_id' => $buku->id,
-            'jumlah'  => $request->jumlah,
+            'jumlah' => $request->jumlah,
             'tanggal' => now(),
-            'status'  => 'menunggu',
+            'status' => 'menunggu',
         ]);
 
-        // 🔁 Ubah status buku jadi "diajukan" agar tidak bisa diajukan orang lain
+        // ✅ Ubah status buku jadi 'diajukan'
         $buku->update(['status_buku' => 'diajukan']);
 
         return response()->json([
@@ -57,7 +44,6 @@ class PengajuanController extends Controller
             'pengajuan_id' => $pengajuan->id,
         ]);
     }
-
     // === Admin: tampilkan daftar pengajuan ===
     public function index()
     {
@@ -71,52 +57,17 @@ class PengajuanController extends Controller
     // === Admin: update status pengajuan (disetujui / ditolak) ===
     public function updateStatus(Request $request, $id)
     {
-        $request->validate([
-            'status' => 'required|in:disetujui,ditolak',
-        ]);
+        $request->validate(['status' => 'required|in:disetujui,ditolak']);
 
         $pengajuan = Pengajuan::with('buku')->findOrFail($id);
-
-        // Jika status tidak berubah, skip
-        if ($pengajuan->status === $request->status) {
-            return response()->json(['message' => 'Status tidak berubah.']);
-        }
-
-        // ✅ Update status pengajuan
         $pengajuan->update(['status' => $request->status]);
 
-        // 🔁 Update status buku berdasarkan keputusan
         if ($request->status === 'disetujui') {
-            // Buku diberikan → ubah jadi 'terkirim'
             $pengajuan->buku->update(['status_buku' => 'terkirim']);
-        } elseif ($request->status === 'ditolak') {
-            // Kembalikan ke 'tersedia' agar bisa diajukan lagi
+        } else {
             $pengajuan->buku->update(['status_buku' => 'tersedia']);
         }
 
-        // 📩 Notifikasi ke penerima
-        $judul = $pengajuan->buku->judul;
-        $statusText = $request->status === 'disetujui' ? 'disetujui' : 'ditolak';
-        $pesan = "📚 Pengajuan buku *\"$judul\"* telah **$statusText** oleh admin.";
-
-        Notifikasi::create([
-            'user_id' => $pengajuan->user_id,
-            'pesan'   => $pesan,
-        ]);
-
-        // ✅ Kirim notifikasi ke donatur (opsional tapi bagus)
-        $donaturId = $pengajuan->buku->user_id; // karena buku punya `user_id` = donatur
-        if ($donaturId && $donaturId !== $pengajuan->user_id) {
-            $namaPenerima = $pengajuan->user->name;
-            Notifikasi::create([
-                'user_id' => $donaturId,
-                'pesan'   => "Buku *\"$judul\"* yang Anda donasikan telah $statusText untuk penerima: *$namaPenerima*.",
-            ]);
-        }
-
-        return response()->json([
-            'message' => 'Status pengajuan berhasil diperbarui!',
-            'status'  => $request->status,
-        ]);
+        return response()->json(['message' => 'Status diperbarui.']);
     }
 }

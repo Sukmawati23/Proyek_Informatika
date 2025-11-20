@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Donasi;
+use App\Models\Pengajuan;
+use App\Models\Notifikasi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -34,7 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function donasis()
     {
-        return $this->hasMany(Donasi::class);
+        return $this->hasMany(Donasi::class, 'user_id');
     }
 
     public function pengajuans()

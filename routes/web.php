@@ -42,10 +42,10 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name(
 
 // Email Verification (guest)
 Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice')
-    ->middleware('auth'); // ✅ hanya bisa diakses saat login
+    ->middleware('auth');
 
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware(['auth', 'signed']) // ✅ signed, bukan verified
+    ->middleware(['auth', 'signed'])
     ->name('verification.verify');
 
 Route::post('/email/verification-notification', [VerificationController::class, 'resend'])
@@ -89,6 +89,10 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/admin/donasi', [DonasiController::class, 'indexAdmin'])->name('admin.donasi.index');
     Route::post('/admin/donasi/{id}/verify', [DonasiController::class, 'verify'])
         ->name('admin.donasi.verify');
+
+    Route::post('/admin/donasi/{id}/update-status', [DonasiController::class, 'updateStatus'])
+        ->name('admin.donasi.updateStatus')
+        ->middleware(['auth', 'is_admin']);
 });
 
 // === Hapus User (aman via UserController) ===
@@ -101,3 +105,8 @@ Route::delete('/donatur/{id}', [UserController::class, 'destroyDonatur'])
 Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
     ->middleware('is_admin')
     ->name('penerima.destroy');
+
+// routes/web.php
+Route::post('/admin/donasi/{id}/reject', [DonasiController::class, 'reject'])
+    ->name('admin.donasi.reject')
+    ->middleware(['auth', 'is_admin']);
