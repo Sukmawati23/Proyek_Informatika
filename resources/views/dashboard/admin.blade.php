@@ -737,74 +737,63 @@
             
             <!-- Donasi Buku Page -->
             <div id="donasi" class="page">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Daftar Donasi Buku</h3>
-                        <button class="btn btn-primary" id="addDonasiBtn">Tambah Donasi</button>
+                <!-- Bagian 2: Daftar Buku yang Didonasikan -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Daftar Buku yang Didonasikan</h3>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Donasi</th>
+                <th>Judul Buku</th>
+                <th>Donatur</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($donasis as $donasi)
+            <tr data-donasi-id="{{ $donasi->id }}">
+                <td>{{ $donasi->id }}</td>
+                <td>{{ $donasi->judul_buku }}</td>
+                <td>{{ $donasi->donatur?->name ?? '-' }}</td>
+                <td>{{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') ?? '-' }}</td>
+                <td>
+                    @if($donasi->status == 'menunggu')
+                        <span class="badge badge-warning">Menunggu</span>
+                    @elseif($donasi->status == 'diverifikasi')
+                        <span class="badge badge-success">Diverifikasi</span>
+                    @elseif($donasi->status == 'ditolak')
+                        <span class="badge badge-danger">Ditolak</span>
+                    @elseif($donasi->status == 'terkirim')
+                        <span class="badge badge-primary">Terkirim</span>
+                    @else
+                        <span class="badge badge-secondary">{{ ucfirst($donasi->status) }}</span>
+                    @endif
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        @if($donasi->status == 'menunggu')
+                            <form action="{{ route('admin.donasi.verify', $donasi->id) }}" method="POST" style="display:inline">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Verifikasi</button>
+                            </form>
+                            <form action="{{ route('admin.donasi.reject', $donasi->id) }}" method="POST" style="display:inline">
+                                @csrf
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin tolak donasi ini?')">Tolak</button>
+                            </form>
+                        @endif
+                        <button class="btn btn-primary btn-sm" onclick="showDonationDetail({{ $donasi->id }})">Detail</button>
+                        <button class="btn btn-secondary btn-sm" onclick="deleteDonation({{ $donasi->id }})">Hapus</button>
                     </div>
-                    <div class="search-filter">
-                        <input type="text" placeholder="Cari donasi..." class="form-control">
-                        <select class="form-control">
-                            <option>Semua Status</option>
-                            <option>Pending</option>
-                            <option>Diverifikasi</option>
-                            <option>Ditolak</option>
-                            <option>Terkirim</option>
-                        </select>
-                        <button class="btn btn-secondary">Filter</button>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID Donasi</th>
-                                <th>Judul Buku</th>
-                                <th>Donatur</th>
-                                <th>Penerima</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($donasis as $donasi)
-                            <tr>
-                                <td>{{ $donasi->id }}</td>
-                                <td>{{ $donasi->book_title }}</td>
-                                <td>{{ $donasi->donatur?->name ?? '-' }}</td>
-                                <td>
-    @php
-        // Ambil buku pertama dari donasi
-        $buku = $donasi->bukus->first();
-        // Jika ada buku, cari pengajuan yang disetujui
-        $pengajuanDisetujui = $buku 
-            ? $buku->pengajuans()->where('status', 'disetujui')->first() 
-            : null;
-    @endphp
-    {{ optional($pengajuanDisetujui?->user)->name ?: '-' }}
-</td>
-                                <td>{{ $donasi->date }}</td>
-                                <td>
-                                    @if($donasi->status == 'pending')
-                                        <span class="badge badge-warning">Pending</span>
-                                    @elseif($donasi->status == 'verified')
-                                        <span class="badge badge-success">Diverifikasi</span>
-                                    @elseif($donasi->status == 'rejected')
-                                        <span class="badge badge-danger">Ditolak</span>
-                                    @elseif($donasi->status == 'delivered')
-                                        <span class="badge badge-primary">Terkirim</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm" onclick="showDonationDetail({{ $donasi->id }})">Detail</button>
-                                        <button class="btn btn-danger btn-sm" onclick="deleteDonation({{ $donasi->id }})">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
             </div>
             
             <!-- Verifikasi Page -->
@@ -1898,45 +1887,57 @@ function showDonationDetail(donasiId) {
 // === Fungsi untuk memperbarui status donasi via AJAX ===
 function updateDonationStatus(selectElement, donasiId) {
     const newStatus = selectElement.value;
-    if (!confirm(`Yakin ubah status jadi "${newStatus}"?`)) return;
-    fetch(`/admin/donasi/${donasiId}/update-status`, {
+    if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
+        selectElement.value = selectElement.getAttribute('data-original-status') || 'menunggu';
+        return;
+    }
+
+    fetch(`/admin/donasi/${donasiId}/verify`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-        body: JSON.stringify({ status: newStatus })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert('Status berhasil diperbarui.');
-    })
-    .catch(() => alert('Gagal memperbarui status.'));
-}
-
-// === Fungsi untuk menghapus donasi via AJAX ===
-function deleteDonation(id) {
-    if (!confirm('Yakin hapus donasi ini?')) return;
-
-    fetch(`/api/donasi/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Accept': 'application/json'
         }
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Hapus baris dari DOM
-            const row = event.target.closest('tr');
-            if (row) row.remove();
-            alert('Donasi berhasil dihapus.');
+            // Update UI
+            const row = selectElement.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(5)');
+            let badgeClass = '';
+            let badgeText = '';
+            switch(newStatus) {
+                case 'menunggu':
+                    badgeClass = 'badge-warning';
+                    badgeText = 'Menunggu';
+                    break;
+                case 'diverifikasi':
+                    badgeClass = 'badge-success';
+                    badgeText = 'Diverifikasi';
+                    break;
+                case 'ditolak':
+                    badgeClass = 'badge-danger';
+                    badgeText = 'Ditolak';
+                    break;
+                case 'terkirim':
+                    badgeClass = 'badge-primary';
+                    badgeText = 'Terkirim';
+                    break;
+                default:
+                    badgeClass = 'badge-secondary';
+                    badgeText = newStatus;
+            }
+            statusCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+            alert('Status donasi berhasil diperbarui.');
         } else {
-            alert('Gagal menghapus donasi.');
+            alert(data.message || 'Gagal memperbarui status.');
         }
     })
-    .catch(() => alert('Terjadi kesalahan.'));
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+    });
 }
 
     // Fungsi untuk menutup modal detail

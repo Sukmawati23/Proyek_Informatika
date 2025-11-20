@@ -371,23 +371,26 @@
             </div>
         </div>
 
-        <!-- Notifikasi (SERVER-SIDE) -->
-        <div id="notificationSection" style="display:none;">
-            <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
-            <h2>Notifikasi</h2>
-            <div id="notifContainer">
-                @forelse($notifications as $notif)
-                <div class="notif-card">
-                    <p>• {{ $notif->pesan }}</p>
-                    <div class="notif-footer">
-                        <small>{{ $notif->created_at->diffForHumans() }}</small>
-                    </div>
+        <!-- Notifikasi -->
+<div id="notificationSection" style="display:none;">
+    <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
+    <h2>Notifikasi</h2>
+    <div id="notifContainer">
+        @forelse($notifications as $notif)
+            <div class="notif-card">
+                <p>• {{ $notif->pesan }}</p>
+                <div class="notif-footer">
+                    <small>{{ $notif->created_at->diffForHumans() }}</small>
                 </div>
-                @empty
-                <p>Tidak ada notifikasi baru.</p>
-                @endforelse
             </div>
-        </div> 
+        @empty
+            <p style="text-align: center; margin-top: 20px;">Tidak ada notifikasi baru.</p>
+        @endforelse
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="showProfile()" style="background-color:#000080; color:white; padding:10px 20px; border:none; border-radius:5px;">Kembali</button>
+    </div>
+</div>
 
 
         <!-- Pengaturan Akun -->

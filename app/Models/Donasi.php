@@ -11,6 +11,10 @@ class Donasi extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'tanggal' => 'date', // ✅ ini yang kurang
+    ];
+
     protected $fillable = [
         'user_id',
         'penerima_id',      // ✅ pastikan ini ada
