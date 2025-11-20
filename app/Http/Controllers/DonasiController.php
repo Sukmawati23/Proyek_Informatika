@@ -51,7 +51,7 @@ class DonasiController extends Controller
         // ✅ Kirim notifikasi
         Notifikasi::create([
             'user_id' => $donasi->user_id,
-            'pesan'   => "🎉 Buku \"{$donasi->judul_buku}\" yang Anda donasikan telah **diverifikasi** dan kini tersedia untuk diajukan penerima.",
+            'pesan'   => "Buku \"{$donasi->judul_buku}\" yang Anda donasikan telah diverifikasi dan kini tersedia untuk diajukan penerima.",
         ]);
 
         return back()->with('success', 'Donasi berhasil diverifikasi. Buku kini tersedia untuk diajukan.');
