@@ -330,66 +330,73 @@
         </div>
 
         <h3>Status Permintaan</h3>
-        <div class="status-box" id="statusSection">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Judul Buku</th>
-                        <th>Tanggapan</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($bukus as $buku)
-                    <tr>
-                        <td>{{ $buku->judul }}</td>  <!-- bukan judul_buku -->
-                        <td>{{ ucfirst($buku->status_buku) }}</td>  <!-- bukan $buku->status -->
-                        <td>-</td> {{-- Penulis belum tersedia --}}
-                        <td>{{ $buku->kategori }}</td>
-                        <td>{{ ucfirst($buku->status) }}</td>
-                        <td>-</td> {{-- Penerbit belum tersedia --}}
-                        <td>{{ \Carbon\Carbon::parse($buku->tanggal)->format('Y') }}</td>
-                    </tr>
-                @endforeach
-
-                @if($bukus->isEmpty())
-                    <tr>
-                        <td colspan="7" class="text-center">Belum ada buku yang tersedia.</td>
-                    </tr>
-                @endif
-            </tbody>
-            </table>
-        </div>
+<div class="status-box" id="statusSection">
+    <table>
+        <thead>
+            <tr>
+                <th>Judul Buku</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($pengajuans as $pengajuan)
+            <tr>
+                <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
+                <td>{{ ucfirst($pengajuan->status) }}</td>
+            </tr>
+            @endforeach
+            @if($pengajuans->isEmpty())
+                <tr>
+                    <td colspan="2" class="text-center">Belum ada permintaan.</td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+</div>
     </div>
 
     <!-- Daftar Buku -->
-    <div id="bookListSection" style="display: none;" class="container fade-in">
-        <h3>Daftar Buku</h3>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Cari ..." oninput="filterBooks()">
-        </div>
-        <div class="book-box">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Buku</th>
-                        <th>Judul</th>
-                        <th>Penulis</th>
-                        <th>Kategori</th>
-                        <th>Status Buku</th>
-                        <th>Penerbit</th>
-                        <th>Tahun Terbit</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="bookTableBody">
-                    <!-- Data akan diisi oleh JavaScript -->
-                </tbody>
-            </table>
-            <div id="noResults" class="no-results" style="display: none;">Buku tidak ditemukan.</div>
-        </div>
-        <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
+<div id="bookListSection" style="display: none;" class="container fade-in">
+    <h3>Daftar Buku</h3>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari ..." oninput="filterBooks()">
     </div>
+    <div class="book-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Buku</th>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Kategori</th>
+                    <th>Status Buku</th>
+                    <th>Penerbit</th>
+                    <th>Tahun Terbit</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="bookTableBody">
+                @foreach ($bukus as $buku)
+    <tr>
+        <td>{{ $buku->judul }}</td> <!-- ✅ Judul dari tabel bukus -->
+        <td>{{ ucfirst($buku->status_buku) }}</td> <!-- ✅ Status dari tabel bukus -->
+        <td>-</td> {{-- Penulis belum tersedia --}}
+        <td>{{ $buku->kategori }}</td>
+        <td>-</td> {{-- Penerbit belum tersedia --}}
+        <td>{{ \Carbon\Carbon::parse($buku->tanggal)->format('Y') }}</td>
+    </tr>
+@endforeach
+                @if($bukus->isEmpty())
+                <tr>
+                    <td colspan="8" class="text-center">Belum ada buku yang tersedia.</td>
+                </tr>
+                @endif
+            </tbody>
+        </table>
+        <div id="noResults" class="no-results" style="display: none;">Buku tidak ditemukan.</div>
+    </div>
+    <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
+</div>
 
     <!-- Detail Buku -->
     <div id="bookDetailSection" class="container fade-in" style="display: none;">

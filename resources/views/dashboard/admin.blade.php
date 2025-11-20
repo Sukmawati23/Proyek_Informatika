@@ -771,11 +771,16 @@
                                 <td>{{ $donasi->id }}</td>
                                 <td>{{ $donasi->book_title }}</td>
                                 <td>{{ $donasi->donatur?->name ?? '-' }}</td>
-                               <td>
+                                <td>
     @php
-        $pengajuan = $donasi->bukus->first()?->pengajuans()->where('status', 'disetujui')->first();
+        // Ambil buku pertama dari donasi
+        $buku = $donasi->bukus->first();
+        // Jika ada buku, cari pengajuan yang disetujui
+        $pengajuanDisetujui = $buku 
+            ? $buku->pengajuans()->where('status', 'disetujui')->first() 
+            : null;
     @endphp
-    {{ optional($pengajuan?->user)->name ?: '-' }}
+    {{ optional($pengajuanDisetujui?->user)->name ?: '-' }}
 </td>
                                 <td>{{ $donasi->date }}</td>
                                 <td>
@@ -791,8 +796,8 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn btn-primary btn-sm">Detail</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                        <button class="btn btn-primary btn-sm" onclick="showDonationDetail({{ $donasi->id }})">Detail</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteDonation({{ $donasi->id }})">Hapus</button>
                                     </div>
                                 </td>
                             </tr>
@@ -1893,48 +1898,22 @@ function showDonationDetail(donasiId) {
 // === Fungsi untuk memperbarui status donasi via AJAX ===
 function updateDonationStatus(selectElement, donasiId) {
     const newStatus = selectElement.value;
-
-    // Konfirmasi perubahan status
-    if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
-        selectElement.value = selectElement.getAttribute('data-original-status') || 'menunggu';
-        return;
-    }
-
-    selectElement.setAttribute('data-original-status', selectElement.value);
-
-
-    // --- Selalu tampilkan badge ---
-    const row = selectElement.closest('tr');
-    const statusCell = row.querySelector('td:nth-child(5)'); // Kolom status
-
-    let badgeClass = '';
-    let badgeText = '';
-
-    switch(newStatus) {
-        case 'menunggu':
-            badgeClass = 'badge-warning';
-            badgeText = 'Menunggu';
-            break;
-        case 'diverifikasi':
-            badgeClass = 'badge-success';
-            badgeText = 'Diverifikasi';
-            break;
-        case 'ditolak':
-            badgeClass = 'badge-danger';
-            badgeText = 'Ditolak';
-            break;
-        case 'terkirim':
-            badgeClass = 'badge-primary';
-            badgeText = 'Terkirim';
-            break;
-        default:
-            badgeClass = 'badge-secondary';
-            badgeText = newStatus;
-    }
-
-    statusCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
-    alert('Status donasi berhasil diperbarui.');
+    if (!confirm(`Yakin ubah status jadi "${newStatus}"?`)) return;
+    fetch(`/admin/donasi/${donasiId}/update-status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert('Status berhasil diperbarui.');
+    })
+    .catch(() => alert('Gagal memperbarui status.'));
 }
+
 // === Fungsi untuk menghapus donasi via AJAX ===
 function deleteDonation(id) {
     if (!confirm('Yakin hapus donasi ini?')) return;

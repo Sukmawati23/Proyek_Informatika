@@ -8,9 +8,9 @@ use App\Models\User;
 use App\Models\Buku;
 use App\Models\Donasi;
 use App\Models\Pengajuan;
+use App\Models\Notifikasi;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-// Tambahkan model Notifikasi jika sudah ada
-// use App\Models\Notifikasi;
 
 class DashboardController extends Controller
 {
@@ -38,16 +38,19 @@ class DashboardController extends Controller
             ]);
         }
 
+        // app/Http/Controllers/DashboardController.php → index()
         if ($user->role === 'donatur') {
             return view('dashboard.donatur', [
-                'donasis' => Donasi::with(['donatur', 'penerima'])->latest()->take(10)->get(),
+                'donasis'       => Donasi::where('user_id', $user->id)->latest()->get(),
+                'notifications' => $user->notifications()->latest()->take(5)->get(),
             ]);
         }
 
+        // DashboardController@index — untuk penerima
         if ($user->role === 'penerima') {
             return view('dashboard.penerima', [
-                'pengajuans' => $user->pengajuans()->with('buku')->latest()->take(10)->get(),
-                'bukus'      => Buku::where('status_buku', 'tersedia')->latest()->take(10)->get(),
+                'bukus' => Buku::where('status_buku', 'tersedia')->latest()->get(),
+                'pengajuans' => Pengajuan::where('user_id', $user->id)->with('buku')->latest()->get(),
             ]);
         }
 
