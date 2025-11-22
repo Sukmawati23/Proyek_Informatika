@@ -114,6 +114,7 @@
             max-width: 500px;
             border-radius: 5px;
             border: none;
+            margin-bottom: 15px;
         }
 
         .btn-kembali, .btn-ajukan {
@@ -321,7 +322,7 @@
     <!-- Dashboard Utama -->
     <div id="dashboardSection" class="container fade-in">
         <img src="LOGO-SDB.png" class="logo" alt="Logo">
-        <h2 id="userName">Halo, Pengguna</h2>
+        <h2 id="userName">Halo, {{ Auth::user()->name }}</h2>
 
         <div class="card-book" id="cardBook">
             <img src="icon-daftar-buku.png" alt="Icon Daftar Buku">
@@ -339,74 +340,52 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($pengajuans as $pengajuan)
-            <tr>
-                <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
-                <td>{{ ucfirst($pengajuan->status) }}</td>
-            </tr>
-            @endforeach
-            @if($pengajuans->isEmpty())
-                <tr>
-                    <td colspan="2" class="text-center">Belum ada permintaan.</td>
-                </tr>
-            @endif
+            @forelse($pengajuans as $pengajuan)
+                        <tr>
+                            <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
+                            <td>{{ ucfirst($pengajuan->status) }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="2">Belum ada permintaan.</td></tr>
+                    @endforelse
         </tbody>
     </table>
 </div>
     </div>
 
     <!-- Daftar Buku -->
-<div id="bookListSection" style="display: none;" class="container fade-in">
-    <h3>Daftar Buku</h3>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari ..." oninput="filterBooks()">
+    <div id="bookListSection" style="display: none;" class="container fade-in">
+        <h3>Daftar Buku</h3>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Cari buku..." oninput="filterBooks()">
+        </div>
+        <div class="book-box">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Judul</th>
+                        <th>Kategori</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="bookTableBody">
+                    <!-- Diisi oleh JavaScript -->
+                </tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display: none;">Buku tidak ditemukan.</div>
+        </div>
+        <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
     </div>
-    <div class="book-box">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID Buku</th>
-                    <th>Judul</th>
-                    <th>Penulis</th>
-                    <th>Kategori</th>
-                    <th>Status Buku</th>
-                    <th>Penerbit</th>
-                    <th>Tahun Terbit</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="bookTableBody">
-                @foreach ($bukus as $buku)
-    <tr>
-        <td>{{ $buku->judul }}</td> <!-- ✅ Judul dari tabel bukus -->
-        <td>{{ ucfirst($buku->status_buku) }}</td> <!-- ✅ Status dari tabel bukus -->
-        <td>-</td> {{-- Penulis belum tersedia --}}
-        <td>{{ $buku->kategori }}</td>
-        <td>-</td> {{-- Penerbit belum tersedia --}}
-        <td>{{ \Carbon\Carbon::parse($buku->tanggal)->format('Y') }}</td>
-    </tr>
-@endforeach
-                @if($bukus->isEmpty())
-                <tr>
-                    <td colspan="8" class="text-center">Belum ada buku yang tersedia.</td>
-                </tr>
-                @endif
-            </tbody>
-        </table>
-        <div id="noResults" class="no-results" style="display: none;">Buku tidak ditemukan.</div>
-    </div>
-    <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
-</div>
 
     <!-- Detail Buku -->
     <div id="bookDetailSection" class="container fade-in" style="display: none;">
         <div class="book-detail">
             <h3>Detail Buku</h3>
             <div class="book-detail-content">
-                <table>
-                    <tbody id="bookDetailContent">
-                        <!-- Data akan diisi oleh JavaScript -->
-                    </tbody>
+                <table id="bookDetailContent">
+                    <!-- Diisi oleh JavaScript -->
                 </table>
             </div>
             <button class="btn-ajukan" onclick="confirmAjukanBuku()">Ajukan Buku</button>
@@ -417,10 +396,8 @@
     <!-- Notifikasi Pengajuan -->
     <div id="notificationSection" style="display: none;" class="container fade-in">
         <div class="notification-section">
-            <h2>Ajukan Permintaan Buku</h2>
-            <div>
-                <img src="img-notifikasi.png" alt="Permintaan Diajukan" style="width: 120px; margin: 20px 0;">
-            </div>
+            <h2>Permintaan Diajukan</h2>
+            <img src="{{ asset('img-notifikasi.png') }}" alt="✓" style="width: 120px; margin: 20px 0;">
             <h3>Permintaan telah diajukan</h3>
             <p>Permintaan buku Anda telah berhasil diajukan.</p>
             <button class="btn-daftar" onclick="kembaliKeBeranda()">Kembali ke Beranda</button>
@@ -679,79 +656,71 @@
     </div>
 
     <script>
-                let books = [];
-        let requestStatus = [];
-        let notifications = [];
-        let currentBookId = null; // ✅ Simpan ID buku yang sedang dilihat
+        let books = [];
+        let currentBookId = null;
 
-        // ✅ Fungsi fetch dipindah ke luar DOMContentLoaded
-        function fetchBukuTersedia() {
-            fetch('/api/buku-tersedia')
-                .then(response => {
-                    if (!response.ok) throw new Error('Gagal mengambil data buku');
-                    return response.json();
-                })
-                .then(data => {
-                    books = data.map(buku => ({
-                        id: buku.id,
-                        title: buku.judul || 'Tanpa Judul',
-                        author: buku.penulis || '-',
-                        category: buku.kategori || '-',
-                        status: buku.status_buku || 'tersedia',
-                        publisher: buku.penerbit || '-',
-                        year: buku.tahun_terbit || '-',
-                        description: buku.deskripsi || '',
-                        image: buku.foto ? `/storage/${buku.foto}` : 'icon-daftar-buku.png'
-                    }));
-                    if (document.getElementById('bookListSection').style.display === 'block') {
-                        displayBooks(books);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Gagal memuat daftar buku. Silakan coba lagi nanti.');
-                });
+        // ✅ Ambil data buku dari API
+        async function fetchBukuTersedia() {
+            try {
+                const res = await fetch('/api/buku-tersedia');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                books = data.map(b => ({
+                    id: b.id,
+                    title: b.judul || 'Tanpa Judul',
+                    author: b.penulis || '-',
+                    category: b.kategori || '-',
+                    status: b.status_buku || 'tersedia',
+                    publisher: b.penerbit || '-',
+                    year: b.tahun_terbit || '-',
+                    description: b.deskripsi || '',
+                    image: b.foto ? `/storage/${b.foto}` : '{{ asset("icon-daftar-buku.png") }}'
+                }));
+                if (document.getElementById('bookListSection').style.display === 'block') {
+                    displayBooks(books);
+                }
+            } catch (err) {
+                console.error('[ERROR] Gagal load buku:', err);
+                alert('Gagal memuat daftar buku. Coba refresh halaman.');
+            }
         }
 
-        // ✅ Fungsi ajukan buku ke API
-        function ajukanBuku() {
+         // ✅ Ajukan buku ke API
+        async function ajukanBuku() {
             const book = books.find(b => b.id === currentBookId);
             if (!book) {
-                alert("Buku tidak ditemukan.");
+                alert('Buku tidak ditemukan.');
                 return;
             }
-
-            fetch('/api/ajukan-buku', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token') // Jika pakai Sanctum SPA
-                },
-                body: JSON.stringify({
-                    buku_id: book.id,
-                    jumlah: 1
-                })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Gagal mengajukan buku');
-                return response.json();
-            })
-            .then(data => {
+            try {
+                const res = await fetch('/api/ajukan-buku', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        buku_id: book.id,
+                        jumlah: 1
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal mengajukan buku');
+                // ✅ Sukses → tampilkan notifikasi
                 hideAllSections();
                 document.getElementById('notificationSection').style.display = 'block';
                 setTimeout(() => {
-                    alert(data.message || "Permintaan buku berhasil diajukan!");
-                    showDashboard();
-                }, 2000);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Gagal mengajukan buku. Pastikan Anda login.");
-            });
+                    alert('✅ ' + (data.message || 'Permintaan buku berhasil diajukan!'));
+                    location.reload(); // refresh untuk update status permintaan
+                }, 1500);
+            } catch (err) {
+                console.error('[AJUKAN ERROR]:', err);
+                alert('❌ Gagal mengajukan buku. Pastikan Anda login dan coba lagi.');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            
             const userData = JSON.parse(localStorage.getItem('userData')) || {
                 namaLengkap: "{{ Auth::user()->name }}",
                 email: "{{ Auth::user()->email }}",
@@ -771,7 +740,7 @@
 
             const emailNotif = localStorage.getItem('emailNotif') === 'true';
             document.getElementById('emailNotifCheckbox').checked = emailNotif;
-
+            
             // ✅ Panggil setelah semua siap
             fetchBukuTersedia();
         });
@@ -781,79 +750,91 @@
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
         }
+
         function showBookList() {
             hideAllSections();
             document.getElementById('bookListSection').style.display = 'block';
             displayBooks(books);
         }
+
         function hideBookList() {
             hideAllSections();
             document.getElementById('dashboardSection').style.display = 'block';
         }
-        function showBookDetail(bookId) {
-            currentBookId = bookId; // ✅ Simpan ID
-            hideAllSections();
-            const book = books.find(b => b.id === bookId);
-            if (book) {
-                const detailContent = document.getElementById("bookDetailContent");
-                detailContent.innerHTML = `
-                    <tr><th colspan="2"><img src="${book.image}" alt="${book.title}" style="max-width:150px;"></th></tr>
-                    <tr><th>Judul</th><td>${book.title}</td></tr>
-                    <tr><th>Penulis</th><td>${book.author}</td></tr>
-                    <tr><th>Kategori</th><td>${book.category}</td></tr>
-                    <tr><th>Status</th><td>${book.status}</td></tr>
-                    <tr><th>Penerbit</th><td>${book.publisher}</td></tr>
-                    <tr><th>Tahun Terbit</th><td>${book.year}</td></tr>
-                    <tr><th>Deskripsi</th><td>${book.description}</td></tr>
-                `;
-                document.getElementById('bookDetailSection').style.display = 'block';
+
+         function showBookDetail(bookId) {
+            currentBookId = parseInt(bookId);
+            const book = books.find(b => b.id === currentBookId);
+            if (!book) {
+                alert('❌ Buku tidak ditemukan. Coba refresh halaman.');
+                return;
             }
+            const content = document.getElementById('bookDetailContent');
+            content.innerHTML = `
+                <tr><th colspan="2"><img src="${book.image}" alt="${book.title}" style="max-width:150px;"></th></tr>
+                <tr><th>Judul</th><td>${book.title}</td></tr>
+                <tr><th>Penulis</th><td>${book.author}</td></tr>
+                <tr><th>Kategori</th><td>${book.category}</td></tr>
+                <tr><th>Status</th><td>${ucfirst(book.status)}</td></tr>
+                <tr><th>Penerbit</th><td>${book.publisher}</td></tr>
+                <tr><th>Tahun</th><td>${book.year}</td></tr>
+                <tr><th>Deskripsi</th><td>${book.description || '-'}</td></tr>
+            `;
+            hideAllSections();
+            document.getElementById('bookDetailSection').style.display = 'block';
         }
+
         function hideBookDetail() {
             hideAllSections();
             document.getElementById('bookListSection').style.display = 'block';
         }
+
         function confirmAjukanBuku() {
-            if (confirm("Apakah Anda yakin ingin mengajukan buku ini?")) {
+            if (confirm("📌 Apakah Anda yakin ingin mengajukan buku ini?")) {
                 ajukanBuku();
             }
         }
+
         function kembaliKeBeranda() {
-            hideAllSections();
-            document.getElementById('dashboardSection').style.display = 'block';
+            location.reload(); // biar status pengajuan terupdate
         }
-        function displayBooks(booksToDisplay) {
-            const tbody = document.getElementById("bookTableBody");
-            tbody.innerHTML = "";
-            const noResults = document.getElementById("noResults");
-            if (booksToDisplay.length === 0) {
-                noResults.style.display = "block";
-            } else {
-                noResults.style.display = "none";
-                booksToDisplay.forEach(book => {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${book.id}</td>
-                        <td>${book.title}</td>
-                        <td>${book.author}</td>
-                        <td>${book.category}</td>
-                        <td>${book.status}</td>
-                        <td>${book.publisher}</td>
-                        <td>${book.year}</td>
-                        <td><button onclick="showBookDetail('${book.id}')" style="padding: 5px 10px; background-color: #0000cd; color: white; border: none; border-radius: 3px;">Detail</button></td>
-                    `;
-                    tbody.appendChild(row);
-                });
+
+         // ✅ Tampilkan daftar buku
+        function displayBooks(list) {
+            const tbody = document.getElementById('bookTableBody');
+            const noResults = document.getElementById('noResults');
+            tbody.innerHTML = '';
+            if (!list || list.length === 0) {
+                noResults.style.display = 'block';
+                return;
             }
+            noResults.style.display = 'none';
+            list.forEach(b => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${b.id}</td>
+                    <td>${b.title}</td>
+                    <td>${b.category}</td>
+                    <td>${ucfirst(b.status)}</td>
+                    <td><button class="btn-daftar" style="padding:5px 10px;font-size:12px;" onclick="showBookDetail(${b.id})">Detail</button></td>
+                `;
+                tbody.appendChild(row);
+            });
         }
+
+        // ✅ Helper: capitalize
+        function ucfirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
         function filterBooks() {
-            const searchInput = document.getElementById("searchInput").value.toLowerCase();
-            const filteredBooks = books.filter(book => 
-                book.title.toLowerCase().includes(searchInput) || 
-                book.author.toLowerCase().includes(searchInput) ||
-                book.category.toLowerCase().includes(searchInput)
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = books.filter(b =>
+                b.title.toLowerCase().includes(q) ||
+                b.category.toLowerCase().includes(q) ||
+                b.author.toLowerCase().includes(q)
             );
-            displayBooks(filteredBooks);
+            displayBooks(filtered);
         }
 
         function showNotifications() {
@@ -1139,11 +1120,7 @@
                 'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
                 'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
                 'deleteSuccess'
-            ];
-            sections.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
+            ].forEach(id => document.getElementById(id).style.display = 'none');
         }
 
     </script>

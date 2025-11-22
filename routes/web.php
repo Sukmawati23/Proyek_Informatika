@@ -98,6 +98,9 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::post('/admin/donasi/{id}/reject', [DonasiController::class, 'reject'])
         ->name('admin.donasi.reject')
         ->middleware(['auth', 'is_admin']);
+
+    Route::post('/admin/pengajuan/{id}/status', [PengajuanController::class, 'updateStatus'])
+        ->name('admin.pengajuan.status');
 });
 
 // === Hapus User (aman via UserController) ===
