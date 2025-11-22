@@ -24,11 +24,6 @@ class Pengajuan extends Model
         'tanggal' => 'date',
     ];
 
-    // Optional: default status
-    // protected $attributes = [
-    //     'status' => 'Menunggu',
-    // ];
-
     public function user()
     {
         return $this->belongsTo(User::class);

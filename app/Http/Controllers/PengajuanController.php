@@ -29,11 +29,11 @@ class PengajuanController extends Controller
 
         // ✅ Buat pengajuan
         $pengajuan = Pengajuan::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // ID penerima yang login
             'buku_id' => $buku->id,
             'jumlah' => $request->jumlah,
             'tanggal' => now(),
-            'status' => 'menunggu',
+            'status' => 'menunggu', // Status default
         ]);
 
         // ✅ Ubah status buku jadi 'diajukan'
@@ -44,6 +44,7 @@ class PengajuanController extends Controller
             'pengajuan_id' => $pengajuan->id,
         ]);
     }
+
     // === Admin: tampilkan daftar pengajuan ===
     public function index()
     {

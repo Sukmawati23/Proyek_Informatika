@@ -799,49 +799,61 @@
             <!-- Verifikasi Page -->
 <div id="verifikasi" class="page">
     <!-- Bagian 1: Verifikasi Pengajuan Donasi -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Verifikasi Pengajuan Donasi</h3>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID Pengajuan</th>
-                    <th>Judul Buku</th>
-                    <th>Donatur</th>
-                    <th>Tanggal</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($verifications as $verification)
-                <tr>
-                    <td>{{ $verification->id }}</td>
-                    <td>{{ $verification->book_title }}</td>
-                    <td>{{ $verification->donatur->name }}</td>
-                    <td>{{ $verification->date }}</td>
-                    <td>
-                        @if($verification->status == 'pending')
-                            <span class="badge badge-warning">Pending</span>
-                        @elseif($verification->status == 'verified')
-                            <span class="badge badge-success">Diverifikasi</span>
-                        @elseif($verification->status == 'rejected')
-                            <span class="badge badge-danger">Ditolak</span>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-primary btn-sm">Verifikasi</button>
-                            <button class="btn btn-danger btn-sm">Tolak</button>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <!-- Di dalam div id="verifikasi" -->
+<!-- Bagian 2: Daftar Pengajuan Penerima -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Pengajuan Menunggu Verifikasi</h3>
     </div>
-              <!-- Bagian 2: Daftar Buku yang Didonasikan -->
+    <div class="search-filter">
+        <input type="text" placeholder="Cari pengajuan..." class="form-control">
+        <select class="form-control">
+            <option>Semua Status</option>
+            <option>Menunggu</option>
+            <option>Disetujui</option>
+            <option>Ditolak</option>
+        </select>
+        <button class="btn btn-secondary">Filter</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Pengajuan</th>
+                <th>Judul Buku</th>
+                <th>Penerima</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($verifications as $pengajuan)
+            <tr data-pengajuan-id="{{ $pengajuan->id }}">
+                <td>{{ $pengajuan->id }}</td>
+                <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
+                <td>{{ $pengajuan->user?->name ?? '-' }}</td>
+                <td>{{ $pengajuan->tanggal }}</td>
+                <td>
+                    <!-- Dropdown Status -->
+                    <select class="form-control status-dropdown" onchange="updatePengajuanStatus(this, {{ $pengajuan->id }})">
+                        <option value="menunggu" {{ $pengajuan->status == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="disetujui" {{ $pengajuan->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="ditolak" {{ $pengajuan->status == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm" onclick="showPengajuanDetail({{ $pengajuan->id }})">Detail</button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePengajuan({{ $pengajuan->id }})">Hapus</button>
+                    </div>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+            <!-- Bagian 2: Daftar Buku yang Didonasikan -->
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Daftar Buku yang Didonasikan</h3>
@@ -2058,6 +2070,62 @@ document.getElementById('editDonaturForm')?.addEventListener('submit', function(
     }
     closeModal('editDonaturModal');
 });
+
+// === Fungsi untuk memperbarui status pengajuan via AJAX ===
+function updatePengajuanStatus(selectElement, pengajuanId) {
+    const newStatus = selectElement.value;
+    if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
+        selectElement.value = selectElement.getAttribute('data-original-status') || 'menunggu';
+        return;
+    }
+
+    fetch(`/admin/pengajuan/${pengajuanId}/status`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update UI
+            const row = selectElement.closest('tr');
+            const statusCell = row.querySelector('td:nth-child(5)');
+            let badgeClass = '';
+            let badgeText = '';
+            switch(newStatus) {
+                case 'menunggu':
+                    badgeClass = 'badge-warning';
+                    badgeText = 'Menunggu';
+                    break;
+                case 'disetujui':
+                    badgeClass = 'badge-success';
+                    badgeText = 'Disetujui';
+                    break;
+                case 'ditolak':
+                    badgeClass = 'badge-danger';
+                    badgeText = 'Ditolak';
+                    break;
+                default:
+                    badgeClass = 'badge-secondary';
+                    badgeText = newStatus;
+            }
+            statusCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+            alert('Status pengajuan berhasil diperbarui.');
+        } else {
+            alert(data.message || 'Gagal memperbarui status.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+    });
+}
+
 </script>
 </body>
 </html>
