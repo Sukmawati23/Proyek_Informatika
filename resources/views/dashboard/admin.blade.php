@@ -2072,6 +2072,7 @@ document.getElementById('editDonaturForm')?.addEventListener('submit', function(
 });
 
 // === Fungsi untuk memperbarui status pengajuan via AJAX ===
+// === Fungsi untuk memperbarui status pengajuan via AJAX ===
 function updatePengajuanStatus(selectElement, pengajuanId) {
     const newStatus = selectElement.value;
     if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
@@ -2079,14 +2080,15 @@ function updatePengajuanStatus(selectElement, pengajuanId) {
         return;
     }
 
+    // ✅ PERBAIKAN: Kirim data sebagai JSON
     fetch(`/admin/pengajuan/${pengajuanId}/status`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Accept': 'application/json'
+            'Content-Type': 'application/json', // ✅ Penting: Tandai bahwa kita mengirim JSON
         },
         body: JSON.stringify({
-            status: newStatus
+            status: newStatus // ✅ Data dikirim dalam format JSON
         })
     })
     .then(response => response.json())

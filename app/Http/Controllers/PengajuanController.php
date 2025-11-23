@@ -61,19 +61,36 @@ class PengajuanController extends Controller
     }
 
     // === Admin: update status pengajuan (disetujui / ditolak) ===
-    public function updateStatus(Request $request, $id)
+            public function updateStatus(Request $request, $id)
     {
-        $request->validate(['status' => 'required|in:disetujui,ditolak']);
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:disetujui,ditolak'
+        ]);
 
-        $pengajuan = Pengajuan::with('buku')->findOrFail($id);
-        $pengajuan->update(['status' => $request->status]);
+        try {
+            // Cari pengajuan beserta buku yang terkait
+            $pengajuan = Pengajuan::with('buku')->findOrFail($id);
 
-        if ($request->status === 'disetujui') {
-            $pengajuan->buku->update(['status_buku' => 'terkirim']);
-        } else {
-            $pengajuan->buku->update(['status_buku' => 'tersedia']);
+            // Perbarui status pengajuan
+            $pengajuan->update(['status' => $request->status]);
+
+            // Hanya perbarui status buku jika buku ditemukan
+            if ($pengajuan->buku) { // ✅ Pengecekan ini sangat penting
+                if ($request->status === 'disetujui') {
+                    $pengajuan->buku->update(['status_buku' => 'terkirim']);
+                } else {
+                    $pengajuan->buku->update(['status_buku' => 'tersedia']);
+                }
+            }
+
+            return response()->json(['message' => 'Status diperbarui.']);
+
+        } catch (\Exception $e) {
+            \Log::error('Error update pengajuan status: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Gagal memperbarui status. Silakan coba lagi.'
+            ], 500);
         }
-
-        return response()->json(['message' => 'Status diperbarui.']);
     }
 }
