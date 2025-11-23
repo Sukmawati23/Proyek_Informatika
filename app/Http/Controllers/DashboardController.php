@@ -46,11 +46,11 @@ class DashboardController extends Controller
             ]);
         }
 
-        // DashboardController@index — untuk penerima
+       // === DashboardController.php → index() — untuk penerima
         if ($user->role === 'penerima') {
             return view('dashboard.penerima', [
                 'bukus' => Buku::where('status_buku', 'tersedia')->latest()->get(),
-                'pengajuans' => Pengajuan::where('user_id', $user->id)->with('buku')->latest()->get(),
+                'pengajuans' => Pengajuan::where('user_id', $user->id)->with('buku')->latest()->get(), // ✅ Sudah benar
             ]);
         }
 
