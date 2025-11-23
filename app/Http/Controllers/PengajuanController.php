@@ -5,20 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Pengajuan;
 use App\Models\Buku;
 use App\Models\Notifikasi;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class PengajuanController extends Controller
 {
-    // === Penerima mengajukan buku ===
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'buku_id' => 'required|exists:bukus,id',
             'jumlah' => 'required|integer|min:1',
         ]);
+
+        // Pastikan user sudah login
+        if (!Auth::check()) {
+            return response()->json(['error' => 'Anda harus login untuk mengajukan buku.'], 401);
+        }
 
         $buku = Buku::findOrFail($request->buku_id);
 
@@ -44,6 +48,7 @@ class PengajuanController extends Controller
             'pengajuan_id' => $pengajuan->id,
         ]);
     }
+
 
     // === Admin: tampilkan daftar pengajuan ===
     public function index()

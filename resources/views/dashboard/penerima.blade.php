@@ -693,11 +693,11 @@
                 return;
             }
             try {
-                const res = await fetch('/api/ajukan-buku', {
+                const res = await fetch('/pengajuan', { // ✅ URL sudah benar
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content // ✅ Token CSRF sudah ada
                     },
                     body: JSON.stringify({
                         buku_id: book.id,

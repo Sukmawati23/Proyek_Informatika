@@ -192,8 +192,6 @@
             opacity: 0.8;              
         }
 
-
-
         /* Pengaturan */
         #settingsSection {
             display: none;
@@ -306,14 +304,21 @@
         <label for="kondisi">Kondisi Buku</label>
         <input type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
 
+        <!-- Tambahkan ini setelah field "Kondisi Buku" -->
+        <label for="penulis">Penulis</label>
+        <input type="text" id="penulis" name="penulis" placeholder="Masukkan nama penulis" required>
+
+        <label for="penerbit">Penerbit</label>
+        <input type="text" id="penerbit" name="penerbit" placeholder="Masukkan nama penerbit" required>
+
         <label for="foto">Pilih Foto</label>
         <input type="file" id="foto" name="foto" accept="image/*">
 
         <label for="deskripsi">Deskripsi (Opsional)</label>
         <textarea id="deskripsi" name="deskripsi" placeholder="Tambahkan deskripsi jika ada..."></textarea>
-
+        
         <label for="jumlah">Jumlah Buku</label>
-<input type="number" id="jumlah" name="jumlah" value="1" min="1" required>
+        <input type="number" id="jumlah" name="jumlah" value="1" min="1" required>
 
         <button type="submit">Donasikan Buku</button>
     </form>
@@ -335,6 +340,8 @@
         <strong>{{ $donasi->judul_buku }}</strong> — 
         <em>{{ ucfirst($donasi->status) }}</em>
         <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
+        <br><span style="font-size:0.85em; color:#666;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
+        <br><span style="font-size:0.85em; color:#666;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
     </li>
 @empty
     <li>Belum ada donasi.</li>

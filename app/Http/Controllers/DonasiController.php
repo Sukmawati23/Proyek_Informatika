@@ -76,6 +76,8 @@ class DonasiController extends Controller
             'judul_buku' => 'required|string|max:255',
             'kategori' => 'required|string|max:100',
             'kondisi' => 'required|string|max:50',
+            'penulis' => 'required|string|max:255',     // ← tambahkan
+            'penerbit' => 'required|string|max:255',    // ← tambahkan
             'jumlah' => 'required|integer|min:1',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'deskripsi' => 'nullable|string',
@@ -90,6 +92,8 @@ class DonasiController extends Controller
             'judul_buku' => $validated['judul_buku'],
             'kategori' => $validated['kategori'],
             'kondisi' => $validated['kondisi'],
+            'penulis' => $validated['penulis'],        // ← simpan
+            'penerbit' => $validated['penerbit'],      // ← simpan
             'jumlah' => $validated['jumlah'],
             'foto' => $validated['foto'] ?? null,
             'deskripsi' => $validated['deskripsi'] ?? null,
