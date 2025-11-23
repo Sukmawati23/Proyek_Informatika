@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('judul_buku');
             $table->string('kategori');
             $table->string('kondisi');
+            $table->string('penulis')->nullable();
+            $table->string('penerbit')->nullable();
             $table->string('foto')->nullable();
             $table->date('tanggal')->nullable();
             $table->enum('status', ['menunggu', 'diterima', 'diproses', 'ditolak'])->default('menunggu');

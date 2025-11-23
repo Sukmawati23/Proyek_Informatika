@@ -13,11 +13,6 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
@@ -76,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/update-email-notification', [UserController::class, 'updateNotification']);
     Route::get('/api/get-email-notification', [UserController::class, 'getEmailNotification']);
 
+    Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    
     // HAPUS route duplikat: `/pengajuan` (karena frontend pakai `/api/ajukan-buku`)
     // Route::post('/pengajuan', ...) → sudah dihapus ✅
 });
