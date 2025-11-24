@@ -61,7 +61,7 @@ class PengajuanController extends Controller
     }
 
     // === Admin: update status pengajuan (disetujui / ditolak) ===
-            public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id)
     {
         // Validasi input
         $request->validate([
@@ -76,12 +76,27 @@ class PengajuanController extends Controller
             $pengajuan->update(['status' => $request->status]);
 
             // Hanya perbarui status buku jika buku ditemukan
-            if ($pengajuan->buku) { // ✅ Pengecekan ini sangat penting
+            if ($pengajuan->buku) {
                 if ($request->status === 'disetujui') {
                     $pengajuan->buku->update(['status_buku' => 'terkirim']);
                 } else {
                     $pengajuan->buku->update(['status_buku' => 'tersedia']);
                 }
+            }
+
+            // BUAT NOTIFIKASI UNTUK PENERIMA
+            if ($request->status === 'disetujui') {
+                Notifikasi::create([
+                    'user_id' => $pengajuan->user_id,
+                    'pesan' => "Buku \"{$pengajuan->buku->judul}\" sudah diverifikasi."
+                ]);
+            }
+
+            if ($request->status === 'ditolak') {
+                Notifikasi::create([
+                    'user_id' => $pengajuan->user_id,
+                    'pesan' => "❌ Pengajuan buku \"{$pengajuan->buku->judul}\" ditolak oleh admin."
+                ]);
             }
 
             return response()->json(['message' => 'Status diperbarui.']);

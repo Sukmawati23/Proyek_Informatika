@@ -231,6 +231,38 @@
             margin: 0 auto 10px;
             width: 50px;
         }
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            background: #0a0fbf;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            color: white;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .notif-icon {
+            font-size: 24px;
+        }
+
+        .notif-content {
+            flex: 1;
+        }
+
+        .notif-text {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            display: block;
+            margin-top: 5px;
+            font-size: 13px;
+            opacity: 0.7;
+        }
 
         /* Pengaturan */
         #settingsSection {
@@ -424,11 +456,28 @@
 
     <!-- Notifikasi -->
     <div id="notificationsSection" class="fade-in">
-        <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
-        <h2>Notifikasi</h2>
-        <div id="notifContainer">
-            <!-- Data akan diisi oleh JavaScript -->
-        </div>
+         @foreach($notifications as $notif)
+            <div class="notif-box" style="background:#1a2aff; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
+            
+                <strong>• {{ $notif->pesan }}</strong>
+
+                <div style="margin-top:8px; font-size:14px; opacity:0.8;">
+                    {{ $notif->created_at->format('d M Y, H:i') }}
+                </div>
+
+                <!-- TOMBOL CHAT KANAN -->
+                <div style="text-align:right; margin-top:-25px;">
+                    <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
+                        Masuk Chat
+                    </a>
+                </div>
+
+            </div>
+        @endforeach
+
+        @if($notifications->isEmpty())
+            <p class="text-center text-white mt-4">Belum ada notifikasi.</p>
+        @endif
     </div>
 
     <!-- Pengaturan Akun -->
@@ -840,6 +889,7 @@
         function showNotifications() {
             hideAllSections();
             document.getElementById('notificationsSection').style.display = 'block';
+            loadNotifications(); // 
         }
 
         function showProfile() {
@@ -1121,6 +1171,72 @@
                 'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
                 'deleteSuccess'
             ].forEach(id => document.getElementById(id).style.display = 'none');
+        }
+
+        // parsing yang lebih aman
+function parseServerDateToUTC(dateStr) {
+    if (!dateStr) return new Date();
+
+    if (/[Tt].*\d{2}:\d{2}:\d{2}/.test(dateStr) || dateStr.endsWith('Z') || /[+\-]\d{2}:\d{2}$/.test(dateStr)) {
+        return new Date(dateStr);
+    }
+
+    const justDateTime = dateStr.replace(' ', 'T');
+    return new Date(justDateTime + 'Z');
+}
+
+function formatTimeFromServer(dateTimeStr) {
+    const d = parseServerDateToUTC(dateTimeStr);
+
+    return d.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    }) + ' • ' +
+    d.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'Asia/Jakarta'
+    }) + ' WIB';
+}
+
+
+        
+        // === LOAD NOTIFICATION DARI SERVER ===
+        async function loadNotifications() {
+            try {
+                const res = await fetch('/api/notifikasi');
+                const data = await res.json();
+
+                const container = document.getElementById('notifContainer');
+                container.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <p style="text-align:center; color:#ccc;">Tidak ada notifikasi</p>
+                    `;
+                    return;
+                }
+
+                data.forEach(n => {
+                    const card = document.createElement('div');
+                    card.classList.add('notif-item');
+
+                    card.innerHTML = `
+                        <div class="notif-icon">🔔</div>
+                        <div class="notif-content">
+                            <p class="notif-text">${n.pesan}</p>
+                            <span class="notif-time">${timeAgo(n.created_at)}</span>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error('Gagal memuat notifikasi:', err);
+            }
         }
 
     </script>
