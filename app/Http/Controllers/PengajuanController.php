@@ -8,7 +8,8 @@ use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Log
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class PengajuanController extends Controller
 {
@@ -72,8 +73,8 @@ class PengajuanController extends Controller
         try {
             // Cari pengajuan beserta buku yang terkait
             $pengajuan = Pengajuan::with('buku')->findOrFail($id);
-          
-             // Simpan status lama untuk logging (opsional)
+
+            // Simpan status lama untuk logging (opsional)
             $oldStatus = $pengajuan->status;
 
             // Perbarui status pengajuan
@@ -109,7 +110,6 @@ class PengajuanController extends Controller
                     'buku_status' => optional($pengajuan->buku)->status_buku,
                 ]
             ]);
-
         } catch (\Exception $e) {
             Log::error('Error updating pengajuan status (ID: ' . $id . '): ' . $e->getMessage());
             return response()->json([
