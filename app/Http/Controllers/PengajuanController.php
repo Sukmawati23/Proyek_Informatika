@@ -8,6 +8,7 @@ use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log
 
 class PengajuanController extends Controller
 {
@@ -61,48 +62,60 @@ class PengajuanController extends Controller
     }
 
     // === Admin: update status pengajuan (disetujui / ditolak) ===
-            public function updateStatus(Request $request, $id){
-    // Validasi input
-    $request->validate([
-        'status' => 'required|in:menunggu,disetujui,ditolak',
-    ]);
-
-    try {
-        // Cari pengajuan
-        $pengajuan = Pengajuan::with('buku')->findOrFail($id);
-
-        // Update status
-        $pengajuan->update(['status' => $request->status]);
-
-        // Perbarui status buku jika diperlukan
-        if ($request->status === 'disetujui') {
-            // Pastikan buku ada sebelum update
-            if ($pengajuan->buku) {
-                $pengajuan->buku->update(['status_buku' => 'terkirim']);
-            }
-        } else if ($request->status === 'ditolak') {
-            // Pastikan buku ada sebelum update
-            if ($pengajuan->buku) {
-                $pengajuan->buku->update(['status_buku' => 'tersedia']);
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status diperbarui.',
-            'data' => [
-                'id' => $pengajuan->id,
-                'status' => $pengajuan->status,
-                'buku_status' => $pengajuan->buku ? $pengajuan->buku->status_buku : null
-            ]
+    public function updateStatus(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'status' => 'required|in:disetujui,ditolak'
         ]);
-    } catch (\Exception $e) {
-        // Tangkap semua error dan kembalikan respons JSON
-        Log::error('Error updating pengajuan status: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal memperbarui status. ' . $e->getMessage(),
-        ], 500);
+
+        try {
+            // Cari pengajuan beserta buku yang terkait
+            $pengajuan = Pengajuan::with('buku')->findOrFail($id);
+          
+             // Simpan status lama untuk logging (opsional)
+            $oldStatus = $pengajuan->status;
+
+            // Perbarui status pengajuan
+            $pengajuan->update(['status' => $request->status]);
+
+            // Update status buku jika ada
+            if ($pengajuan->buku) {
+                $newBukuStatus = $request->status === 'disetujui' ? 'terkirim' : 'tersedia';
+                $pengajuan->buku->update(['status_buku' => $newBukuStatus]);
+            } else {
+                Log::warning("Buku tidak ditemukan untuk pengajuan ID: {$id}");
+            }
+
+            // Buat notifikasi untuk penerima
+            $judulBuku = optional($pengajuan->buku)->judul ?? '[Judul tidak tersedia]';
+
+            $pesan = $request->status === 'disetujui'
+                ? "Buku \"{$judulBuku}\" sudah diverifikasi."
+                : "❌ Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
+
+            Notifikasi::create([
+                'user_id' => $pengajuan->user_id,
+                'pesan' => $pesan
+            ]);
+
+            // Respons sukses
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pengajuan berhasil diperbarui.',
+                'data' => [
+                    'id' => $pengajuan->id,
+                    'status' => $pengajuan->status,
+                    'buku_status' => optional($pengajuan->buku)->status_buku,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating pengajuan status (ID: ' . $id . '): ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage(),
+            ], 500);
+        }
     }
-}
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
-
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
@@ -52,7 +52,6 @@ Route::get('/email/verification-success', function () {
         'role' => auth()->user()->role
     ]);
 })->middleware(['auth'])->name('verification.success');
-
 
 // Donasi Publik
 Route::get('/donasi', [DonasiController::class, 'index'])->name('donasi.index');
@@ -110,3 +109,7 @@ Route::delete('/donatur/{id}', [UserController::class, 'destroyDonatur'])
 Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
     ->middleware('is_admin')
     ->name('penerima.destroy');
+
+Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
+    ->middleware('auth');
+
