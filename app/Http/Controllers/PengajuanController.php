@@ -8,6 +8,7 @@ use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log
 
 class PengajuanController extends Controller
 {
@@ -31,7 +32,7 @@ class PengajuanController extends Controller
             return response()->json(['error' => 'Buku tidak tersedia untuk diajukan.'], 400);
         }
 
-        // ✅ Buat pengajuan
+        //  Buat pengajuan
         $pengajuan = Pengajuan::create([
             'user_id' => Auth::id(), // ID penerima yang login
             'buku_id' => $buku->id,
@@ -40,7 +41,7 @@ class PengajuanController extends Controller
             'status' => 'menunggu', // Status default
         ]);
 
-        // ✅ Ubah status buku jadi 'diajukan'
+        // Ubah status buku jadi 'diajukan'
         $buku->update(['status_buku' => 'diajukan']);
 
         return response()->json([
@@ -50,12 +51,12 @@ class PengajuanController extends Controller
     }
 
 
-    // === Admin: tampilkan daftar pengajuan ===
+    //  Admin: tampilkan daftar pengajuan 
     public function index()
     {
         $pengajuans = Pengajuan::with(['user', 'buku'])
             ->latest()
-            ->paginate(10); // ✅ tambahkan pagination
+            ->paginate(10); // 
 
         return view('admin.pengajuan.index', compact('pengajuans'));
     }
@@ -71,40 +72,49 @@ class PengajuanController extends Controller
         try {
             // Cari pengajuan beserta buku yang terkait
             $pengajuan = Pengajuan::with('buku')->findOrFail($id);
+          
+             // Simpan status lama untuk logging (opsional)
+            $oldStatus = $pengajuan->status;
 
             // Perbarui status pengajuan
             $pengajuan->update(['status' => $request->status]);
 
-            // Hanya perbarui status buku jika buku ditemukan
+            // Update status buku jika ada
             if ($pengajuan->buku) {
-                if ($request->status === 'disetujui') {
-                    $pengajuan->buku->update(['status_buku' => 'terkirim']);
-                } else {
-                    $pengajuan->buku->update(['status_buku' => 'tersedia']);
-                }
+                $newBukuStatus = $request->status === 'disetujui' ? 'terkirim' : 'tersedia';
+                $pengajuan->buku->update(['status_buku' => $newBukuStatus]);
+            } else {
+                Log::warning("Buku tidak ditemukan untuk pengajuan ID: {$id}");
             }
 
-            // BUAT NOTIFIKASI UNTUK PENERIMA
-            if ($request->status === 'disetujui') {
-                Notifikasi::create([
-                    'user_id' => $pengajuan->user_id,
-                    'pesan' => "Buku \"{$pengajuan->buku->judul}\" sudah diverifikasi."
-                ]);
-            }
+            // Buat notifikasi untuk penerima
+            $judulBuku = optional($pengajuan->buku)->judul ?? '[Judul tidak tersedia]';
 
-            if ($request->status === 'ditolak') {
-                Notifikasi::create([
-                    'user_id' => $pengajuan->user_id,
-                    'pesan' => "❌ Pengajuan buku \"{$pengajuan->buku->judul}\" ditolak oleh admin."
-                ]);
-            }
+            $pesan = $request->status === 'disetujui'
+                ? "Buku \"{$judulBuku}\" sudah diverifikasi."
+                : "❌ Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
 
-            return response()->json(['message' => 'Status diperbarui.']);
+            Notifikasi::create([
+                'user_id' => $pengajuan->user_id,
+                'pesan' => $pesan
+            ]);
+
+            // Respons sukses
+            return response()->json([
+                'success' => true,
+                'message' => 'Status pengajuan berhasil diperbarui.',
+                'data' => [
+                    'id' => $pengajuan->id,
+                    'status' => $pengajuan->status,
+                    'buku_status' => optional($pengajuan->buku)->status_buku,
+                ]
+            ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error update pengajuan status: ' . $e->getMessage());
+            Log::error('Error updating pengajuan status (ID: ' . $id . '): ' . $e->getMessage());
             return response()->json([
-                'error' => 'Gagal memperbarui status. Silakan coba lagi.'
+                'success' => false,
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage(),
             ], 500);
         }
     }
