@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color:#000080;
+            --primary-color:#00002c;
             --secondary-color: #f8f9fc;
             --success-color: #1cc88a;
             --info-color: #36b9cc;
@@ -156,22 +156,26 @@
         
         .stat-card.donatur {
             border-left-color: var(--primary-color);
+            font-size: 20px;
         }
         
         .stat-card.penerima {
             border-left-color: var(--success-color);
+            font-size: 20px;
         }
         
         .stat-card.donasi {
             border-left-color: var(--info-color);
+            font-size: 20px;
         }
         
         .stat-card.pending {
             border-left-color: var(--warning-color);
+            font-size: 20px;
         }
         
         .stat-title {
-            font-size: 14px;
+            font-size: 20px;
             color: var(--dark-color);
             text-transform: uppercase;
             font-weight: 600;
@@ -529,32 +533,29 @@
             <div id="dashboard" class="page active">
                 <p>Selamat datang, Admin! Anda dapat mengelola semua data di sini.</p>
                 
-                <!-- Statistics Cards -->
-                <div class="stats-cards">
-                    <div class="stat-card donatur">
-                        <div class="stat-title">Donatur</div>
-                        <div class="stat-value"></div>
-                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> % dari bulan lalu</div>
-                    </div>
-                    
-                    <div class="stat-card penerima">
-                        <div class="stat-title">Penerima</div>
-                        <div class="stat-value"></div>
-                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> % dari bulan lalu</div>
-                    </div>
-                    
-                    <div class="stat-card donasi">
-                        <div class="stat-title">Donasi Buku</div>
-                        <div class="stat-value"></div>
-                        <div class="stat-change up"><i class="fas fa-arrow-up"></i> % dari bulan lalu</div>
-                    </div>
-                    
-                    <div class="stat-card pending">
-                        <div class="stat-title">Menunggu Verifikasi</div>
-                        <div class="stat-value"></div>
-                        <div class="stat-change down"><i class="fas fa-arrow-down"></i> 3% dari bulan lalu</div>
-                    </div>
-                </div>
+               <!-- Statistics Cards -->
+<div class="stats-cards">
+    <div class="stat-card donatur">
+        <div class="stat-title">Donatur</div>
+        <div class="stat-value">{{ number_format($total_donatur) }}</div> 
+        
+    </div>
+    <div class="stat-card penerima">
+        <div class="stat-title">Penerima</div>
+        <div class="stat-value">{{ number_format($total_penerima) }}</div> 
+        
+    </div>
+    <div class="stat-card donasi">
+        <div class="stat-title">Donasi Buku</div>
+        <div class="stat-value">{{ number_format($total_donasi) }}</div> 
+       
+    </div>
+    <div class="stat-card pending">
+        <div class="stat-title">Menunggu Verifikasi</div>
+        <div class="stat-value">{{ number_format($total_menunggu_verifikasi) }}</div> 
+        
+    </div>
+</div>
                 
                 <!-- Charts -->
                 <div class="card">
