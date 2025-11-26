@@ -5,35 +5,39 @@
     <title>Lupa Kata Sandi</title>
     <style>
         body {
-            background-color: #000080;
+            background-color: #00002c;
             font-family: 'Segoe UI', sans-serif;
             text-align: center;
             padding: 50px;
+            font-size: 20px;
         }
         .container {
             width: 90%;
-            max-width: 400px; /* Batas lebar maksimal */
+            max-width: 700px; /* Batas lebar maksimal */
             padding: 30px;
             color: white;
             text-align: center;
             margin: auto;
+            font-size: 20px;
         }
         .container h2 {
             margin-bottom: 20px;
-            font-size: 20px;
+            font-size: 30px;
         }
         .form-control {
             width: 94%;
-            padding: 10px;
+            padding: 20px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
+            font-size: 20px;
         }
         .btn-submit {
             width: 100%;
-            padding: 10px;
+            padding: 20px;
             background-color: white;
-            color: #000080;
+            font-size: 20px;
+            color: #00002c;
             border: none;
             border-radius: 5px;
             font-weight: bold;
@@ -46,7 +50,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="{{ asset('LOGO-SDB.png') }}" alt="Logo" style="width: 50%; margin-bottom: 20px;">
+        <img src="{{ asset('LOGO-SDB.png') }}" alt="Logo" style="width: 40%; margin-bottom: 10px;">
         <h2>Lupa Kata Sandi</h2>
         <p>Masukkan email Anda untuk mengatur ulang kata sandi</p>
         
