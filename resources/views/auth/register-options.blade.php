@@ -6,7 +6,7 @@
     <title>Daftarkan Sebagai</title>
     <style>
         body {
-            background-color: #000080;
+            background-color: #00002c;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
@@ -16,25 +16,24 @@
             min-height: 100vh;
         }
         .container {
-            width: 90%;
-            max-width: 320px;
+            width: 100%;
+            max-width: 800px;
             color: white;
-            padding: 30px 20px;
+            padding: 50px;
             border-radius: 10px;
             text-align: center;
-            background-color: rgba(0, 0, 128, 0.9); /* Opsional: tambah transparansi agar lebih modern */
         }
         .container img {
-            width: 60px;
-            margin-bottom: 15px;
+            width: 200px;
+            margin-bottom: 5px;
         }
         .container h2 {
-            font-size: 20px;
+            font-size: 30px;
             margin-bottom: 5px;
         }
         .container p {
-            font-size: 12px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 15px;
         }
         .btn {
             display: block;
@@ -42,13 +41,13 @@
             padding: 12px;
             margin: 12px auto;
             background-color: white;
-            color: #000080;
+            color: #00002c;
             font-weight: bold;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 20px;
             transition: background-color 0.2s;
         }
         .btn:hover {

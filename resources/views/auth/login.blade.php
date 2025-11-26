@@ -6,7 +6,7 @@
     <title>Masuk</title>
     <style>
         body {
-            background-color: #000080;
+            background-color: #00002c;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 0;
@@ -17,37 +17,37 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 400px; /* Batas lebar maksimal */
-            padding: 30px;
+            width: 100%;
+            max-width: 800px; /* Batas lebar maksimal */
+            padding: 50px;
             color: white;
             text-align: center;
         }
 
         .container img {
-            width: 50%;
-            margin-bottom: 20px;
+            width: 30%;
+            margin-bottom: 10px;
         }
 
         .container h2 {
-            margin-bottom: 10px;
-            font-size: 20px;
+            margin-bottom: 20px;
+            font-size: 30px;
         }
 
         .container p {
             margin-bottom: 20px;
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 20px;
+            opacity: 1;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px;
+            padding: 20px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
             box-sizing: border-box;
-            font-size: 15px;
+            font-size: 20px;
         }
 
         .forgot-password {
@@ -55,13 +55,13 @@
             margin: 10px 0;
             color: white;
             text-decoration: underline;
-            font-size: 14px;
+            font-size: 20px;
             text-align: left;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 10px;
+            padding: 20px;
             background-color: white;
             color: #000080;
             border: none;
@@ -69,7 +69,7 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
-            font-size: 16px;
+            font-size: 20px;
             text-align: center;
             text-decoration: none;
             display: block;
@@ -96,7 +96,7 @@
         .divider span {
             padding: 0 10px;
             color: white;
-            font-size: 14px;
+            font-size: 20px;
         }
 
         .error-message {
@@ -105,7 +105,7 @@
             padding: 10px;
             border-radius: 5px;
             margin-top: 15px;
-            font-size: 14px;
+            font-size: 20px;
             text-align: left;
         }
     </style>
