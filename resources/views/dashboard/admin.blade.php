@@ -126,11 +126,12 @@
         
         .card-header {
             border-bottom: 1px solid #e3e6f0;
-            padding-bottom: 10px;
+            padding-bottom: 35px;
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 20px;
         }
         
         .card-title {
@@ -1563,44 +1564,44 @@
     <script>
         // Initialize chart
         document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('donationChart').getContext('2d');
-            const donationChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [
-                        {
-                            label: 'Donatur',
-                            data: [120, 190, 170, 220, 210, 250],
-                            borderColor: '#4e73df',
-                            backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                            tension: 0.3
-                        },
-                        {
-                            label: 'Penerima',
-                            data: [80, 120, 110, 140, 150, 170],
-                            borderColor: '#1cc88a',
-                            backgroundColor: 'rgba(28, 200, 138, 0.05)',
-                            tension: 0.3
-                        },
-                        {
-                            label: 'Donasi Buku',
-                            data: [250, 300, 400, 500, 450, 600],
-                            borderColor: '#36b9cc',
-                            backgroundColor: 'rgba(54, 185, 204, 0.05)',
-                            tension: 0.3
-                        }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+        const ctx = document.getElementById('donationChart').getContext('2d');
+        const donationChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($chart_months), // Gunakan data bulan dari controller
+                datasets: [
+                    {
+                        label: 'Donatur',
+                        data: @json($chart_donatur_data), // Gunakan data donatur dari controller
+                        borderColor: '#4e73df',
+                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Penerima',
+                        data: @json($chart_penerima_data), // Gunakan data penerima dari controller
+                        borderColor: '#1cc88a',
+                        backgroundColor: 'rgba(28, 200, 138, 0.05)',
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Donasi Buku',
+                        data: @json($chart_donasi_data), // Gunakan data donasi dari controller
+                        borderColor: '#36b9cc',
+                        backgroundColor: 'rgba(54, 185, 204, 0.05)',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
-            });
+            }
+        });
             
             // Page navigation
             const navLinks = document.querySelectorAll('.nav-link');
