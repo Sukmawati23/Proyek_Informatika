@@ -17,15 +17,19 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-
         if ($user->role === 'admin') {
+            // Hitung statistik
+            $total_donatur = User::where('role', 'donatur')->count();
+            $total_penerima = User::where('role', 'penerima')->count();
+            $total_donasi = Donasi::count();
+            $total_menunggu_verifikasi = Donasi::where('status', 'menunggu')->count(); // <-- Ini yang baru
+
             return view('dashboard.admin', [
                 // Statistik utama
-                'total_donatur' => User::where('role', 'donatur')->count(),
-                'total_penerima' => User::where('role', 'penerima')->count(),
-                'total_donasi' => Donasi::count(),
-                'total_pengajuan' => Pengajuan::count(),
-
+                'total_donatur' => $total_donatur,
+                'total_penerima' => $total_penerima,
+                'total_donasi' => $total_donasi,
+                'total_menunggu_verifikasi' => $total_menunggu_verifikasi, // <-- Tambahkan ini
                 // Data tabel — ganti `collect()` jika sudah punya model Notifikasi/ActivityLog
                 'activities'    => collect(), // ✅ atasi error $activities
                 'donaturs' => User::where('role', 'donatur')->latest()->take(10)->get(),
@@ -37,7 +41,6 @@ class DashboardController extends Controller
                 'sessions'      => collect(),
             ]);
         }
-
         // app/Http/Controllers/DashboardController.php → index()
         if ($user->role === 'donatur') {
             return view('dashboard.donatur', [
@@ -46,7 +49,7 @@ class DashboardController extends Controller
             ]);
         }
 
-       // === DashboardController.php → index() — untuk penerima
+        // === DashboardController.php → index() — untuk penerima
         if ($user->role === 'penerima') {
             return view('dashboard.penerima', [
                 'bukus'         => Buku::where('status_buku', 'tersedia')->latest()->get(),
@@ -67,5 +70,4 @@ class DashboardController extends Controller
 
         return response()->json($notifs);
     }
-
 }
