@@ -641,17 +641,6 @@
                             @endif
                         </td>
                         <td>
-                            <button class="btn btn-primary btn-sm"
-                                    onclick="openEditDonaturModal(
-                                        {{ $donatur->id }},
-                                        '{{ $donatur->name }}',
-                                        '{{ $donatur->email }}',
-                                        '{{ $donatur->telepon }}', <!-- ✅ Mengirim nilai telepon ke modal -->
-                                        '{{ $donatur->alamat }}',
-                                        '{{ $donatur->is_active ? 'active' : 'inactive' }}'
-                                    )">
-                                Edit
-                            </button>
                             <button class="btn btn-danger btn-sm"
                                     onclick="deleteDonatur({{ $donatur->id }})">
                                 Hapus
@@ -708,21 +697,6 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="action-buttons">
-                                        <!-- Tombol Edit dengan onclick -->
-                                        <button class="btn btn-primary btn-sm"
-                                                onclick="openEditPenerimaModal(
-                                                    {{ $penerima->id }},
-                                                    '{{ $penerima->name }}',
-                                                    '{{ $penerima->type }}',
-                                                    '{{ $penerima->contact_person }}',
-                                                    '{{ $penerima->telepon }}',
-                                                    '{{ $penerima->alamat }}',
-                                                    '{{ $penerima->needs }}',
-                                                    '{{ $penerima->is_active ? 'active' : 'inactive' }}'
-                                                )">
-                                            Edit
-                                        </button>
                                         <!-- Tombol Hapus dengan onclick -->
                                         <button class="btn btn-danger btn-sm"
                                             onclick="deletePenerima({{ $penerima->id }}, event)">
