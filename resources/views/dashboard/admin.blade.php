@@ -602,7 +602,7 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Daftar Donatur</h3>
-            <button class="btn btn-primary" onclick="showAddDonaturForm()">Tambah Donatur</button>
+            
         </div>
         <div class="search-filter">
             <input type="text" placeholder="Cari donatur..." class="form-control" id="searchDonatur">
@@ -669,7 +669,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Daftar Penerima</h3>
-                        <button class="btn btn-primary" id="addPenerimaBtn">Tambah Penerima</button>
+                        
                     </div>
                     <div class="search-filter">
                         <input type="text" placeholder="Cari penerima..." class="form-control">
