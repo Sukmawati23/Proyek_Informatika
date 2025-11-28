@@ -401,7 +401,16 @@
     <div id="bookListSection" style="display: none;" class="container fade-in">
         <h3>Daftar Buku</h3>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Cari buku..." oninput="filterBooks()">
+            <input 
+                type="text" 
+                id="searchInput" 
+                name="search_buku"
+                placeholder="Cari buku..." 
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                spellcheck="false"
+                oninput="filterBooks()">
         </div>
         <div class="book-box">
             <table>
@@ -893,7 +902,21 @@
         }
 
         function filterBooks() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
+            const input = document.getElementById('searchInput');
+            const q = (input.value || '').toLowerCase().trim();
+
+            // Kalau kosong → tampilkan semua buku lagi
+            if (!q) {
+                displayBooks(books);
+                return;
+            }
+
+            // Kalau yang keisi itu email (ada @) → anggap tidak valid, tampilkan semua
+            if (q.includes('@')) {
+                displayBooks(books);
+                return;
+            }
+
             const filtered = books.filter(b =>
                 b.title.toLowerCase().includes(q) ||
                 b.category.toLowerCase().includes(q) ||
