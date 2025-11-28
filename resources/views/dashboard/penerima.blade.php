@@ -367,7 +367,7 @@
     <!-- Dashboard Utama -->
     <div id="dashboardSection" class="container fade-in">
         <img src="LOGO-SDB.png" class="logo" alt="Logo">
-        <h2 id="userName">Halo, {{ Auth::user()->name }}</h2>
+        <h2 id="userName">Halo,  {{ $user->name }}!</h2>
 
         <div class="card-book" id="cardBook">
             <img src="icon-daftar-buku.png" alt="Icon Daftar Buku">
@@ -465,7 +465,7 @@
             <i class="fas fa-camera"></i>
             <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
         </div>
-        <p style="margin-top: 10px; font-weight: bold;" id="profileName">Nama Lengkap</p>
+        <p style="margin-top: 10px; font-weight: bold;" id="profileName">{{ $user->name }}</p>
 
         <div class="profile-menu">
             <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
@@ -582,35 +582,36 @@
     </div>
 
     <!-- Halaman Edit Akun -->
-    <div id="editAccountSection" style="display: none;" class="fade-in">
-        <h2 style="color: lightgray; text-align: center;">Edit Akun</h2>
-        <div style="margin: 20px auto; text-align: center;">
-            <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
-                <img id="fotoProfilEditPreview" src="profile-placeholder.jpg" style="width: 150px; height: 150px; border-radius: 50%; background-color: white;" />
-                <i class="fas fa-camera"></i>
-                <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;" onchange="previewFotoProfilEdit(event)" />
-            </div>
-        </div>
-        <div style="max-width: 900px; margin: auto; text-align: left; padding: 20px;">
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
-            <input type="text" id="editNama" placeholder="Nama Lengkap" style="width: 100%; ; padding: 20px; border-radius: 5px; border: none;font-size:20px" />
-
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
-            <input type="text" id="editAlamat" placeholder="Alamat" style="width: 100%; padding: 20px 20px; border-radius: 5px; border: none;font-size:20px" />
-
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
-            <input type="text" id="editTelepon" placeholder="Nomor Telepon" style="width: 100%; padding: 20px 20px; border-radius: 5px; border: none;font-size:20px" />
-        </div>
-        <div style="text-align: center;">
-            <button style="background-color: #00008070; color: white; padding: 20px; border: none;  border-radius: 5px;font-size:20px;width:500px;" onclick="saveAccountChanges()">
-                Simpan
-            </button>
-            <br><br>
-            <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;font-size:20px">
-                Kembali
-            </button>
+<div id="editAccountSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+    <h2 style="color: lightgray;">Edit Akun</h2>
+    <div style="margin: 20px auto;">
+        <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
+            <img id="fotoProfilEditPreview" src="{{ $user->foto ? asset('storage/'.$user->foto) : 'profile-placeholder.jpg' }}" 
+                 style="width: 150px; height: 150px; border-radius: 50%; background-color: white;" />
+            <i class="fas fa-camera"></i>
+            <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;" onchange="previewFotoProfilEdit(event)" />
         </div>
     </div>
+    <div style="max-width: 800px; margin: auto; text-align: left;">
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
+        <input type="text" id="editNama" value="{{ $user->name }}" 
+               placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
+        <input type="text" id="editAlamat" value="{{ $user->alamat ?? '' }}" 
+               placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
+        <input type="text" id="editTelepon" value="{{ $user->telepon ?? '' }}" 
+               placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+    </div>
+    <button style="background-color: #0000cd; color: white; padding:20px; border: none; border-radius: 8px;font-size:20px;width:500px;" 
+            onclick="saveAccountChanges()">
+        Simpan
+    </button>
+    <br><br>
+    <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;font-size:20px;">Kembali</button>
+</div>
 
     <!-- Halaman Ubah Email -->
     <div id="changeEmailSection" style="display: none;" class="fade-in">
@@ -795,22 +796,32 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             
-            const userData = JSON.parse(localStorage.getItem('userData')) || {
-                namaLengkap: "{{ Auth::user()->name }}",
-                email: "{{ Auth::user()->email }}",
-                alamat: "",
-                telepon: "",
-                fotoProfil: "profile-placeholder.jpg"
-            };
+            // Ambil data dari server (via Auth::user()) sebagai sumber utama
+    const serverName = "{{ Auth::user()->name }}";
+    const serverEmail = "{{ Auth::user()->email }}";
+    const serverAlamat = "{{ Auth::user()->alamat ?? '' }}";
+    const serverTelepon = "{{ Auth::user()->telepon ?? '' }}";
 
-            document.getElementById("userName").textContent = `Halo, ${userData.namaLengkap}!`;
-            document.getElementById("profileName").textContent = userData.namaLengkap;
-            document.getElementById("fotoProfilPreview").src = userData.fotoProfil;
-            document.getElementById("fotoProfilEditPreview").src = userData.fotoProfil;
-            document.getElementById("editNama").value = userData.namaLengkap;
-            document.getElementById("editAlamat").value = userData.alamat;
-            document.getElementById("editTelepon").value = userData.telepon;
-            document.getElementById("currentEmail").value = userData.email;
+    let userData = {
+        namaLengkap: serverName,
+        email: serverEmail,
+        alamat: serverAlamat,
+        telepon: serverTelepon,
+        fotoProfil: "profile-placeholder.jpg" // Atau gunakan $user->foto jika ada
+    };
+
+    // Simpan ke localStorage (opsional, untuk performa)
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+             // Update tampilan
+    document.getElementById("userName").textContent = `Halo, ${userData.namaLengkap}!`;
+    document.getElementById("profileName").textContent = userData.namaLengkap;
+    document.getElementById("fotoProfilPreview").src = userData.fotoProfil;
+    document.getElementById("fotoProfilEditPreview").src = userData.fotoProfil;
+    document.getElementById("editNama").value = userData.namaLengkap;
+    document.getElementById("editAlamat").value = userData.alamat;
+    document.getElementById("editTelepon").value = userData.telepon;
+    document.getElementById("currentEmail").value = userData.email;
 
             const emailNotif = localStorage.getItem('emailNotif') === 'true';
             document.getElementById('emailNotifCheckbox').checked = emailNotif;
@@ -989,45 +1000,49 @@
         }
 
         function saveAccountChanges() {
-    const nama = document.getElementById('editNama').value;
-    const alamat = document.getElementById('editAlamat').value;
-    const telepon = document.getElementById('editTelepon').value;
+    const nama = document.getElementById('editNama').value.trim();
+    const alamat = document.getElementById('editAlamat').value.trim();
+    const telepon = document.getElementById('editTelepon').value.trim();
+
+    if (!nama) {
+        alert("Nama lengkap wajib diisi.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', nama);
+    formData.append('alamat', alamat);
+    formData.append('telepon', telepon);
+
+    // Jika ada file foto yang diupload
+    const fileInput = document.getElementById('uploadFotoProfilEdit');
+    if (fileInput.files.length > 0) {
+        formData.append('foto', fileInput.files[0]);
+    }
 
     fetch('/profile/update', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Authorization': 'Bearer ' + localStorage.getItem('auth_token') // Jika pakai Sanctum
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            // Jangan set Content-Type jika pakai FormData → biar browser set otomatis
         },
-        body: JSON.stringify({
-            name: nama,
-            alamat: alamat,
-            telepon: telepon
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Perbarui localStorage jika masih digunakan untuk tampilan
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData.namaLengkap = nama;
-            userData.alamat = alamat;
-            userData.telepon = telepon;
-            localStorage.setItem('userData', JSON.stringify(userData));
-
-            // Perbarui tampilan
+            alert(data.message || 'Profil berhasil diperbarui.');
+            // Update tampilan nama di halaman utama
             document.getElementById("userName").textContent = `Halo, ${nama}!`;
             document.getElementById("profileName").textContent = nama;
-            alert(data.message);
-            showSettings();
+            showSettings(); // kembali ke pengaturan
         } else {
-            alert(data.message || 'Gagal memperbarui profil.');
+            alert('Gagal memperbarui profil: ' + (data.message || 'Terjadi kesalahan.'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan. Silakan coba lagi.');
+        alert('Terjadi kesalahan saat menyimpan data.');
     });
 }
 
