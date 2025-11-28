@@ -13,6 +13,7 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
+use App\Models\Buku;
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
@@ -113,3 +114,6 @@ Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
 Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
     ->middleware('auth');
 
+Route::get('/api/buku-tersedia', function () {
+    return Buku::where('status_buku', 'tersedia')->get();
+})->middleware('auth');
