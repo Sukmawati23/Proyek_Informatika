@@ -633,7 +633,7 @@
         <div style="background-color:white; color:black; border-radius:10px; padding:30px; margin: 20px;">
             <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; margin-bottom:15px;" />
             <p style="font-weight:bold; font-size:18px; color:#000080;">Email berhasil diperbaharui</p>
-            <p>Email Anda telah berhasil diperbaharui</p>
+            <p>Email Anda telah berhasil diperbaharui! Silakan verifikasi di email Anda!</p>
             <button onclick="showSettings()" style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">
                 OK
             </button>
