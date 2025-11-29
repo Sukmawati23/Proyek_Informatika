@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,26 +14,30 @@
             margin: 0;
             padding: 0;
         }
-        
+
         .container {
             margin: auto;
             background-color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             text-align: center;
             color: #333;
         }
+
         .logo {
             display: block;
             margin: 0 auto 20px;
             max-width: 100px;
         }
+
         form {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
         button {
             padding: 10px;
             background-color: #007bff;
@@ -41,31 +46,38 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         a {
             text-decoration: none;
             color: #007bff;
         }
+
         .donation-history {
             margin-top: 30px;
             border-top: 1px solid #ddd;
             padding-top: 20px;
         }
+
         .status-title {
             font-weight: bold;
             margin-top: 20px;
         }
+
         .nav {
             display: flex;
             justify-content: space-around;
             margin-top: 20px;
         }
+
         .nav i {
             font-size: 24px;
             cursor: pointer;
         }
+
         .success-message {
             display: none;
             text-align: center;
@@ -76,6 +88,7 @@
             border: 1px solid #c3e6cb;
             border-radius: 5px;
         }
+
         .success-message img {
             max-width: 50px;
             display: block;
@@ -91,15 +104,18 @@
             padding: 30px 20px;
             text-align: center;
         }
+
         #profileSection .title {
             color: #ADD8E6;
             margin-bottom: 20px;
         }
+
         .profile-pic-wrapper {
             position: relative;
             display: inline-block;
             cursor: pointer;
         }
+
         #fotoProfilPreview {
             width: 100px;
             height: 100px;
@@ -107,6 +123,7 @@
             border: 2px solid white;
             object-fit: cover;
         }
+
         .profile-pic-wrapper i {
             position: absolute;
             right: 0;
@@ -116,10 +133,12 @@
             border-radius: 50%;
             padding: 5px;
         }
+
         .profile-menu {
             margin-top: 30px;
             text-align: left;
         }
+
         .profile-menu div {
             background-color: #0000b3;
             border-radius: 8px;
@@ -130,34 +149,36 @@
             color: white;
             cursor: pointer;
         }
+
         .profile-menu div i {
             margin-right: 10px;
         }
+
         .logout-link {
             text-decoration: none;
         }
 
         /* Notifikasi */
-        #notificationSection {
+        #notificationsSection {
             display: none;
             background-color: #000080;
             color: white;
             padding: 30px 15px;
-            height: 100vh;
+            min-height: 100vh;
         }
-        #notificationSection h2 {
+
+        #notificationsSection h2 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .notif-card {
-            background-color: #0000cc;
-            color: white;
-            padding: 10px 15px;
+            background-color: #1a1aff;
+            padding: 15px;
+            margin-bottom: 15px;
             border-radius: 10px;
-            margin-bottom: 10px;
-            max-width: 600px;
-            font-family: Arial, sans-serif;
         }
+
         .notif-footer {
             display: flex;
             justify-content: space-between;
@@ -168,28 +189,30 @@
             font-size: 12px;
             color: #ddd;
         }
+
         .notif-card small {
             color: #ccc;
         }
+
         .notification-icon {
             display: block;
             margin: 0 auto 10px;
             width: 50px;
         }
 
-       .chat-link {
-            color: #ffffff;            
+        .chat-link {
+            color: #ffffff;
             font-weight: bold;
-            background: none;          
-            padding: 0;               
-            border-radius: 0;         
+            background: none;
+            padding: 0;
+            border-radius: 0;
             font-size: 13px;
             cursor: pointer;
         }
 
         .chat-link:hover {
-            text-decoration: underline; 
-            opacity: 0.8;              
+            text-decoration: underline;
+            opacity: 0.8;
         }
 
         /* Pengaturan */
@@ -201,127 +224,143 @@
         }
 
         .switch {
-        position: relative;
-        display: inline-block;
-        width: 46px;
-        height: 24px;
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
         }
 
         .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
         .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        border-radius: 24px;
-        transition: .4s;
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 24px;
+            transition: .4s;
         }
 
         .slider:before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        border-radius: 50%;
-        transition: .4s;
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
         }
 
-        input:checked + .slider {
-        background-color: #26e07f;
+        input:checked+.slider {
+            background-color: #26e07f;
         }
 
-        input:checked + .slider:before {
-        transform: translateX(22px);
+        input:checked+.slider:before {
+            transform: translateX(22px);
         }
 
         .slider.round {
-        border-radius: 24px;
+            border-radius: 24px;
         }
 
+        /* Animasi */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <img src="LOGO-SDB.png" alt="Logo" class="logo">
         <h1>Dashboard Donatur</h1>
         <p id="welcomeText">Selamat datang!</p>
-        
+
         {{-- Pesan sukses --}}
         @if(session('success'))
-        <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
-            {{ session('success') }}
-        </div>
+            <div
+                style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
+                {{ session('success') }}
+            </div>
         @endif
 
 
         {{-- Pesan error validasi --}}
         @if ($errors->any())
-        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-            <ul style="margin: 0; padding-left: 20px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
         <!-- Form Donasi -->
         <form id="donationForm" action="{{ route('donasi.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+            @csrf
 
             <label for="judul_buku">Judul Buku</label>
             <input type="text" id="judul_buku" name="judul_buku" placeholder="Masukkan judul buku" required>
 
             <label for="kategori">Kategori</label>
             <select id="kategori" name="kategori" required>
-            <option value="">Pilih Kategori</option>
-            <option value="fiksi">Fiksi</option>
-            <option value="non-fiksi">Non-Fiksi</option>
-            <option value="anak-anak">Anak-anak</option>
-            <option value="misteri">Misteri</option>
-            <option value="fantasi">Fantasi</option>
-            <option value="biografi">Biografi</option>
-            <option value="sejarah">Sejarah</option>
-            <option value="sains">Sains</option>
-            <option value="pengembangan-diri">Pengembangan Diri</option>
-            <option value="buku-masak">Buku Masak</option>
-            <option value="perjalanan">Perjalanan</option>
-            <option value="puisi">Puisi</option>
-            <option value="novel-grafis">Novel Grafis</option>
-        </select>
+                <option value="">Pilih Kategori</option>
+                <option value="fiksi">Fiksi</option>
+                <option value="non-fiksi">Non-Fiksi</option>
+                <option value="anak-anak">Anak-anak</option>
+                <option value="misteri">Misteri</option>
+                <option value="fantasi">Fantasi</option>
+                <option value="biografi">Biografi</option>
+                <option value="sejarah">Sejarah</option>
+                <option value="sains">Sains</option>
+                <option value="pengembangan-diri">Pengembangan Diri</option>
+                <option value="buku-masak">Buku Masak</option>
+                <option value="perjalanan">Perjalanan</option>
+                <option value="puisi">Puisi</option>
+                <option value="novel-grafis">Novel Grafis</option>
+            </select>
 
-        <label for="kondisi">Kondisi Buku</label>
-        <input type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
+            <label for="kondisi">Kondisi Buku</label>
+            <input type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
 
-        <!-- Tambahkan ini setelah field "Kondisi Buku" -->
-        <label for="penulis">Penulis</label>
-        <input type="text" id="penulis" name="penulis" placeholder="Masukkan nama penulis" required>
+            <!-- Tambahkan ini setelah field "Kondisi Buku" -->
+            <label for="penulis">Penulis</label>
+            <input type="text" id="penulis" name="penulis" placeholder="Masukkan nama penulis" required>
 
-        <label for="penerbit">Penerbit</label>
-        <input type="text" id="penerbit" name="penerbit" placeholder="Masukkan nama penerbit" required>
+            <label for="penerbit">Penerbit</label>
+            <input type="text" id="penerbit" name="penerbit" placeholder="Masukkan nama penerbit" required>
 
-        <label for="foto">Pilih Foto</label>
-        <input type="file" id="foto" name="foto" accept="image/*">
+            <label for="foto">Pilih Foto</label>
+            <input type="file" id="foto" name="foto" accept="image/*">
 
-        <label for="deskripsi">Deskripsi (Opsional)</label>
-        <textarea id="deskripsi" name="deskripsi" placeholder="Tambahkan deskripsi jika ada..."></textarea>
-        
-        <label for="jumlah">Jumlah Buku</label>
-        <input type="number" id="jumlah" name="jumlah" value="1" min="1" required>
+            <label for="deskripsi">Deskripsi (Opsional)</label>
+            <textarea id="deskripsi" name="deskripsi" placeholder="Tambahkan deskripsi jika ada..."></textarea>
 
-        <button type="submit">Donasikan Buku</button>
-    </form>
+            <label for="jumlah">Jumlah Buku</label>
+            <input type="number" id="jumlah" name="jumlah" value="1" min="1" required>
+
+            <button type="submit">Donasikan Buku</button>
+        </form>
 
 
         <div class="success-message" id="successMessage">
@@ -336,16 +375,16 @@
             <div class="status-title">Riwayat Donasi Anda:</div>
             <ul>
                 @forelse($donasis as $donasi)
-    <li>
-        <strong>{{ $donasi->judul_buku }}</strong> — 
-        <em>{{ ucfirst($donasi->status) }}</em>
-        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
-        <br><span style="font-size:0.85em; color:#666;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
-        <br><span style="font-size:0.85em; color:#666;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
-    </li>
-@empty
-    <li>Belum ada donasi.</li>
-@endforelse
+                    <li>
+                        <strong>{{ $donasi->judul_buku }}</strong> —
+                        <em>{{ ucfirst($donasi->status) }}</em>
+                        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
+                        <br><span style="font-size:0.85em; color:#666;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
+                        <br><span style="font-size:0.85em; color:#666;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
+                    </li>
+                @empty
+                    <li>Belum ada donasi.</li>
+                @endforelse
             </ul>
             <div class="status-title">Status Pengiriman:</div>
             @php
@@ -362,13 +401,14 @@
             <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfil').click()">
                 <img id="fotoProfilPreview" src="profile-placeholder.jpg" />
                 <i class="fas fa-camera"></i>
-                <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
+                <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;"
+                    onchange="previewFotoProfil(event)" />
             </div>
             <p style="margin-top: 10px; font-weight: bold;">Nama Lengkap</p>
 
             <div class="profile-menu">
                 <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
-            <div onclick="showHelp()"><i class="fas fa-question-circle"></i> Bantuan</div>
+                <div onclick="showHelp()"><i class="fas fa-question-circle"></i> Bantuan</div>
 
                 <div onclick="showTerms()"><i class="fas fa-file-alt"></i> Syarat & Ketentuan</div>
                 <!-- Ubah bagian Logout di HTML -->
@@ -378,59 +418,200 @@
             </div>
         </div>
 
-        <!-- Notifikasi -->
-<div id="notificationSection" style="display:none;">
-    <img src="bell-icon.png" alt="Notifikasi" class="notification-icon" />
-    <h2>Notifikasi</h2>
-    <div id="notifContainer">
-        @forelse($notifications as $notif)
-            <div class="notif-card">
-                <p>• {{ $notif->pesan }}</p>
-                <div class="notif-footer">
-                    <small>{{ $notif->created_at->diffForHumans() }}</small>
+        <!-- NOTIFIKASI DONATUR -->
+        <div id="notificationsSection" class="fade-in"
+            style="display:none; background-color:#000080; color:white; padding:30px 15px; min-height:100vh;">
+            <img src="bell-icon.png" alt="Notifikasi" class="notification-icon"
+                style="display:block; margin:0 auto 10px; width:50px;" />
+            <h2 style="text-align:center; margin-bottom:20px;">Notifikasi</h2>
+            <div id="notifContainer" style="max-width:900px; margin:0 auto; padding-bottom:80px;">
+                @forelse($notifications as $notif)
+                    <div class="notif-card"
+                        style="background:#1a2aff; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
+                        <p style="margin:0 0 8px 0;">• {{ $notif->pesan }}</p>
+                        <div style="margin-top:8px; font-size:14px; opacity:0.8;">
+                            {{ $notif->created_at->format('d M Y, H:i') }}
+                        </div>
+                        <div
+                            style="text-align:right; margin-top:12px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+                            <a href="/chat/{{ $notif->id }}"
+                                style="color:white; font-weight:bold; text-decoration:underline;">
+                                Masuk Chat
+                            </a>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <button type="button" onclick="openRating({{ $notif->donasi_id }})"
+                                style="background:#5a8eff; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:bold; width:100%;">
+                                Beri Rating & Ulasan
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <p style="text-align:center; color:#ccc;">Tidak ada notifikasi baru.</p>
+                @endforelse
+            </div>
+        </div>
+        <!-- RATING DONATUR -->
+        <div id="ratingSection"
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+            <div
+                style="background:#00107a; width:95%; max-width:700px; border-radius:10px; padding:30px; color:#fff; position:relative; max-height:90vh; overflow-y:auto;">
+                <button onclick="closeRating()"
+                    style="position:absolute; right:14px; top:12px; background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">✕</button>
+
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:60px; margin-bottom:8px;">👍</div>
+                    <h2 style="margin:0 0 4px; font-size:28px;">Rating & Ulasan</h2>
                 </div>
+
+                <form id="ratingForm" method="POST" action="{{ route('review.store') }}">
+                    @csrf
+                    <input type="hidden" name="donasi_id" id="ratingDonasiId" value="">
+
+                    <div
+                        style="background:#2e38b8; padding:25px; border-radius:8px; margin-bottom:20px; text-align:center;">
+                        <div style="font-weight:700; margin-bottom:15px; font-size:16px;">BERIKAN PENILAIAN ANDA</div>
+                        <div id="ratingStars"
+                            style="display:flex; justify-content:center; gap:12px; margin-bottom:10px;">
+                            @for($i = 1; $i <= 5; $i++)
+                                <input type="radio" id="rstar{{ $i }}" name="rating_radio" value="{{ $i }}"
+                                    style="display:none;">
+                                <label for="rstar{{ $i }}" data-value="{{ $i }}"
+                                    style="font-size:48px; cursor:pointer; color:#999; transition:0.2s;">★</label>
+                            @endfor
+                        </div>
+                        <input type="hidden" id="ratingValue" name="rating" value="">
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block; margin-bottom:8px; font-weight:600;">Ulasan Anda</label>
+                        <textarea name="comment" placeholder="Tuliskan pengalaman Anda..."
+                            style="width:100%; min-height:120px; padding:12px; border:none; border-radius:6px; font-size:14px;"></textarea>
+                    </div>
+
+                    <div style="text-align:center; display:flex; gap:10px;">
+                        <button type="submit"
+                            style="flex:1; background:#000; color:#fff; padding:12px; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
+                            KIRIM
+                        </button>
+                        <button type="button" onclick="closeRating()"
+                            style="flex:1; background:#444; color:#fff; padding:12px; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
+                            BATAL
+                        </button>
+                    </div>
+                </form>
             </div>
-        @empty
-            <p style="text-align: center; margin-top: 20px;">Tidak ada notifikasi baru.</p>
-        @endforelse
-    </div>
-    <div style="text-align: center; margin-top: 20px;">
-        <button onclick="showProfile()" style="background-color:#000080; color:white; padding:10px 20px; border:none; border-radius:5px;">Kembali</button>
-    </div>
-</div>
-
-
-        <!-- Pengaturan Akun -->
-        <div id="settingsSection">
-            <h2 style="background-color:#000080; color:white; padding:10px; border-radius: 5px; text-align:center;">
-                <i class="fas fa-cog"></i> Pengaturan Akun
-            </h2>
-            <div style="margin:20px 0;">
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showEditAccount()">Edit Akun <span style="float:right;">›</span></div>
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangeEmail()">Ubah Email <span style="float:right;">›</span></div>
-
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangePassword()">Ganti Kata Sandi <span style="float:right;">›</span></div>
-
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showPrivacy()">Privasi & Keamanan <span style="float:right;">›</span></div>
-
-            </div>
-            <div style="margin: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                <span>Kirim notifikasi via email</span>
-                <input type="checkbox" id="emailNotifCheckbox" onchange="saveNotifPreference()" />
-
-            </div>
-            <button onclick="showDeleteAccountConfirm()" style="width:100%; background-color: darkred; color:white; padding:10px; border:none; border-radius:5px; font-weight:bold;">
-    Hapus Akun
-</button>
-
-            <br><br>
-            <button onclick="showProfile()" style="width:100%; background-color: #000080; color:white; padding:10px; border:none; border-radius:5px;">
-                Kembali
-            </button>
         </div>
 
+        <!-- MODAL UCAPAN TERIMA KASIH -->
+        <div id="thankYouModal"
+            style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+            <div
+                style="background:#00107a; width:95%; max-width:500px; border-radius:15px; padding:40px 30px; color:#fff; position:relative; text-align:center;">
+                <div style="font-size:80px; margin-bottom:20px;">⭐</div>
+                <h2 style="margin:0 0 15px; font-size:28px; font-weight:bold;">Terima kasih telah berbagi!</h2>
+                <p style="margin:0 0 30px; font-size:16px; line-height:1.5; opacity:0.9;">
+                    Masukan Anda membantu orang lain membuat keputusan yang lebih baik.
+                </p>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <button onclick="closeThankYou()"
+                        style="background:#6699ff; color:#fff; padding:14px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:16px;">
+                        Selesai
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openRating(donasiId = '') {
+                const form = document.getElementById('ratingForm');
+                if (!form) return;
+                form.reset();
+                document.getElementById('ratingValue').value = '';
+                document.getElementById('ratingDonasiId').value = donasiId || '';
+                document.querySelectorAll('#ratingStars label').forEach(l => l.style.color = '#999');
+                document.getElementById('ratingSection').style.display = 'flex';
+            }
+
+            function closeRating() {
+                const modal = document.getElementById('ratingSection');
+                if (modal) modal.style.display = 'none';
+            }
+
+            function showThankYou() {
+                const modal = document.getElementById('thankYouModal');
+                if (modal) modal.style.display = 'flex';
+            }
+
+            function closeThankYou() {
+                const modal = document.getElementById('thankYouModal');
+                if (modal) modal.style.display = 'none';
+            }
+
+            (function () {
+                const labels = document.querySelectorAll('#ratingStars label');
+                const hidden = document.getElementById('ratingValue');
+
+                labels.forEach((lbl) => {
+                    lbl.addEventListener('click', function () {
+                        const val = parseInt(this.getAttribute('data-value'));
+                        hidden.value = val;
+                        labels.forEach((l, idx) => {
+                            l.style.color = (idx < val ? '#ffcc00' : '#999');
+                        });
+                    });
+
+                    lbl.addEventListener('mouseover', function () {
+                        const hoverVal = parseInt(this.getAttribute('data-value'));
+                        labels.forEach((l, idx) => {
+                            l.style.color = (idx < hoverVal ? '#ffdd66' : '#999');
+                        });
+                    });
+                });
+
+                document.getElementById('ratingStars').addEventListener('mouseout', function () {
+                    const currentVal = parseInt(hidden.value) || 0;
+                    labels.forEach((l, idx) => {
+                        l.style.color = (idx < currentVal ? '#ffcc00' : '#999');
+                    });
+                });
+
+                const ratingForm = document.getElementById('ratingForm');
+                if (ratingForm) {
+                    ratingForm.addEventListener('submit', function (event) {
+                        event.preventDefault();
+                        if (!hidden.value) {
+                            alert('Silakan pilih rating terlebih dahulu.');
+                            return;
+                        }
+                        const formData = new FormData(ratingForm);
+                        fetch(ratingForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: formData
+                        })
+                            .then(async (response) => {
+                                const payload = await response.json().catch(() => ({}));
+                                if (!response.ok || !payload.success) {
+                                    throw new Error(payload.message || 'Gagal mengirim ulasan.');
+                                }
+                                closeRating();
+                                showThankYou();
+                            })
+                            .catch((error) => {
+                                alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                            });
+                    });
+                }
+            })();
+        </script>
+
         <!-- Bantuan -->
-        <div id="helpSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
+        <div id="helpSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
             <h2 style="text-align:center;"><i class="fas fa-question-circle"></i> Bantuan</h2>
             <div style="background:white; color:#000; border-radius:10px; padding:15px; margin-top:20px;">
                 <strong>Cara mengubah foto profil?</strong>
@@ -449,9 +630,10 @@
                 <p>Hubungi kami di: <a href="mailto:donasibuku.app@gmail.com">donationbook7@gmail.com</a></p>
             </div>
         </div>
-        
+
         <!-- Syarat & Ketentuan -->
-        <div id="termsSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+        <div id="termsSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
             <h2 style="color: #ADD8E6;">Syarat & Ketentuan Donatur</h2>
             <div style="background: white; color: #000080; padding: 20px; border-radius: 10px; text-align: left;">
                 <ol>
@@ -461,132 +643,179 @@
                     <li>Donasi akan digunakan sesuai tujuan program.</li>
                     <li>Dengan mendaftar, Anda setuju pada ketentuan ini.</li>
                 </ol>
-                <button onclick="showProfile()" style="margin-top: 20px; padding: 10px 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;">Kembali</button>
+                <button onclick="showProfile()"
+                    style="margin-top: 20px; padding: 10px 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;">Kembali</button>
             </div>
         </div>
 
         <!-- Halaman Edit Akun -->
-<!-- Halaman Edit Akun -->
-<div id="editAccountSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
-    <h2 style="color: lightgray;">Edit Akun</h2>
-    <div style="margin: 20px auto;">
-        <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
-            <img id="fotoProfilEditPreview" src="profile-placeholder.jpg" style="width: 100px; height: 100px; border-radius: 50%; background-color: white;" />
-            <i class="fas fa-camera"></i>
-            <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;" onchange="previewFotoProfilEdit(event)" />
+        <!-- Halaman Edit Akun -->
+        <div id="editAccountSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+            <h2 style="color: lightgray;">Edit Akun</h2>
+            <div style="margin: 20px auto;">
+                <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
+                    <img id="fotoProfilEditPreview" src="profile-placeholder.jpg"
+                        style="width: 100px; height: 100px; border-radius: 50%; background-color: white;" />
+                    <i class="fas fa-camera"></i>
+                    <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;"
+                        onchange="previewFotoProfilEdit(event)" />
+                </div>
+            </div>
+            <div style="max-width: 300px; margin: auto; text-align: left;">
+                <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
+                <input type="text" placeholder="Nama Lengkap"
+                    style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
+
+                <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
+                <input type="text" placeholder="Alamat"
+                    style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
+
+                <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
+                <input type="text" placeholder="Nomor Telepon"
+                    style="width: 100%; margin-bottom: 20px; padding: 8px; border-radius: 5px; border: none;" />
+            </div>
+            <button
+                style="background-color: #0000cd; color: white; padding: 10px 20px; border: none; border-radius: 8px;"
+                onclick="saveAccountChanges()">Simpan</button>
+            <br><br>
+            <button onclick="showSettings()"
+                style="color: white; background: none; border: none; text-decoration: underline;">Kembali</button>
         </div>
-    </div>
-    <div style="max-width: 300px; margin: auto; text-align: left;">
-        <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
-        <input type="text" placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
 
-        <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
-        <input type="text" placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
-
-        <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
-        <input type="text" placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 8px; border-radius: 5px; border: none;" />
-    </div>
-    <button style="background-color: #0000cd; color: white; padding: 10px 20px; border: none; border-radius: 8px;" onclick="saveAccountChanges()">Simpan</button>
-    <br><br>
-    <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;">Kembali</button>
-</div>
-
-<!-- Halaman Ubah Email -->
-<div id="changeEmailSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
-    <h2 style="text-align: center; color: white;">Ubah Email</h2>
-    <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; text-align: center;">
-        <img src="https://img.icons8.com/ios-filled/100/000000/new-post.png" style="width:80px; margin-bottom: 20px;" />
-        <p style="font-weight: bold; font-size: 18px;">Ubah Email</p>
-        <input type="email" placeholder="Email Saat ini" id="currentEmail" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-        <input type="email" placeholder="Email Baru" id="newEmail" style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-        <button onclick="submitEmailChange()" style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">PERBAHARUI EMAIL</button>
-    </div>
-</div>
-
-<!-- Halaman Konfirmasi Email Berhasil -->
-<div id="emailSuccessSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
-    <h2 style="color:white;">Ubah Email</h2>
-    <div style="background-color:white; color:black; border-radius:10px; padding:30px;">
-        <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; margin-bottom:15px;" />
-        <p style="font-weight:bold; font-size:18px; color:#000080;">Email berhasil diperbaharui</p>
-        <p>Email Anda telah berhasil diperbaharui</p>
-        <button onclick="showSettings()" style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">OK</button>
-    </div>
-</div>
-
-<!-- Halaman Ganti Kata Sandi -->
-<div id="changePasswordSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
-    <h2 style="text-align: center; color: white;">Ganti Kata Sandi</h2>
-    <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; text-align: center;">
-        <img src="https://img.icons8.com/ios-filled/100/000000/lock-2.png" style="width:80px; margin-bottom: 20px;" />
-        <p style="font-weight: bold; font-size: 18px;">Ganti Kata Sandi</p>
-        <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-        <input type="password" placeholder="Kata sandi baru" id="newPassword" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-        <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword" style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-        <button onclick="submitPasswordChange()" style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">Simpan</button>
-    </div>
-</div>
-
-<!-- Halaman Konfirmasi Kata Sandi Berhasil -->
-<div id="passwordSuccessSection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
-    <h2 style="color:white;">Kata Sandi Berhasil Diubah</h2>
-    <div style="background-color:white; color:black; border-radius:10px; padding:30px;">
-        <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; margin-bottom:15px;" />
-        <p style="font-weight:bold; font-size:18px; color:#000080;">Kata sandi Anda telah berhasil diperbaharui.</p>
-        <button onclick="showSettings()" style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">Kembali ke Pengaturan</button>
-    </div>
-</div>
-
-<!-- Halaman Privasi & Keamanan -->
-<div id="privacySection" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
-    <h3 style="color: white; margin-bottom: 30px;">
-        <i class="fas fa-arrow-left" style="cursor:pointer; margin-right:10px;" onclick="showSettings()"></i> Privasi & Keamanan
-    </h3>
-    <div style="background-color: white; color: #000080; border-radius: 10px; padding: 20px;">
-        <p style="font-weight: bold; font-size: 18px;">Autentikasi Dua Faktor 
-            <label class="switch" style="float:right;">
-                <input type="checkbox" id="twoFactorToggle" checked>
-                <span class="slider round"></span>
-            </label>
-        </p>
-        <p style="margin-top: 10px; color: black;">Tambahkan lapisan keamanan tambahan pada akun Anda.</p>
-    </div>
-    <button onclick="showSettings()" style="margin-top: 30px; padding: 10px; width: 100%; background-color: #0000cd; color: white; border: none; border-radius: 5px;">
-        Kembali
-    </button>
-</div>
-
-<!-- Halaman Konfirmasi Hapus Akun -->
-<div id="deleteAccountConfirm" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
-    <h2 style="text-align:center; color: #ADD8E6;">Konfirmasi Penghapusan Akun</h2>
-    <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin-top: 20px;">
-        <p style="font-weight: bold;">Apakah Anda yakin ingin menghapus akun Anda?</p>
-        <p style="font-size: 14px;">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan hilang secara permanen.</p>
-        <div style="background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin-top: 10px;">
-            <strong style="color: red;">PERINGATAN:</strong>
-            <ul style="padding-left: 20px;">
-                <li>Akun tidak dapat dipulihkan setelah dihapus.</li>
-                <li>Semua histori, preferensi, dan data Anda akan dihapus.</li>
-            </ul>
+        <!-- Halaman Ubah Email -->
+        <div id="changeEmailSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
+            <h2 style="text-align: center; color: white;">Ubah Email</h2>
+            <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; text-align: center;">
+                <img src="https://img.icons8.com/ios-filled/100/000000/new-post.png"
+                    style="width:80px; margin-bottom: 20px;" />
+                <p style="font-weight: bold; font-size: 18px;">Ubah Email</p>
+                <input type="email" placeholder="Email Saat ini" id="currentEmail"
+                    style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;"
+                    required>
+                <input type="email" placeholder="Email Baru" id="newEmail"
+                    style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;"
+                    required>
+                <button onclick="submitEmailChange()"
+                    style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">PERBAHARUI
+                    EMAIL</button>
+            </div>
         </div>
-        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-            <button onclick="showSettings()" style="padding: 10px 20px; background-color: gray; color: white; border: none; border-radius: 5px;">Batalkan</button>
-            <button onclick="confirmDeleteAccount()" style="padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 5px;">Ya, Hapus Akun</button>
+
+        <!-- Halaman Konfirmasi Email Berhasil -->
+        <div id="emailSuccessSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+            <h2 style="color:white;">Ubah Email</h2>
+            <div style="background-color:white; color:black; border-radius:10px; padding:30px;">
+                <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png"
+                    style="width:80px; margin-bottom:15px;" />
+                <p style="font-weight:bold; font-size:18px; color:#000080;">Email berhasil diperbaharui</p>
+                <p>Email Anda telah berhasil diperbaharui</p>
+                <button onclick="showSettings()"
+                    style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">OK</button>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- Halaman Akun Berhasil Dihapus -->
-<div id="deleteSuccess" style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
-    <h2 style="margin-top: 100px;">Akun Berhasil Dihapus</h2>
-    <p style="margin: 20px 0;">Akun Anda telah dihapus secara permanen.<br>Terima kasih telah menggunakan layanan kami.</p>
-    <button onclick="goToHome()" style="background-color: white; color: #000080; padding: 10px 20px; border: none; border-radius: 5px;">Kembali ke Beranda</button>
-</div>
+        <!-- Halaman Ganti Kata Sandi -->
+        <div id="changePasswordSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
+            <h2 style="text-align: center; color: white;">Ganti Kata Sandi</h2>
+            <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; text-align: center;">
+                <img src="https://img.icons8.com/ios-filled/100/000000/lock-2.png"
+                    style="width:80px; margin-bottom: 20px;" />
+                <p style="font-weight: bold; font-size: 18px;">Ganti Kata Sandi</p>
+                <input type="password" placeholder="Kata sandi saat ini" id="currentPassword"
+                    style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;"
+                    required>
+                <input type="password" placeholder="Kata sandi baru" id="newPassword"
+                    style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;"
+                    required>
+                <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword"
+                    style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;"
+                    required>
+                <button onclick="submitPasswordChange()"
+                    style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">Simpan</button>
+            </div>
+        </div>
+
+        <!-- Halaman Konfirmasi Kata Sandi Berhasil -->
+        <div id="passwordSuccessSection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+            <h2 style="color:white;">Kata Sandi Berhasil Diubah</h2>
+            <div style="background-color:white; color:black; border-radius:10px; padding:30px;">
+                <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png"
+                    style="width:80px; margin-bottom:15px;" />
+                <p style="font-weight:bold; font-size:18px; color:#000080;">Kata sandi Anda telah berhasil diperbaharui.
+                </p>
+                <button onclick="showSettings()"
+                    style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">Kembali
+                    ke Pengaturan</button>
+            </div>
+        </div>
+
+        <!-- Halaman Privasi & Keamanan -->
+        <div id="privacySection"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
+            <h3 style="color: white; margin-bottom: 30px;">
+                <i class="fas fa-arrow-left" style="cursor:pointer; margin-right:10px;" onclick="showSettings()"></i>
+                Privasi & Keamanan
+            </h3>
+            <div style="background-color: white; color: #000080; border-radius: 10px; padding: 20px;">
+                <p style="font-weight: bold; font-size: 18px;">Autentikasi Dua Faktor
+                    <label class="switch" style="float:right;">
+                        <input type="checkbox" id="twoFactorToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </p>
+                <p style="margin-top: 10px; color: black;">Tambahkan lapisan keamanan tambahan pada akun Anda.</p>
+            </div>
+            <button onclick="showSettings()"
+                style="margin-top: 30px; padding: 10px; width: 100%; background-color: #0000cd; color: white; border: none; border-radius: 5px;">
+                Kembali
+            </button>
+        </div>
+
+        <!-- Halaman Konfirmasi Hapus Akun -->
+        <div id="deleteAccountConfirm"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px;">
+            <h2 style="text-align:center; color: #ADD8E6;">Konfirmasi Penghapusan Akun</h2>
+            <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin-top: 20px;">
+                <p style="font-weight: bold;">Apakah Anda yakin ingin menghapus akun Anda?</p>
+                <p style="font-size: 14px;">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan hilang secara
+                    permanen.</p>
+                <div style="background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    <strong style="color: red;">PERINGATAN:</strong>
+                    <ul style="padding-left: 20px;">
+                        <li>Akun tidak dapat dipulihkan setelah dihapus.</li>
+                        <li>Semua histori, preferensi, dan data Anda akan dihapus.</li>
+                    </ul>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button onclick="showSettings()"
+                        style="padding: 10px 20px; background-color: gray; color: white; border: none; border-radius: 5px;">Batalkan</button>
+                    <button onclick="confirmDeleteAccount()"
+                        style="padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 5px;">Ya,
+                        Hapus Akun</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman Akun Berhasil Dihapus -->
+        <div id="deleteSuccess"
+            style="display: none; background-color: #000080; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+            <h2 style="margin-top: 100px;">Akun Berhasil Dihapus</h2>
+            <p style="margin: 20px 0;">Akun Anda telah dihapus secara permanen.<br>Terima kasih telah menggunakan
+                layanan kami.</p>
+            <button onclick="goToHome()"
+                style="background-color: white; color: #000080; padding: 10px 20px; border: none; border-radius: 5px;">Kembali
+                ke Beranda</button>
+        </div>
 
 
 
 
-<!-- Navigasi Bawah -->
+        <!-- Navigasi Bawah -->
         <div class="nav">
             <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
             <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
@@ -600,12 +829,12 @@
         let donations = [];
 
         // Ambil nama dari localStorage
-const namaDonatur = localStorage.getItem("namaLengkap");
+        const namaDonatur = localStorage.getItem("namaLengkap");
 
-// Jika ada nama, tampilkan di dashboard
-if (namaDonatur) {
-    document.getElementById("welcomeText").textContent = `Selamat datang, ${namaDonatur}!`;
-}
+        // Jika ada nama, tampilkan di dashboard
+        if (namaDonatur) {
+            document.getElementById("welcomeText").textContent = `Selamat datang, ${namaDonatur}!`;
+        }
 
         /*document.getElementById('donationForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -618,19 +847,19 @@ if (namaDonatur) {
             updateDonationHistory();
         });*/
 
-    function addNotification(title, time, chatLink) {
-    const notifContainer = document.getElementById('notifContainer');
-    const notifCard = document.createElement('div');
-    notifCard.className = 'notif-card';
-    notifCard.innerHTML = `
+        function addNotification(title, time, chatLink) {
+            const notifContainer = document.getElementById('notifContainer');
+            const notifCard = document.createElement('div');
+            notifCard.className = 'notif-card';
+            notifCard.innerHTML = `
         <p>• Buku ‘${title}’ sudah diterima.</p>
         <div class="notif-footer">
             <small>${time}</small>
             <a href="${chatLink}" class="chat-link">Masuk Chat</a>
         </div>
     `;
-    notifContainer.appendChild(notifCard);
-}
+            notifContainer.appendChild(notifCard);
+        }
 
         function updateDonationHistory() {
             const receivedBooks = document.getElementById('receivedBooks');
@@ -654,23 +883,34 @@ if (namaDonatur) {
         function showDashboard() {
             document.getElementById('donationForm').style.display = 'flex';
             document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'none';
             document.querySelector('.donation-history').style.display = 'block';
         }
 
         function showNotifications() {
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'block';
-            document.getElementById('profileSection').style.display = 'none';
-            document.getElementById('settingsSection').style.display = 'none';
-            document.querySelector('.donation-history').style.display = 'none';
+            // Scroll ke atas dulu sebelum menampilkan section
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+
+            hideAllSections();
+            const donationHistory = document.querySelector('.donation-history');
+            if (donationHistory) donationHistory.style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'block';
+
+            // Pastikan scroll tetap di atas setelah render
+            requestAnimationFrame(function () {
+                window.scrollTo(0, 0);
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            });
         }
 
         function showProfile() {
             document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'block';
             document.getElementById('settingsSection').style.display = 'none';
             document.querySelector('.donation-history').style.display = 'none';
@@ -679,7 +919,7 @@ if (namaDonatur) {
         function showSettings() {
             document.getElementById('donationForm').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'block';
             document.querySelector('.donation-history').style.display = 'none';
@@ -699,17 +939,17 @@ if (namaDonatur) {
         function showHelp() {
             document.getElementById('donationForm').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'none';
             document.getElementById('helpSection').style.display = 'block';
             document.querySelector('.donation-history').style.display = 'none';
         }
-        
+
         function showTerms() {
             document.getElementById('donationForm').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'none';
             document.getElementById('helpSection').style.display = 'none';
@@ -720,170 +960,166 @@ if (namaDonatur) {
         function confirmLogout() {
             const confirmation = confirm("Apakah Anda yakin ingin logout?");
             if (confirmation) {// Logika untuk logout, misalnya menghapus session atau redirect
-            alert("Anda telah logout.");
-            // Contoh: window.location.href = 'login.html'; // Ganti dengan URL login Anda
-            window.location.href = '/login'; // Ganti dengan URL login Anda
+                alert("Anda telah logout.");
+                // Contoh: window.location.href = 'login.html'; // Ganti dengan URL login Anda
+                window.location.href = '/login'; // Ganti dengan URL login Anda
             }
         }
 
         function previewFotoProfilEdit(event) {
-    const input = event.target;
-    const reader = new FileReader();
-    reader.onload = function () {
-        document.getElementById('fotoProfilEditPreview').src = reader.result;
-    };
-    if (input.files && input.files[0]) {
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('fotoProfilEditPreview').src = reader.result;
+            };
+            if (input.files && input.files[0]) {
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
 
         function showEditAccount() {
-    // Sembunyikan semua tampilan lain
-    document.getElementById('donationForm').style.display = 'none';
-    document.getElementById('successMessage').style.display = 'none';
-    document.getElementById('notificationSection').style.display = 'none';
-    document.getElementById('profileSection').style.display = 'none';
-    document.getElementById('settingsSection').style.display = 'none';
-    document.getElementById('editAccountSection').style.display = 'block';
-    document.querySelector('.donation-history').style.display = 'none';
-}
+            // Sembunyikan semua tampilan lain
+            document.getElementById('donationForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('notificationsSection').style.display = 'none';
+            document.getElementById('profileSection').style.display = 'none';
+            document.getElementById('settingsSection').style.display = 'none';
+            document.getElementById('editAccountSection').style.display = 'block';
+            document.querySelector('.donation-history').style.display = 'none';
+        }
 
 
-function saveAccountChanges() {
-    alert("Data akun berhasil disimpan!");
-}
+        function saveAccountChanges() {
+            alert("Data akun berhasil disimpan!");
+        }
 
-function showChangeEmail() {
-    hideAllSections();
-    document.getElementById('changeEmailSection').style.display = 'block';
-}
+        function showChangeEmail() {
+            hideAllSections();
+            document.getElementById('changeEmailSection').style.display = 'block';
+        }
 
-function submitEmailChange() {
-    const currentEmail = document.getElementById('currentEmail').value;
-    const newEmail = document.getElementById('newEmail').value;
+        function submitEmailChange() {
+            const currentEmail = document.getElementById('currentEmail').value;
+            const newEmail = document.getElementById('newEmail').value;
 
-    if (!currentEmail || !newEmail) {
-        alert("Harap isi semua field.");
-        return;
-    }
+            if (!currentEmail || !newEmail) {
+                alert("Harap isi semua field.");
+                return;
+            }
 
-    // Simulasi pengubahan email berhasil
-    document.getElementById('changeEmailSection').style.display = 'none';
-    document.getElementById('emailSuccessSection').style.display = 'block';
-}
+            // Simulasi pengubahan email berhasil
+            document.getElementById('changeEmailSection').style.display = 'none';
+            document.getElementById('emailSuccessSection').style.display = 'block';
+        }
 
-function hideAllSections() {
-    const sections = [
-        'donationForm', 'successMessage', 'notificationSection',
-        'profileSection', 'settingsSection', 'editAccountSection',
-        'helpSection', 'termsSection', 'changeEmailSection', 'emailSuccessSection',
-        'changePasswordSection', 'passwordSuccessSection', 'privacySection'
-    ];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-}
-
-
-
-function showChangePassword() {
-    hideAllSections();
-    document.getElementById('changePasswordSection').style.display = 'block';
-}
-
-function submitPasswordChange() {
-    const current = document.getElementById('currentPassword').value;
-    const newPass = document.getElementById('newPassword').value;
-    const confirmPass = document.getElementById('confirmPassword').value;
-
-    if (!current || !newPass || !confirmPass) {
-        alert("Harap isi semua kolom.");
-        return;
-    }
-
-    if (newPass !== confirmPass) {
-        alert("Kata sandi baru dan konfirmasi tidak cocok.");
-        return;
-    }
-
-    // Simulasi validasi berhasil
-    document.getElementById('changePasswordSection').style.display = 'none';
-    document.getElementById('passwordSuccessSection').style.display = 'block';
-}
-
-function showPrivacy() {
-    hideAllSections();
-    document.getElementById('privacySection').style.display = 'block';
-}
-
-// Simpan status checkbox ke localStorage
-function saveNotifPreference() {
-    const checkbox = document.getElementById('emailNotifCheckbox');
-    localStorage.setItem('notifEmail', checkbox.checked);
-
-    if (checkbox.checked) {
-        alert("Notifikasi via email diaktifkan.");
-    } else {
-        alert("Notifikasi via email dimatikan.");
-    }
-
-     // Kirim ke backend (AJAX)
-    fetch('/api/update-email-notification', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Tambahkan token jika pakai Laravel Sanctum atau CSRF
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-        },
-        body: JSON.stringify({
-            notif_email: isChecked
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Status notifikasi disimpan:", data);
-    })
-    .catch(error => {
-        console.error("Gagal menyimpan status notifikasi:", error);
-    });
-}
+        function hideAllSections() {
+            const sections = [
+                'donationForm', 'successMessage', 'notificationsSection',
+                'profileSection', 'settingsSection', 'editAccountSection',
+                'helpSection', 'termsSection', 'changeEmailSection', 'emailSuccessSection',
+                'changePasswordSection', 'passwordSuccessSection', 'privacySection',
+                'deleteAccountConfirm', 'deleteSuccess'
+            ];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+        }
 
 
-// Muat status saat halaman dimuat
-window.addEventListener('DOMContentLoaded', () => {
-    const checkbox = document.getElementById('emailNotifCheckbox');
-    const saved = localStorage.getItem('notifEmail');
-    if (saved !== null) {
-        checkbox.checked = saved === 'true';
-    }
-});
 
-function showDeleteAccountConfirm() {
-    hideAllSections();
-    document.getElementById('deleteAccountConfirm').style.display = 'block';
-}
+        function showChangePassword() {
+            hideAllSections();
+            document.getElementById('changePasswordSection').style.display = 'block';
+        }
 
-function confirmDeleteAccount() {
-    // Simulasikan penghapusan akun
-    console.log("Akun telah dihapus");
-    hideAllSections();
-    document.getElementById('deleteSuccess').style.display = 'block';
-    localStorage.clear(); // Jika pakai localStorage untuk menyimpan user
-}
+        function submitPasswordChange() {
+            const current = document.getElementById('currentPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
 
-function goToHome() {
-    window.location.href = '/'; // Ganti sesuai rute halaman utama
-}
+            if (!current || !newPass || !confirmPass) {
+                alert("Harap isi semua kolom.");
+                return;
+            }
 
-function hideAllSections() {
-    const sections = ['donationForm', 'successMessage', 'notificationSection', 'profileSection', 'settingsSection', 'editAccountSection', 'helpSection', 'termsSection', 'deleteAccountConfirm', 'deleteSuccess'];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-} 
-        </script>  
-    </body>
+            if (newPass !== confirmPass) {
+                alert("Kata sandi baru dan konfirmasi tidak cocok.");
+                return;
+            }
+
+            // Simulasi validasi berhasil
+            document.getElementById('changePasswordSection').style.display = 'none';
+            document.getElementById('passwordSuccessSection').style.display = 'block';
+        }
+
+        function showPrivacy() {
+            hideAllSections();
+            document.getElementById('privacySection').style.display = 'block';
+        }
+
+        // Simpan status checkbox ke localStorage
+        function saveNotifPreference() {
+            const checkbox = document.getElementById('emailNotifCheckbox');
+            localStorage.setItem('notifEmail', checkbox.checked);
+
+            if (checkbox.checked) {
+                alert("Notifikasi via email diaktifkan.");
+            } else {
+                alert("Notifikasi via email dimatikan.");
+            }
+
+            // Kirim ke backend (AJAX)
+            fetch('/api/update-email-notification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Tambahkan token jika pakai Laravel Sanctum atau CSRF
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                },
+                body: JSON.stringify({
+                    notif_email: isChecked
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Status notifikasi disimpan:", data);
+                })
+                .catch(error => {
+                    console.error("Gagal menyimpan status notifikasi:", error);
+                });
+        }
+
+
+        // Muat status saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            const checkbox = document.getElementById('emailNotifCheckbox');
+            const saved = localStorage.getItem('notifEmail');
+            if (saved !== null) {
+                checkbox.checked = saved === 'true';
+            }
+        });
+
+        function showDeleteAccountConfirm() {
+            hideAllSections();
+            document.getElementById('deleteAccountConfirm').style.display = 'block';
+        }
+
+        function confirmDeleteAccount() {
+            // Simulasikan penghapusan akun
+            console.log("Akun telah dihapus");
+            hideAllSections();
+            document.getElementById('deleteSuccess').style.display = 'block';
+            localStorage.clear(); // Jika pakai localStorage untuk menyimpan user
+        }
+
+        function goToHome() {
+            window.location.href = '/'; // Ganti sesuai rute halaman utama
+        }
+    </script>
+</body>
+
 </html>

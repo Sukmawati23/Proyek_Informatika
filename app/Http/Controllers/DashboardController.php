@@ -9,6 +9,7 @@ use App\Models\Buku;
 use App\Models\Donasi;
 use App\Models\Pengajuan;
 use App\Models\Notifikasi;
+use App\Models\Review;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
@@ -33,7 +34,7 @@ class DashboardController extends Controller
                 'donasis'       => Donasi::with('user')->latest()->take(10)->get(), // ✅ (tambahkan relasi donasi->user)
                 'verifications' => Pengajuan::with(['user', 'buku'])->where('status', 'menunggu')->latest()->take(10)->get(), // ✅
                 'reports'       => collect(),
-                'reviews'       => collect(),
+                'reviews'       => Review::with('reviewer')->latest()->take(25)->get(),
                 'sessions'      => collect(),
             ]);
         }

@@ -13,6 +13,9 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\ReviewController;
+
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
@@ -71,9 +74,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/get-email-notification', [UserController::class, 'getEmailNotification']);
 
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
-    
+
     // HAPUS route duplikat: `/pengajuan` (karena frontend pakai `/api/ajukan-buku`)
     // Route::post('/pengajuan', ...) → sudah dihapus ✅
+
+    // Rating & ulasan (donatur + penerima)
+    Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 });
 
 // === Admin-only Routes ===
@@ -112,4 +118,13 @@ Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
 
 Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
     ->middleware('auth');
+
+// === Rating Routes Penrima dan Donatur ===
+Route::get('/ratingPenerima', [App\Http\Controllers\RatingPageController::class, 'penerima'])->name('rating.penerima.list');
+Route::get('/ratingDonatur', [App\Http\Controllers\RatingPageController::class, 'donatur'])->name('rating.donatur.list');
+
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/admin/reviews', [ReviewController::class, 'index'])->name('admin.reviews');
+});
+
 
