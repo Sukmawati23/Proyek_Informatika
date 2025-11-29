@@ -482,7 +482,6 @@
         </div>
 
         <!-- Halaman Edit Akun -->
-<!-- Halaman Edit Akun -->
 <div id="editAccountSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
     <h2 style="color: lightgray;">Edit Akun</h2>
     <div style="margin: 20px auto;">
@@ -494,13 +493,14 @@
     </div>
     <div style="max-width: 800px; margin: auto; text-align: left;">
         <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
-        <input type="text" placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
-
+        <!-- Tambahkan id="editNama" -->
+        <input type="text" id="editNama" placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
         <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
-        <input type="text" placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
-
+        <!-- Tambahkan id="editAlamat" -->
+        <input type="text" id="editAlamat" placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
         <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
-        <input type="text" placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+        <!-- Tambahkan id="editTelepon" -->
+        <input type="text" id="editTelepon" placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
     </div>
     <button style="background-color: #0000cd; color: white; padding:20px; border: none; border-radius: 8px;font-size:20px;width:500px;" onclick="saveAccountChanges()">Simpan</button>
     <br><br>
@@ -692,12 +692,17 @@ if (namaDonatur) {
         }
 
         function showSettings() {
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'none';
+             hideAllSections();
             document.getElementById('settingsSection').style.display = 'block';
-            document.querySelector('.donation-history').style.display = 'none';
+            // Pastikan tidak ada elemen lain yang tertinggal
+            document.getElementById('editAccountSection').style.display = 'none';
+            document.getElementById('changeEmailSection').style.display = 'none';
+            document.getElementById('emailSuccessSection').style.display = 'none';
+            document.getElementById('changePasswordSection').style.display = 'none';
+            document.getElementById('passwordSuccessSection').style.display = 'none';
+            document.getElementById('privacySection').style.display = 'none';
+            document.getElementById('deleteAccountConfirm').style.display = 'none';
+            document.getElementById('deleteSuccess').style.display = 'none';
         }
 
         function previewFotoProfil(event) {
@@ -753,47 +758,157 @@ if (namaDonatur) {
 }
 
 
-        function showEditAccount() {
-    // Sembunyikan semua tampilan lain
-    document.getElementById('donationForm').style.display = 'none';
-    document.getElementById('successMessage').style.display = 'none';
-    document.getElementById('notificationSection').style.display = 'none';
-    document.getElementById('profileSection').style.display = 'none';
-    document.getElementById('settingsSection').style.display = 'none';
+// === Fungsi untuk menampilkan halaman Edit Akun ===
+function showEditAccount() {
+    hideAllSections(); // Pastikan semua section disembunyikan
     document.getElementById('editAccountSection').style.display = 'block';
-    document.querySelector('.donation-history').style.display = 'none';
+
+    // Ambil data pengguna dari server
+    fetch('/profile/get', { // Menambahkan route baru
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const user = data.user;
+            // Isi form dengan data pengguna
+            document.getElementById('editNama').value = user.name || '';
+            document.getElementById('editAlamat').value = user.alamat || '';
+            document.getElementById('editTelepon').value = user.telepon || '';
+            // Update preview foto profil jika ada
+            if (user.foto_profil) {
+                document.getElementById('fotoProfilEditPreview').src = user.foto_profil;
+                document.getElementById('fotoProfilPreview').src = user.foto_profil; // Juga update di profil utama
+            }
+        } else {
+            alert('Gagal memuat data profil. Silakan coba lagi.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memuat data profil.');
+    });
 }
 
 
 function saveAccountChanges() {
-    alert("Data akun berhasil disimpan!");
-}
+    // Ambil nilai dari input field
+    const nama = document.getElementById('editNama').value;
+    const alamat = document.getElementById('editAlamat').value;
+    const telepon = document.getElementById('editTelepon').value;
 
+    // Validasi input sederhana
+    if (!nama.trim()) {
+        alert("Nama lengkap wajib diisi.");
+        return;
+    }
+
+    // Kirim data ke server
+    fetch('/profile/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            name: nama,
+            alamat: alamat,
+            telepon: telepon
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui tampilan
+            document.getElementById("userName").textContent = `Halo, ${nama}!`;
+            document.getElementById("profileName").textContent = nama;
+            // Perbarui localStorage jika digunakan untuk tampilan
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.namaLengkap = nama;
+            userData.alamat = alamat;
+            userData.telepon = telepon;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            // Tampilkan pesan sukses dan kembali ke pengaturan
+            alert(data.message || 'Profil berhasil diperbarui!');
+            showSettings(); // Kembali ke halaman pengaturan
+        } else {
+            alert(data.message || 'Gagal memperbarui profil.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Berhasil memperbarui profil.');
+    });
+}
 function showChangeEmail() {
     hideAllSections();
     document.getElementById('changeEmailSection').style.display = 'block';
+
+    // Ambil data user dari localStorage atau dari server (jika ada)
+    const userData = JSON.parse(localStorage.getItem('userData')) || {};
+    const currentEmail = userData.email || "{{ Auth::user()->email }}";
+
+    // Isi field "Email Saat ini" dengan email yang sedang digunakan
+    document.getElementById('currentEmail').value = currentEmail;
+
+    // Kosongkan field "Email Baru" agar pengguna bisa mengisinya
+    document.getElementById('newEmail').value = '';
 }
 
 function submitEmailChange() {
     const currentEmail = document.getElementById('currentEmail').value;
     const newEmail = document.getElementById('newEmail').value;
-
     if (!currentEmail || !newEmail) {
         alert("Harap isi semua field.");
         return;
     }
+    fetch('/profile/change-email', { // Pastikan URL ini benar
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            current_email: currentEmail,
+            new_email: newEmail
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // ✅ PERBAIKAN UTAMA: Perbarui localStorage dengan email baru
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.email = newEmail; // Simpan email baru ke localStorage
+            localStorage.setItem('userData', JSON.stringify(userData));
 
-    // Simulasi pengubahan email berhasil
-    document.getElementById('changeEmailSection').style.display = 'none';
-    document.getElementById('emailSuccessSection').style.display = 'block';
+            // ✅ Perbarui juga tampilan input "Email Saat ini" agar sesuai
+            document.getElementById('currentEmail').value = newEmail;
+
+            // Tampilkan pesan sukses
+            hideAllSections();
+            document.getElementById('emailSuccessSection').style.display = 'block';
+        } else {
+            alert(data.message || 'Gagal mengubah email.');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan. Cek koneksi dan coba lagi.');
+    });
 }
 
 function hideAllSections() {
     const sections = [
-        'donationForm', 'successMessage', 'notificationSection',
-        'profileSection', 'settingsSection', 'editAccountSection',
-        'helpSection', 'termsSection', 'changeEmailSection', 'emailSuccessSection',
-        'changePasswordSection', 'passwordSuccessSection', 'privacySection'
+        'dashboardSection', 'bookListSection', 'bookDetailSection', 
+        'notificationSection', 'profileSection', 'notificationsSection',
+        'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
+        'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
+        'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
+        'deleteSuccess'
     ];
     sections.forEach(id => {
         const el = document.getElementById(id);
