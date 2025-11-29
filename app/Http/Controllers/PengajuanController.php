@@ -105,7 +105,6 @@ class PengajuanController extends Controller
                 'success' => true,
                 'message' => 'Status pengajuan berhasil diperbarui.',
             ]);
-
         } catch (\Exception $e) {
             Log::error('Gagal update pengajuan: ' . $e->getMessage());
 

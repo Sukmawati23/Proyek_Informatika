@@ -995,19 +995,15 @@
                 </tr>
             </thead>
             <tbody id="ulasanTableBody">
-                @forelse($reviews as $review)
-                <tr data-type="{{ $review->user_type }}">
-                    <td>{{ ucfirst($review->user_type) }}</td>
-                    <td>{{ $review->reviewer->name ?? 'Pengguna' }}</td>
-                    <td>{{ $review->comment ?? '-' }}</td>
-                    <td>{{ $review->rating }} / 5</td>
-                    <td>{{ optional($review->created_at)->format('d M Y') }}</td>
-                </tr>
-                @empty
+                @foreach($reviews as $review)
                 <tr>
-                    <td colspan="5" style="text-align:center;">Belum ada ulasan.</td>
+                    <td>{{ $review->type }}</td>
+                    <td>{{ $review->name }}</td>
+                    <td>{{ $review->comment }}</td>
+                    <td>{{ $review->rating }} / 5</td>
+                    <td>{{ $review->date }}</td>
                 </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -1691,27 +1687,15 @@
             });
         });
 
-const reportTypeSelect = document.getElementById('reportType');
+        const reportTypeSelect = document.getElementById('reportType');
 const ulasanReportDiv = document.getElementById('ulasanReport');
-if (reportTypeSelect && ulasanReportDiv) {
-    reportTypeSelect.addEventListener('change', function() {
-        ulasanReportDiv.style.display = this.value === 'ulasan' ? 'block' : 'none';
-    });
-}
-
-const ulasanFilter = document.getElementById('ulasanFilter');
-if (ulasanFilter) {
-    ulasanFilter.addEventListener('change', function() {
-        const filter = this.value;
-        document.querySelectorAll('#ulasanTableBody tr').forEach(row => {
-            if (filter === 'all') {
-                row.style.display = '';
-                return;
-            }
-            row.style.display = row.dataset.type === filter ? '' : 'none';
-        });
-    });
-}
+reportTypeSelect.addEventListener('change', function() {
+    if (this.value === 'ulasan') {
+        ulasanReportDiv.style.display = 'block';
+    } else {
+        ulasanReportDiv.style.display = 'none';
+    }
+});
 
 // === Konfirmasi Logout ===
 function confirmLogout() {

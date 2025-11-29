@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up()
-    {            
+    {
         Schema::table('donasis', function (Blueprint $table) {
             if (!Schema::hasColumn('donasis', 'penulis')) {
                 $table->string('penulis')->nullable()->after('kondisi');
