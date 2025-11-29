@@ -90,6 +90,7 @@ class DashboardController extends Controller
         // === DashboardController.php → index() — untuk penerima
         if ($user->role === 'penerima') {
             return view('dashboard.penerima', [
+                'user' => $user,
                 'bukus'         => Buku::where('status_buku', 'tersedia')->latest()->get(),
                 'pengajuans'    => Pengajuan::where('user_id', $user->id)->with('buku')->latest()->get(),
                 'notifications' => Notifikasi::where('user_id', $user->id)->latest()->get(),

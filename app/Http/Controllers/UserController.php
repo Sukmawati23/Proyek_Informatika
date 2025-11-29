@@ -99,14 +99,27 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+    // Di UserController.php → method updateProfile
     public function updateProfile(Request $request)
     {
+      
+      perbaikanDonatur
         $user = $request->user(); // Menggunakan $request->user() lebih aman daripada Auth::user()
+      
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'alamat' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:15',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada (opsional)
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $validated['foto'] = $request->file('foto')->store('profil', 'public');
+        }
 
         $user->update($validated);
 
