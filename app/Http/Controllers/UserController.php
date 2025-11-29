@@ -162,7 +162,7 @@ public function changeEmail(Request $request)
         // Kirim ulang email verifikasi — hanya sekali
         $user->sendEmailVerificationNotification();
 
-        // ✅ PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
+        // PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
         Auth::login($user); // Login ulang user dengan data terbaru
     }
 
