@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -103,10 +102,10 @@ class UserController extends Controller
     // Di UserController.php → method updateProfile
     public function updateProfile(Request $request)
     {
-
-
+      
+      perbaikanDonatur
         $user = $request->user(); // Menggunakan $request->user() lebih aman daripada Auth::user()
-
+      
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'alamat' => 'nullable|string|max:255',
@@ -131,86 +130,85 @@ class UserController extends Controller
     }
 
     /**
-     * Change user email (requires current email verification & sends new verification).
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function changeEmail(Request $request)
-    {
-        $user = $request->user();
-        $validated = $request->validate([
-            'current_email' => [
-                'required',
-                'email',
-                'exists:users,email',
-                function ($attribute, $value, $fail) use ($user) {
-                    if ($value !== $user->email) {
-                        $fail('Email saat ini tidak sesuai.');
-                    }
-                },
-            ],
-            'new_email' => 'required|email|unique:users,email',
-        ]);
+ * Change user email (requires current email verification & sends new verification).
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function changeEmail(Request $request)
+{
+    $user = $request->user();
+    $validated = $request->validate([
+        'current_email' => [
+            'required',
+            'email',
+            'exists:users,email',
+            function ($attribute, $value, $fail) use ($user) {
+                if ($value !== $user->email) {
+                    $fail('Email saat ini tidak sesuai.');
+                }
+            },
+        ],
+        'new_email' => 'required|email|unique:users,email',
+    ]);
 
-        // Update email hanya jika berbeda
-        if ($user->email !== $validated['new_email']) {
-            $oldEmail = $user->email; // Simpan email lama
-            $user->email = $validated['new_email'];
-            $user->email_verified_at = null; // batalkan verifikasi
-            $user->save();
+    // Update email hanya jika berbeda
+    if ($user->email !== $validated['new_email']) {
+        $oldEmail = $user->email; // Simpan email lama
+        $user->email = $validated['new_email'];
+        $user->email_verified_at = null; // batalkan verifikasi
+        $user->save();
 
+        // Kirim ulang email verifikasi — hanya sekali
+        $user->sendEmailVerificationNotification();
 
-            // Kirim ulang email verifikasi — hanya sekali
-            $user->sendEmailVerificationNotification();
-
-            // ✅ PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
-            Auth::login($user); // Login ulang user dengan data terbaru
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Email berhasil diperbarui. Silakan periksa email Anda untuk verifikasi ulang.',
-        ]);
+        // ✅ PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
+        Auth::login($user); // Login ulang user dengan data terbaru
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Email berhasil diperbarui. Silakan periksa email Anda untuk verifikasi ulang.',
+    ]);
+}
 
     /**
-     * Change user password (logs out other devices on success).
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function changePassword(Request $request)
-    {
-        // Cek apakah user login
-        if (!Auth::check()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Silakan login terlebih dahulu.'
-            ], 401);
-        }
-        $user = $request->user();
-        $validated = $request->validate([
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:6|confirmed',
-        ]);
-        // Verifikasi password lama
-        if (! Hash::check($validated['current_password'], $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kata sandi saat ini salah.',
-            ], 422);
-        }
-        // Update password
-        $user->password = Hash::make($validated['new_password']);
-        $user->save();
-        // ✅ PERBAIKAN UTAMA: Login ulang user dengan password baru
-        Auth::login($user); // Login ulang user dengan data terbaru
+ * Change user password (logs out other devices on success).
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\JsonResponse
+ */
+public function changePassword(Request $request)
+{
+    // Cek apakah user login
+    if (!Auth::check()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Kata sandi berhasil diperbarui.',
-        ]);
+            'success' => false,
+            'message' => 'Silakan login terlebih dahulu.'
+        ], 401);
     }
+    $user = $request->user();
+    $validated = $request->validate([
+        'current_password' => 'required|string',
+        'new_password' => 'required|string|min:6|confirmed',
+    ]);
+    // Verifikasi password lama
+    if (! Hash::check($validated['current_password'], $user->password)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Kata sandi saat ini salah.',
+        ], 422);
+    }
+    // Update password
+    $user->password = Hash::make($validated['new_password']);
+    $user->save();
+    // ✅ PERBAIKAN UTAMA: Login ulang user dengan password baru
+    Auth::login($user); // Login ulang user dengan data terbaru
+    return response()->json([
+        'success' => true,
+        'message' => 'Kata sandi berhasil diperbarui.',
+    ]);
+}
 
     /**
      * Get user profile data for editing.
