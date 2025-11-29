@@ -5,14 +5,14 @@
     <title>Daftar Sebagai Donatur</title>
     <style>
         body {
-            background-color: #000080;
+            background-color: #00002c;
             font-family: 'Segoe UI', sans-serif;
         }
 
         .container {
-            width: 280px;
+            width: 800px;
             margin: 50px auto;
-            padding: 30px 20px;
+            padding: 50px;
             border-radius: 10px;
             color: white;
         }
@@ -20,17 +20,19 @@
         .container img {
             display: block;
             margin: 0 auto 10px;
-            width: 50px;
+            width: 150px;
         }
 
         .container h2 {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 18px;
+            font-size: 25px;
+            font-size: 25px;
         }
 
         .form-group {
             margin-bottom: 10px;
+            font-size: 20px;
         }
 
         .form-group i {
@@ -39,10 +41,11 @@
 
         .form-control {
             width: 93%;
-            padding: 8px 10px;
+            padding: 20px;
             margin-top: 5px;
             border: none;
             border-radius: 5px;
+            font-size: 20px;
         }
 
         .form-control:focus {
@@ -54,18 +57,19 @@
         }
 
         .form-check-label {
-            font-size: 12px;
+            font-size: 20px;
         }
 
         .btn-submit {
-            width: 100%;
-            padding: 10px;
+            width: 98%;
+            padding: 20px;
             background-color: white;
-            color: #000080;
+            color: #00002c;
             border: none;
             border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
+            font-size: 20px;
         }
 
         .btn-submit:hover {

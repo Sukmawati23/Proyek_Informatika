@@ -6,7 +6,7 @@
     <style>
         /* Tambahkan gaya sesuai kebutuhan */
                 body {
-            background-color: #00008B;
+            background-color: #00002c;
             color: white;
             font-family: 'Poppins', sans-serif;
             display: flex;
@@ -15,28 +15,30 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            font-size: 20px;
         }
         .logo {
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
         .logo img {
-            width: 80px;
+            width: 300px;
         }
 
         h2 {
-            font-size: 22px;
+            font-size: 30px;
             margin-bottom: 10px;
         }
 
         input {
             width: 95%;
-            padding: 12px;
+            padding: 20px;
             margin-bottom: 12px;
             border-radius: 8px;
             border: none;
             background-color: #f2f2f2;
-            color: #000049;
+            color: #00002c;
             font-weight: bold;
+            font-size: 20px;
         }
         input::placeholder {
             color: #000049;
@@ -45,7 +47,7 @@
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 20px;
             border-radius: 8px;
             border: none;
             background-color: #00008B;
@@ -54,6 +56,7 @@
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
             transition: background-color 0.2s ease;
+            font-size: 20px;
         }
         button:hover {
             background-color: #00006B;

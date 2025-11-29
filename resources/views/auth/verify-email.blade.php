@@ -5,20 +5,27 @@
     <title>Verifikasi Email Anda</title>
     <style>
         body {
-            background-color: #000080;
-            color: white;
+            background-color: #00002c;
+            color: #00002c;
             text-align: center;
-            padding: 50px;
+            font-size: 20px;
+            padding: 100px;
             font-family: 'Segoe UI', sans-serif;
         }
+
+        .container img {
+            display: block;
+            margin: 0 auto 10px;
+            width: 250px;
+        }
         .container {
-            background-color: #1a1a1a;
-            padding: 30px;
+            background-color: white;
+            padding: 98px;
             border-radius: 10px;
             display: inline-block;
         }
         .icon {
-            font-size: 50px;
+            font-size: 60px;
             color: #4CAF50;
             margin-bottom: 20px;
         }
@@ -28,10 +35,11 @@
         }
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 20px;
+            font-size: 20px;
             margin: 10px;
-            background-color: white;
-            color: #000080;
+            background-color: #00002c;
+            color: white;
             border: none;
             border-radius: 5px;
             font-weight: bold;
@@ -39,13 +47,14 @@
             transition: background-color 0.3s;
         }
         .btn:hover {
-            background-color: #ddd;
+            background-color: #000080;
         }
     </style>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
+        <img src="{{ asset('email-image.png') }}" alt="Logo">
         <div class="icon">
             <i class="fa fa-envelope"></i>
         </div>

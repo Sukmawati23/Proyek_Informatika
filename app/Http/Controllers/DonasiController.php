@@ -39,14 +39,15 @@ class DonasiController extends Controller
             'user_id'      => $donasi->user_id,
             'donasi_id'    => $donasi->id,
             'judul'        => $donasi->judul_buku,
-            'penulis'      => '-',
+            'penulis'      => $donasi->penulis,     // ← FIX
             'kategori'     => $donasi->kategori,
             'status_buku'  => 'tersedia',
-            'penerbit'     => '-',
+            'penerbit'     => $donasi->penerbit,   // ← FIX
             'tahun_terbit' => now()->year,
             'deskripsi'    => $donasi->deskripsi ?? '',
             'foto'         => $donasi->foto ?? null,
         ]);
+
 
         // ✅ Kirim notifikasi
         Notifikasi::create([
@@ -61,7 +62,9 @@ class DonasiController extends Controller
     public function index()
     {
         $donasis = Donasi::where('user_id', Auth::id())->latest()->get();
-        return view('dashboard.donatur', compact('donasis'));
+        $notifications = Notifikasi::where('user_id', Auth::id())->latest()->get();
+
+        return view('dashboard.donatur', compact('donasis', 'notifications'));
     }
 
     public function create()

@@ -6,7 +6,7 @@
     <title>Akun Anda Telah Aktif</title>
     <style>
         body {
-            background-color: #000080;
+            background-color: #00002c;
             color: white;
             display: flex;
             justify-content: center;
@@ -17,31 +17,32 @@
         }
         .container {
             background-color: white;
-            color: #000080;
-            padding: 40px;
+            color: #00002c;
+            padding: 100px;
             border-radius: 10px;
             text-align: center;
-            max-width: 500px;
+            max-width: 700px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
         .check-icon {
-            font-size: 80px;
-            color: #007bff;
+            font-size: 100px;
+            color: #00002c;
             margin-bottom: 20px;
         }
         h2 {
-            font-size: 24px;
+            font-size: 30px;
             margin-bottom: 15px;
         }
         p {
-            font-size: 16px;
+            font-size: 20px;
             margin-bottom: 25px;
             line-height: 1.5;
         }
         .btn {
             display: inline-block;
-            padding: 12px 24px;
-            background-color: #000080;
+            padding: 25px;
+            font-size: 20px;
+            background-color: #00002c;
             color: white;
             text-decoration: none;
             border-radius: 5px;

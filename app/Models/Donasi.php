@@ -21,6 +21,8 @@ class Donasi extends Model
         'judul_buku',
         'kategori',
         'kondisi',
+        'penulis',
+        'penerbit',
         'jumlah',
         'foto',
         'deskripsi',
