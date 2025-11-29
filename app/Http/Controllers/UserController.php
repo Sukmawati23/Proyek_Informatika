@@ -160,6 +160,7 @@ class UserController extends Controller
             $user->email_verified_at = null; // batalkan verifikasi
             $user->save();
 
+
             // Kirim ulang email verifikasi — hanya sekali
             $user->sendEmailVerificationNotification();
 
