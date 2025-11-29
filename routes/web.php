@@ -13,7 +13,6 @@ use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
-use App\Models\Buku;
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
@@ -66,15 +65,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-email', [UserController::class, 'changeEmail'])->name('profile.changeEmail');
     Route::post('/profile/change-password', [UserController::class, 'changePassword'])->name('profile.changePassword');
-
+    
+    // === Profil Routes (dalam grup auth) ===
+    Route::get('/profile/get', [UserController::class, 'getProfile'])->name('profile.get');
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+    
     // Notifikasi — API-like tapi session-based
     Route::post('/api/update-email-notification', [UserController::class, 'updateNotification']);
     Route::get('/api/get-email-notification', [UserController::class, 'getEmailNotification']);
 
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     
-    // HAPUS route duplikat: `/pengajuan` (karena frontend pakai `/api/ajukan-buku`)
-    // Route::post('/pengajuan', ...) → sudah dihapus ✅
+    Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
+    
 });
 
 // === Admin-only Routes ===
@@ -114,6 +117,12 @@ Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
 Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
     ->middleware('auth');
 
-Route::get('/api/buku-tersedia', function () {
-    return Buku::where('status_buku', 'tersedia')->get();
-})->middleware('auth');
+// Rute untuk generate laporan
+Route::post('/generate-report', [DashboardController::class, 'generateReport'])->name('generate.report');
+
+// Rute untuk download laporan
+Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])->name('download.report');
+
+// Rute untuk hapus laporan
+Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])->name('delete.report');
+
