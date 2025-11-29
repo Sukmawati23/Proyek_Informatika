@@ -12,7 +12,11 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChatController;
 use App\Models\User;
+
+Route::get('/chat/{notifId}', [ChatController::class, 'showFromNotification'])->name('chat.fromNotif');
+Route::post('/chat/{partnerId}/send', [ChatController::class, 'send'])->name('chat.send');
 
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);

@@ -359,7 +359,7 @@
         <div class="card-book" id="cardBook">
             <img src="icon-daftar-buku.png" alt="Icon Daftar Buku">
             <div><strong>Daftar Buku</strong></div>
-            <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Daftar Buku</a>
+            <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Tampilkan</a>
         </div>
 
         <h3>Status Permintaan</h3>
@@ -462,15 +462,20 @@
                 <strong>• {{ $notif->pesan }}</strong>
 
                 <div style="margin-top:8px; font-size:14px; opacity:0.8;">
-                    {{ $notif->created_at->format('d M Y, H:i') }}
-                </div>
+    {{ $notif->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }} WIB
+</div>
+
 
                 <!-- TOMBOL CHAT KANAN -->
-                <div style="text-align:right; margin-top:-25px;">
-                    <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
-                        Masuk Chat
-                    </a>
-                </div>
+          @if(!str_contains(strtolower($notif->pesan), 'ditolak'))
+    <div style="text-align:right;">
+        <a href="{{ route('chat.fromNotif', $notif->id) }}"
+           style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
+            Masuk Chat
+        </a>
+    </div>
+@endif
+
 
             </div>
         @endforeach

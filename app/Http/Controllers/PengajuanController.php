@@ -50,8 +50,6 @@ class PengajuanController extends Controller
             'pengajuan_id' => $pengajuan->id,
         ]);
     }
-
-
     //  Admin: tampilkan daftar pengajuan 
     public function index()
     {
@@ -88,18 +86,30 @@ class PengajuanController extends Controller
                 Log::warning("Buku tidak ditemukan untuk pengajuan ID: {$id}");
             }
 
-            // Buat notifikasi untuk penerima
             $judulBuku = optional($pengajuan->buku)->judul ?? '[Judul tidak tersedia]';
-
-            $pesan = $request->status === 'disetujui'
-                ? "Buku \"{$judulBuku}\" sudah diverifikasi."
+           $donaturId = optional($pengajuan->buku->donasi)->user_id;
+            //pesan untuk penerima
+           $pesan = $request->status === 'disetujui'
+                ? "✅ Buku \"{$judulBuku}\" sudah diverifikasi oleh admin."
                 : "❌ Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
-
+                //pesan untuk donatur
+                // Pesan untuk donatur (bisa sama atau disesuaikan)
+            $pesanDonatur = $request->status === 'disetujui'
+             ? "✅ Pengajuan permintaan buku  \"{$judulBuku}\" dari penerima sudah disetujui oleh Admin."
+             : "❌ Pengajuan permintaan buku \"{$judulBuku}\" dari penerima ditolak oleh Admin.";
+           // Notifikasi untuk penerima
             Notifikasi::create([
-                'user_id' => $pengajuan->user_id,
-                'pesan' => $pesan
+             'user_id' => $pengajuan->user_id,   // penerima
+             'partner_id' => $donaturId,         // donatur
+             'pesan' => $pesan
             ]);
 
+// Notifikasi untuk donatur
+Notifikasi::create([
+    'user_id' => $donaturId,            // donatur
+    'partner_id' => $pengajuan->user_id,// penerima
+    'pesan' => $pesanDonatur
+]);
             // Respons sukses
             return response()->json([
                 'success' => true,

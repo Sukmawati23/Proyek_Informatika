@@ -29,9 +29,21 @@
             max-width: 100px;
         }
         form {
+            width: 90%;              /* lebar form */
+            margin: 0 auto;          /* supaya berada di tengah */
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+        form label {
+            text-align: left;   /* tetap rata kiri label */
+            font-weight: 600;
+        }
+
+        form input,
+        form select,
+        form textarea {
+            width: 100%;        /* input mengikuti lebar form */
         }
         button {
             padding: 10px;
@@ -152,12 +164,14 @@
         .notif-card {
             background-color: #0000cc;
             color: white;
-            padding: 10px 15px;
+            padding: 15px 20px;           /* lebih nyaman */
             border-radius: 10px;
-            margin-bottom: 10px;
-            max-width: 600px;
+            margin: 10px auto;            /* center + jarak antar card */
+            width: 100%;                  /* full width */
+            box-sizing: border-box;       /* memastikan padding tidak melebihi lebar */
             font-family: Arial, sans-serif;
         }
+
         .notif-footer {
             display: flex;
             justify-content: space-between;
@@ -255,7 +269,8 @@
     <div class="container">
         <img src="LOGO-SDB.png" alt="Logo" class="logo">
         <h1>Dashboard Donatur</h1>
-        <p id="welcomeText">Selamat datang!</p>
+        <p id="welcomeText">Selamat Datang! </p>
+        </p>
         
         {{-- Pesan sukses --}}
         @if(session('success'))
@@ -386,8 +401,18 @@
         @forelse($notifications as $notif)
             <div class="notif-card">
                 <p>• {{ $notif->pesan }}</p>
-                <div class="notif-footer">
+
+                <div class="notif-footer" style="display:flex; justify-content:space-between; align-items:center;">
                     <small>{{ $notif->created_at->diffForHumans() }}</small>
+                    
+                     @if(str_contains(strtolower($notif->pesan), 'disetujui',))
+    <div style="text-align:right;">
+        <a href="{{ route('chat.fromNotif', $notif->id) }}"
+           style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
+            Masuk Chat
+        </a>
+    </div>
+@endif
                 </div>
             </div>
         @empty
@@ -398,7 +423,6 @@
         <button onclick="showProfile()" style="background-color:#000080; color:white; padding:10px 20px; border:none; border-radius:5px;">Kembali</button>
     </div>
 </div>
-
 
         <!-- Pengaturan Akun -->
         <div id="settingsSection">
@@ -592,8 +616,6 @@
             <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
             <i class="fas fa-user" title="Profil" onclick="showProfile()"></i>
         </div>
-
-
     </div>
 
     <script>

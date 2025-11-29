@@ -1875,59 +1875,48 @@ function showDonationDetail(donasiId) {
 // === Fungsi untuk memperbarui status donasi via AJAX ===
 function updateDonationStatus(selectElement, donasiId) {
     const newStatus = selectElement.value;
+
     if (!confirm(`Yakin ingin mengubah status menjadi "${newStatus}"?`)) {
         selectElement.value = selectElement.getAttribute('data-original-status') || 'menunggu';
         return;
     }
 
-    fetch(`/admin/donasi/${donasiId}/verify`, {
+    fetch(`/admin/donasi/${donasiId}/update-status`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
             'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({ status: newStatus }) // << kirim status baru
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
         if (data.success) {
-            // Update UI
+            // Update badge UI
             const row = selectElement.closest('tr');
             const statusCell = row.querySelector('td:nth-child(5)');
-            let badgeClass = '';
-            let badgeText = '';
-            switch(newStatus) {
-                case 'menunggu':
-                    badgeClass = 'badge-warning';
-                    badgeText = 'Menunggu';
-                    break;
-                case 'diverifikasi':
-                    badgeClass = 'badge-success';
-                    badgeText = 'Diverifikasi';
-                    break;
-                case 'ditolak':
-                    badgeClass = 'badge-danger';
-                    badgeText = 'Ditolak';
-                    break;
-                case 'terkirim':
-                    badgeClass = 'badge-primary';
-                    badgeText = 'Terkirim';
-                    break;
-                default:
-                    badgeClass = 'badge-secondary';
-                    badgeText = newStatus;
-            }
-            statusCell.innerHTML = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+
+            const badges = {
+                menunggu: ['badge-warning', 'Menunggu'],
+                diverifikasi: ['badge-success', 'Diverifikasi'],
+                ditolak: ['badge-danger', 'Ditolak'],
+                terkirim: ['badge-primary', 'Terkirim']
+            };
+
+            const [cls, text] = badges[newStatus] ?? ['badge-secondary', newStatus];
+            statusCell.innerHTML = `<span class="badge ${cls}">${text}</span>`;
+
             alert('Status donasi berhasil diperbarui.');
         } else {
             alert(data.message || 'Gagal memperbarui status.');
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
+    .catch(err => {
+        console.error(err);
         alert('Terjadi kesalahan. Silakan coba lagi.');
     });
 }
-
     // Fungsi untuk menutup modal detail
     function closeDonationDetailModal() {
         document.getElementById('donationDetailModal').style.display = 'none';
