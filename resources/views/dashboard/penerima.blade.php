@@ -475,34 +475,181 @@
         </div>
     </div>
 
-    <!-- Notifikasi -->
+    <!-- NOTIFIKASI PENERIMA -->
     <div id="notificationsSection" class="fade-in">
-        <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
+         <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
 
         <h2>Notifikasi</h2>
          @foreach($notifications as $notif)
             <div class="notif-box" style="background:#00008070;; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
             
                 <strong>• {{ $notif->pesan }}</strong>
-
-                <div style="margin-top:8px; font-size:14px; opacity:0.8;">
-                    {{ $notif->created_at->format('d M Y, H:i') }}
+                    <div style="margin-top:8px; font-size:14px; opacity:0.8;">
+                        {{ $notif->created_at->format('d M Y, H:i') }}
+                    </div>
+                    <div style="text-align:right; margin-top:12px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap;">
+                        <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
+                            Masuk Chat
+                        </a>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <button type="button" onclick="openRating({{ $notif->donasi_id ?? 'null' }})" 
+                            style="background:#6699ff; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:13px; width:100%;">
+                            Beri Rating
+                        </button>
+                    </div>
                 </div>
-
-                <!-- TOMBOL CHAT KANAN -->
-                <div style="text-align:right; margin-top:-25px;">
-                    <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
-                        Masuk Chat
-                    </a>
-                </div>
-
-            </div>
-        @endforeach
-
-        @if($notifications->isEmpty())
-            <p class="text-center text-white mt-4">Belum ada notifikasi.</p>
-        @endif
+            @empty
+                <p style="text-align:center; color:#ccc;">Belum ada notifikasi.</p>
+            @endforelse
+        </div>
     </div>
+
+    <!-- RATING PENERIMA -->
+    <div id="ratingSection" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#00107a; width:95%; max-width:700px; border-radius:10px; padding:30px; color:#fff; position:relative; max-height:90vh; overflow-y:auto;">
+            <button onclick="closeRating()" style="position:absolute; right:14px; top:12px; background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">✕</button>
+
+            <div style="text-align:center; margin-bottom:20px;">
+                <div style="font-size:60px; margin-bottom:8px;">👍</div>
+                <h2 style="margin:0 0 4px; font-size:28px;">Rating & Ulasan</h2>
+            </div>
+
+            <form id="ratingForm" method="POST" action="{{ route('review.store') }}">
+                @csrf
+                <input type="hidden" name="donasi_id" id="ratingDonasiId" value="">
+                
+                <div style="background:#2e38b8; padding:25px; border-radius:8px; margin-bottom:20px; text-align:center;">
+                    <div style="font-weight:700; margin-bottom:15px; font-size:16px;">BERIKAN PENILAIAN ANDA</div>
+                    <div id="ratingStars" style="display:flex; justify-content:center; gap:12px; margin-bottom:10px;">
+                        @for($i=1;$i<=5;$i++)
+                            <input type="radio" id="rstar{{ $i }}" name="rating_radio" value="{{ $i }}" style="display:none;">
+                            <label for="rstar{{ $i }}" data-value="{{ $i }}" style="font-size:48px; cursor:pointer; color:#999; transition:0.2s;">★</label>
+                        @endfor
+                    </div>
+                    <input type="hidden" id="ratingValue" name="rating" value="">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:8px; font-weight:600;">Ulasan Anda</label>
+                    <textarea name="comment" placeholder="Tuliskan pengalaman Anda..." 
+                        style="width:100%; min-height:120px; padding:12px; border:none; border-radius:6px; font-size:14px;"></textarea>
+                </div>
+
+                <div style="text-align:center; display:flex; gap:10px;">
+                    <button type="submit" style="flex:1; background:#000; color:#fff; padding:12px; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
+                        KIRIM
+                    </button>
+                    <button type="button" onclick="closeRating()" style="flex:1; background:#444; color:#fff; padding:12px; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
+                        BATAL
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL UCAPAN TERIMA KASIH -->
+    <div id="thankYouModalPenerima"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:10000; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:#00107a; width:95%; max-width:500px; border-radius:15px; padding:40px 30px; color:#fff; position:relative; text-align:center;">
+            <div style="font-size:80px; margin-bottom:20px;">⭐</div>
+            <h2 style="margin:0 0 15px; font-size:28px; font-weight:bold;">Terima kasih telah berbagi!</h2>
+            <p style="margin:0 0 30px; font-size:16px; line-height:1.5; opacity:0.9;">
+                Masukan Anda membantu orang lain membuat keputusan yang lebih baik.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <button onclick="closeThankYouPenerima()" style="background:#6699ff; color:#fff; padding:14px; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:16px;">
+                    Selesai
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function openRating(donasiId = ''){
+        const form = document.getElementById('ratingForm');
+        if (!form) return;
+        form.reset();
+        document.getElementById('ratingValue').value = '';
+        document.getElementById('ratingDonasiId').value = donasiId || '';
+        document.querySelectorAll('#ratingStars label').forEach(l => l.style.color = '#999');
+        document.getElementById('ratingSection').style.display = 'flex';
+    }
+
+    function closeRating(){
+        document.getElementById('ratingSection').style.display = 'none';
+    }
+
+    function showThankYouPenerima(){
+        const modal = document.getElementById('thankYouModalPenerima');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeThankYouPenerima(){
+        const modal = document.getElementById('thankYouModalPenerima');
+        if (modal) modal.style.display = 'none';
+    }
+
+    (function(){
+        const labels = document.querySelectorAll('#ratingStars label');
+        const hidden = document.getElementById('ratingValue');
+        
+        labels.forEach((lbl) => {
+            lbl.addEventListener('click', function(){
+                const val = parseInt(this.getAttribute('data-value'));
+                hidden.value = val;
+                labels.forEach((l, i) => {
+                    l.style.color = (i < val ? '#ffcc00' : '#999');
+                });
+            });
+
+            lbl.addEventListener('mouseover', function(){
+                const hoverVal = parseInt(this.getAttribute('data-value'));
+                labels.forEach((l, i) => {
+                    l.style.color = (i < hoverVal ? '#ffdd66' : '#999');
+                });
+            });
+        });
+
+        document.getElementById('ratingStars').addEventListener('mouseout', function(){
+            const currentVal = parseInt(hidden.value) || 0;
+            labels.forEach((l, i) => {
+                l.style.color = (i < currentVal ? '#ffcc00' : '#999');
+            });
+        });
+
+        const ratingForm = document.getElementById('ratingForm');
+        if (ratingForm) {
+            ratingForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (!hidden.value) {
+                    alert('Silakan pilih rating terlebih dahulu.');
+                    return;
+                }
+                const formData = new FormData(ratingForm);
+                fetch(ratingForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(async (response) => {
+                    const payload = await response.json().catch(() => ({}));
+                    if (!response.ok || !payload.success) {
+                        throw new Error(payload.message || 'Gagal mengirim ulasan.');
+                    }
+                    closeRating();
+                    showThankYouPenerima();
+                })
+                .catch((error) => {
+                    alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                });
+            });
+        }
+    })();
+    </script>
 
     <!-- Pengaturan Akun -->
     <div id="settingsSection" class="fade-in">
@@ -939,7 +1086,7 @@
         function showNotifications() {
             hideAllSections();
             document.getElementById('notificationsSection').style.display = 'block';
-            loadNotifications(); // 
+            // loadNotifications(); // hapus/komentar — biarkan Blade menampilkan $notifications seperti di donatur
         }
 
         function showProfile() {
@@ -1217,15 +1364,20 @@
         }
 
                 function hideAllSections() {
-            const sections = [
-                'dashboardSection', 'bookListSection', 'bookDetailSection', 
-                'notificationSection', 'profileSection', 'notificationsSection',
-                'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
-                'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
-                'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
-                'deleteSuccess'
-            ].forEach(id => document.getElementById(id).style.display = 'none');
-        }
+    const ids = [
+        'dashboardSection', 'bookListSection', 'bookDetailSection',
+        'notificationSection', 'notificationsSection', 'profileSection',
+        'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
+        'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
+        'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
+        'deleteSuccess'
+    ];
+
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+}
 
         // parsing yang lebih aman
 function parseServerDateToUTC(dateStr) {
