@@ -12,6 +12,8 @@ use App\Models\Notifikasi;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use App\Controllers\ReviewController;
+use App\Models\Review;
 
 class DashboardController extends Controller
 {
@@ -75,14 +77,43 @@ class DashboardController extends Controller
                 'donasis'       => Donasi::with('user')->latest()->take(10)->get(),
                 'verifications' => Pengajuan::with(['user', 'buku'])->where('status', 'menunggu')->latest()->take(10)->get(),
                 'reports'       => collect(),
-                'reviews'       => collect(),
                 'sessions'      => collect(),
+                'reviews' => Review::with('reviewer', 'reviewed')->latest()->take(20)->get(),
             ]);
         }
         // app/Http/Controllers/DashboardController.php → index()
         if ($user->role === 'donatur') {
+            // Ambil semua donasi user
+            $donasis = Donasi::where('user_id', $user->id)->with('bukus')->get();
+
+            // Ambil pengajuan yang terkait dengan buku dari donasi
+            $pengajuanMap = [];
+            foreach ($donasis as $donasi) {
+                if ($donasi->bukus->isNotEmpty()) {
+                    $buku = $donasi->bukus->first();
+                    $pengajuan = Pengajuan::where('buku_id', $buku->id)
+                        ->with('user')
+                        ->whereIn('status', ['disetujui'])
+                        ->first();
+                    $pengajuanMap[$donasi->id] = $pengajuan;
+                }
+            }
+
+            // Ambil ulasan yang sudah diberikan oleh donatur terkait tiap pengajuan
+            $ulasanMap = [];
+            foreach ($pengajuanMap as $donasi_id => $pengajuan) {
+                if ($pengajuan) {
+                    $ulasan = Review::where('pengajuan_id', $pengajuan->id)
+                        ->where('reviewer_id', $user->id)
+                        ->first();
+                    $ulasanMap[$donasi_id] = $ulasan;
+                }
+            }
+
             return view('dashboard.donatur', [
-                'donasis'       => Donasi::where('user_id', $user->id)->latest()->get(),
+                'donasis' => $donasis,
+                'pengajuanMap' => $pengajuanMap,
+                'ulasanMap' => $ulasanMap,
                 'notifications' => $user->notifications()->latest()->take(5)->get(),
             ]);
         }
