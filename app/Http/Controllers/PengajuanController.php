@@ -17,7 +17,7 @@ class PengajuanController extends Controller
     {
         // Validasi input
         $request->validate([
-            'buku_id' => 'required|exists:bukus,id',
+            'buku_id' => 'required|exists:bukus, id',
             'jumlah' => 'required|integer|min:1',
         ]);
 
@@ -46,6 +46,7 @@ class PengajuanController extends Controller
         $buku->update(['status_buku' => 'diajukan']);
 
         return response()->json([
+            'success' => true,
             'message' => 'Pengajuan berhasil diajukan!',
             'pengajuan_id' => $pengajuan->id,
         ]);
@@ -90,13 +91,13 @@ class PengajuanController extends Controller
            $donaturId = optional($pengajuan->buku->donasi)->user_id;
             //pesan untuk penerima
            $pesan = $request->status === 'disetujui'
-                ? "✅ Buku \"{$judulBuku}\" sudah diverifikasi oleh admin."
-                : "❌ Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
+                ? "Buku \"{$judulBuku}\" sudah diverifikasi oleh admin."
+                : "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
                 //pesan untuk donatur
                 // Pesan untuk donatur (bisa sama atau disesuaikan)
             $pesanDonatur = $request->status === 'disetujui'
-             ? "✅ Pengajuan permintaan buku  \"{$judulBuku}\" dari penerima sudah disetujui oleh Admin."
-             : "❌ Pengajuan permintaan buku \"{$judulBuku}\" dari penerima ditolak oleh Admin.";
+             ? "Pengajuan permintaan buku  \"{$judulBuku}\" dari penerima sudah disetujui oleh Admin."
+             : "Pengajuan permintaan buku \"{$judulBuku}\" dari penerima ditolak oleh Admin.";
            // Notifikasi untuk penerima
             Notifikasi::create([
              'user_id' => $pengajuan->user_id,   // penerima
