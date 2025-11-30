@@ -105,7 +105,7 @@ class DonasiController extends Controller
             'deskripsi' => $validated['deskripsi'] ?? null,
             'tanggal' => now(),
             'status' => 'menunggu', // ✅ menunggu verifikasi
-            'penerima_id'=> null
+            'penerima_id' => null
         ]);
 
         return back()->with('success', 'Donasi berhasil diajukan. Menunggu verifikasi admin.');
@@ -116,52 +116,47 @@ class DonasiController extends Controller
         return view('donasi.show', compact('donasi'));
     }
 
-   public function updateStatus(Request $request, $id)
-{
-    $request->validate([
-        'status' => 'required|string'
-    ]);
-
-    $donasi = Donasi::findOrFail($id);
-    $oldStatus = $donasi->status; // jika butuh logging
-    $donasi->update(['status' => $request->status]);
-
-    $donaturId  = $donasi->user_id;
-    $penerimaId = $donasi->penerima_id;
-    $judul      = $donasi->judul_buku;
-
-    // Pesan notifikasi berdasarkan status
-    $pesan = match($request->status) {
-        'diverifikasi' => "✅ Donasi buku \"$judul\" telah diverifikasi dan kini tersedia",
-        'ditolak'      => "❌ Donasi buku \"$judul\" ditolak. Silahkan hubungi admin untuk info lebih lanjut.",
-        'terkirim'     => "📦 Donasi buku \"$judul\" telah berhasil dikirim ke penerima.",
-        default        => null
-    };
-
-    // Jika ada pesan, buat notifikasi
-    if ($pesan) {
-        Notifikasi::create([
-            'user_id'    => $donaturId,  // penerima notifikasi adalah donatur
-            'partner_id' => $penerimaId, // relasi dengan penerima
-            'pesan'      => $pesan,
-        ]);
-    }
-
-
-    return back()->with('success', 'Status donasi berhasil diperbarui.');
-}
-public function reject($id) 
-{ 
-    $donasi = Donasi::findOrFail($id); 
-    $donasi->update(['status' => 'ditolak']); 
-    $penerimaId = $donasi->penerima_id; 
-    $donaturId = $donasi->user_id; // Buat notifikasi ke donatur 
-    Notifikasi::create([ 'user_id' => $donaturId, 'partner_id' => $penerimaId, 'pesan' => "❌ Donasi buku \"{$donasi->judul_buku}\" ditolak. Silakan hubungi admin untuk info lebih lanjut", ]); 
-    return back()->with('warning', 'Donasi berhasil ditolak.'); }
-
     public function updateStatus(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
         $donasi = Donasi::findOrFail($id);
+        $oldStatus = $donasi->status; // jika butuh logging
         $donasi->update(['status' => $request->status]);
-        return back()->with('success', 'Status donasi diperbarui.');
+
+        $donaturId  = $donasi->user_id;
+        $penerimaId = $donasi->penerima_id;
+        $judul      = $donasi->judul_buku;
+
+        // Pesan notifikasi berdasarkan status
+        $pesan = match ($request->status) {
+            'diverifikasi' => "✅ Donasi buku \"$judul\" telah diverifikasi dan kini tersedia",
+            'ditolak'      => "❌ Donasi buku \"$judul\" ditolak. Silahkan hubungi admin untuk info lebih lanjut.",
+            'terkirim'     => "📦 Donasi buku \"$judul\" telah berhasil dikirim ke penerima.",
+            default        => null
+        };
+
+        // Jika ada pesan, buat notifikasi
+        if ($pesan) {
+            Notifikasi::create([
+                'user_id'    => $donaturId,  // penerima notifikasi adalah donatur
+                'partner_id' => $penerimaId, // relasi dengan penerima
+                'pesan'      => $pesan,
+            ]);
+        }
+
+
+        return back()->with('success', 'Status donasi berhasil diperbarui.');
+    }
+    public function reject($id)
+    {
+        $donasi = Donasi::findOrFail($id);
+        $donasi->update(['status' => 'ditolak']);
+        $penerimaId = $donasi->penerima_id;
+        $donaturId = $donasi->user_id; // Buat notifikasi ke donatur 
+        Notifikasi::create(['user_id' => $donaturId, 'partner_id' => $penerimaId, 'pesan' => "❌ Donasi buku \"{$donasi->judul_buku}\" ditolak. Silakan hubungi admin untuk info lebih lanjut",]);
+        return back()->with('warning', 'Donasi berhasil ditolak.');
+    }
 }
