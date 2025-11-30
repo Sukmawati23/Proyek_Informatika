@@ -78,6 +78,8 @@ Route::middleware(['auth'])->group(function () {
     
     // HAPUS route duplikat: `/pengajuan` (karena frontend pakai `/api/ajukan-buku`)
     // Route::post('/pengajuan', ...) → sudah dihapus ✅
+
+    Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
 });
 
 // === Admin-only Routes ===
@@ -117,3 +119,11 @@ Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
 Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
     ->middleware('auth');
 
+// Rute untuk generate laporan
+Route::post('/generate-report', [DashboardController::class, 'generateReport'])->name('generate.report');
+
+// Rute untuk download laporan
+Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])->name('download.report');
+
+// Rute untuk hapus laporan
+Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])->name('delete.report');
