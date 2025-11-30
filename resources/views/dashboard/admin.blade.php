@@ -619,7 +619,7 @@
                     <th>ID</th>
                     <th>Nama</th>
                     <th>Email</th>
-                    <th>Telepon</th> <!-- ✅ Kolom Telepon DI TAMPILKAN -->
+                    <th>Telepon</th> 
                     <th>Total Donasi</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -631,7 +631,7 @@
                         <td>{{ $donatur->id }}</td>
                         <td>{{ $donatur->name }}</td>
                         <td>{{ $donatur->email }}</td>
-                        <td>{{ $donatur->telepon }}</td> <!-- ✅ Menampilkan nomor telepon dari database -->
+                        <td>{{ $donatur->telepon }}</td> 
                         <td>{{ $donatur->total_donations ?? 0 }} buku</td>
                         <td>
                             @if($donatur->is_active)
@@ -1709,8 +1709,8 @@ function openEditDonaturModal(id, name, email, telepon, alamat, status) {
     document.getElementById('editDonaturId').value = id;
     document.getElementById('editDonaturName').value = name;
     document.getElementById('editDonaturEmail').value = email;
-    document.getElementById('editDonaturtelepon').value = telepon; // ✅ Tambahkan ini
-    document.getElementById('editDonaturalamat').value = alamat; // ✅ Tambahkan ini
+    document.getElementById('editDonaturtelepon').value = telepon; 
+    document.getElementById('editDonaturalamat').value = alamat; 
     document.getElementById('editDonaturStatus').value = status;
 
     // Tampilkan modal
@@ -1730,7 +1730,7 @@ function deleteDonatur(id) {
     .then(data => {
         if (data.success) {
             // Hapus baris dari DOM
-            const row = event.target.closest('tr'); // ✅ Ini penting!
+            const row = event.target.closest('tr'); 
             if (row) row.remove();
             alert('Donatur berhasil dihapus.');
         } else {
@@ -1948,7 +1948,7 @@ function closeModal(modalId) {
     document.getElementById('editDonaturName').value = name;
     document.getElementById('editDonaturEmail').value = email;
     document.getElementById('editDonaturPhone').value = phone;
-    document.getElementById('editDonaturAddress').value = address; // ✅ Isi alamat
+    document.getElementById('editDonaturAddress').value = address; //  Isi alamat
     document.getElementById('editDonaturStatus').value = status;
     document.getElementById('editDonaturModal').style.display = 'block';
 }
@@ -1984,7 +1984,7 @@ function applyFilter() {
         // Ambil teks dari kolom Nama (index 1), Email (index 2), dan Telepon (index 3)
         const name = row.cells[1]?.textContent.toLowerCase() || '';
         const email = row.cells[2]?.textContent.toLowerCase() || '';
-        const telepon = row.cells[3]?.textContent.toLowerCase() || ''; // ✅ Sekarang kita gunakan lagi
+        const telepon = row.cells[3]?.textContent.toLowerCase() || ''; //  Sekarang kita gunakan lagi
 
         // Status sekarang ada di cells[5]
         const status = row.cells[5]?.querySelector('.badge')?.classList.contains('badge-success') ? 'active' : 'inactive';
@@ -2045,15 +2045,15 @@ function updatePengajuanStatus(selectElement, pengajuanId) {
         return;
     }
 
-    // ✅ PERBAIKAN: Kirim data sebagai JSON
+    // PERBAIKAN: Kirim data sebagai JSON
     fetch(`/admin/pengajuan/${pengajuanId}/status`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Content-Type': 'application/json', // ✅ Penting: Tandai bahwa kita mengirim JSON
+            'Content-Type': 'application/json', // Penting: Tandai bahwa kita mengirim JSON
         },
         body: JSON.stringify({
-            status: newStatus // ✅ Data dikirim dalam format JSON
+            status: newStatus // Data dikirim dalam format JSON
         })
     })
     .then(response => response.json())
