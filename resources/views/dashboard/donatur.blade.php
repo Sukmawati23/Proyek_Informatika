@@ -403,12 +403,15 @@
     <h2>Notifikasi</h2>
     <div id="notifContainer">
         @forelse($notifications as $notif)
-            <div class="notif-card">
-                <p>• {{ $notif->pesan }}</p>
-                <div class="notif-footer">
-                    <small>{{ $notif->created_at->diffForHumans() }}</small>
-                </div>
-            </div>
+<div class="notif-box">
+    <strong>• {{ $notif->pesan }}</strong>
+    <div>{{ $notif->created_at->format('d M Y, H:i') }}</div>
+    @if($notif->chatRoom)
+        <div style="text-align:right; margin-top:-25px;">
+            <a href="{{ route('chat.show', $notif->chatRoom) }}" class="chat-link">Masuk Chat</a>
+        </div>
+    @endif
+</div>
         @empty
             <p style="text-align: center; margin-top: 20px;">Tidak ada notifikasi baru.</p>
         @endforelse
@@ -641,7 +644,7 @@ if (namaDonatur) {
         <p>• Buku ‘${title}’ sudah diterima.</p>
         <div class="notif-footer">
             <small>${time}</small>
-            <a href="${chatLink}" class="chat-link">Masuk Chat</a>
+            <a href="/chat/{{ $notif->chat_room_id ?? '#' }}" class="chat-link">Masuk Chat</a>
         </div>
     `;
     notifContainer.appendChild(notifCard);

@@ -397,6 +397,33 @@
 </div>
     </div>
 
+   <!-- Bagian baru: Tombol Chat dengan Donatur -->
+@if($pengajuans->where('status', 'disetujui')->isNotEmpty())
+    <div class="chat-section" style="margin-top: 30px; padding: 20px; background-color: #00008070; border-radius: 10px;">
+        <h3>Chat dengan Donatur</h3>
+        @foreach($pengajuans->where('status', 'disetujui') as $pengajuan)
+            @php
+                $buku = $pengajuan->buku;
+                $donasi = $buku->donasi;
+                // Cari room chat yang sesuai
+                $room = \App\Models\ChatRoom::where('donasi_id', $donasi->id)
+                    ->where('penerima_id', $pengajuan->user_id)
+                    ->first();
+            @endphp
+            @if($room)
+                <div style="background:#00008070; padding:15px; margin-bottom:15px; border-radius:8px; color:white;">
+                    <strong>Buku:</strong> {{ $buku->judul }}<br>
+                    <strong>Donatur:</strong> {{ $donasi->user?->name ?? '-' }}<br>
+                    <a href="{{ route('chat.show', $room) }}" 
+                       style="color:white; font-weight:bold; text-decoration:underline; display:inline-block; margin-top:5px;">
+                        Masuk Chat
+                    </a>
+                </div>
+            @endif
+        @endforeach
+    </div>
+@endif
+
     <!-- Daftar Buku -->
     <div id="bookListSection" style="display: none;" class="container fade-in">
         <h3>Daftar Buku</h3>
@@ -480,24 +507,20 @@
         <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
 
         <h2>Notifikasi</h2>
-         @foreach($notifications as $notif)
-            <div class="notif-box" style="background:#00008070;; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
-            
-                <strong>• {{ $notif->pesan }}</strong>
-
-                <div style="margin-top:8px; font-size:14px; opacity:0.8;">
-                    {{ $notif->created_at->format('d M Y, H:i') }}
-                </div>
-
-                <!-- TOMBOL CHAT KANAN -->
-                <div style="text-align:right; margin-top:-25px;">
-                    <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
-                        Masuk Chat
-                    </a>
-                </div>
-
-            </div>
-        @endforeach
+       <!-- Di dalam loop @foreach($notifications as $notif) -->
+<div class="notif-box" style="background:#00008070; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
+    <strong>• {{ $notif->pesan }}</strong>
+    <div style="margin-top:8px; font-size:14px; opacity:0.8;">
+        {{ $notif->created_at->format('d M Y, H:i') }}
+    </div>
+    <!-- TOMBOL CHAT KANAN -->
+    @if($notif->chatRoom)
+        <div style="text-align:right; margin-top:-25px;">
+            <a href="{{ route('chat.show', $notif->chatRoom) }}" class="chat-link">Masuk Chat</a>
+        </div>
+    @endif
+</div>
+@endforeach
 
         @if($notifications->isEmpty())
             <p class="text-center text-white mt-4">Belum ada notifikasi.</p>

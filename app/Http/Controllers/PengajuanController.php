@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Events\PengajuanDisetujui;
 
 class PengajuanController extends Controller
 {
@@ -101,6 +102,11 @@ class PengajuanController extends Controller
                 'user_id' => $pengajuan->user_id,
                 'pesan'   => $pesan
             ]);
+
+            // ✅ Trigger event jika disetujui
+            if ($request->status === 'disetujui') {
+                event(new PengajuanDisetujui($pengajuan));
+            }
 
             return response()->json([
                 'success' => true,
