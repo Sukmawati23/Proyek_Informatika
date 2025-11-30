@@ -70,14 +70,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/change-email', [UserController::class, 'changeEmail'])->name('profile.changeEmail');
     Route::post('/profile/change-password', [UserController::class, 'changePassword'])->name('profile.changePassword');
 
+    // === Profil Routes (dalam grup auth) ===
+    Route::get('/profile/get', [UserController::class, 'getProfile'])->name('profile.get');
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+
     // Notifikasi — API-like tapi session-based
     Route::post('/api/update-email-notification', [UserController::class, 'updateNotification']);
     Route::get('/api/get-email-notification', [UserController::class, 'getEmailNotification']);
 
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
-    
-    // HAPUS route duplikat: `/pengajuan` (karena frontend pakai `/api/ajukan-buku`)
-    // Route::post('/pengajuan', ...) → sudah dihapus ✅
 
     Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
 });

@@ -41,6 +41,7 @@
             flex-direction: column;
             gap: 10px;
         }
+
         form label {
             text-align: left;   /* tetap rata kiri label */
             font-weight: 600;
@@ -52,7 +53,7 @@
             width: 100%;        /* input mengikuti lebar form */
         }
         
-       button {
+        button {
             padding: 20px;
             background-color: #000080;
             color: white;
@@ -74,11 +75,6 @@
             border-top: 1px solid #ddd;
             padding-top: 20px;
             font-size: 25px;
-        }
-        
-        .status-title {
-            font-weight: bold;
-            margin-top: 20px;
         }
         
         .status-title {
@@ -201,7 +197,7 @@
         }
         
         .notif-card {
-            background-color: #0000cc;
+            background-color: #00008070;
             color: white;
             padding: 15px 20px;           /* lebih nyaman */
             border-radius: 10px;
@@ -367,7 +363,8 @@
             <option value="novel-grafis">Novel Grafis</option>
         </select>
 
-         <label for="kondisi">Kondisi Buku</label>
+        <label for="kondisi">Kondisi Buku</label>
+
         <input style="padding: 15px;font-size:15px;"type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
 
         <!-- Tambahkan ini setelah field "Kondisi Buku" -->
@@ -471,9 +468,6 @@
             <p style="text-align: center; margin-top: 20px;">Tidak ada notifikasi baru.</p>
         @endforelse
     </div>
-    <div style="text-align: center; margin-top: 20px;">
-        <button onclick="showProfile()" style="background-color:#000080; color:white; padding:10px 20px; border:none; border-radius:5px;">Kembali</button>
-    </div>
 </div>
 
         <!-- Pengaturan Akun -->
@@ -499,7 +493,7 @@
     Hapus Akun
 </button>
 
-           <br><br>
+            <br><br>
             <button onclick="showProfile()" style="width:100%; background-color: #000080; color:white; padding:20px; border:none; border-radius:5px;font-size:20px;">
                 Kembali
             </button>
@@ -526,7 +520,8 @@
             </div>
         </div>
         
-         <!-- Syarat & Ketentuan -->
+
+        <!-- Syarat & Ketentuan -->
         <div id="termsSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
             <h2 style="color: #ADD8E6;">Syarat & Ketentuan Donatur</h2>
             <div style="background: #00008070; color: white; padding: 20px; border-radius: 10px; text-align: left;">
@@ -749,7 +744,8 @@ if (namaDonatur) {
             document.querySelector('.donation-history').style.display = 'none';
         }
 
-       function showSettings() {
+
+        function showSettings() {
              hideAllSections();
             document.getElementById('settingsSection').style.display = 'block';
             // Pastikan tidak ada elemen lain yang tertinggal
@@ -817,7 +813,8 @@ if (namaDonatur) {
 }
 
 
-       // === Fungsi untuk menampilkan halaman Edit Akun ===
+
+// === Fungsi untuk menampilkan halaman Edit Akun ===
 function showEditAccount() {
     hideAllSections(); // Pastikan semua section disembunyikan
     document.getElementById('editAccountSection').style.display = 'block';
@@ -904,6 +901,44 @@ function saveAccountChanges() {
     });
 }
 
+
+    // Kirim data ke server
+    fetch('/profile/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            name: nama,
+            alamat: alamat,
+            telepon: telepon
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui tampilan
+            document.getElementById("userName").textContent = `Halo, ${nama}!`;
+            document.getElementById("profileName").textContent = nama;
+            // Perbarui localStorage jika digunakan untuk tampilan
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.namaLengkap = nama;
+            userData.alamat = alamat;
+            userData.telepon = telepon;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            // Tampilkan pesan sukses dan kembali ke pengaturan
+            alert(data.message || 'Profil berhasil diperbarui!');
+            showSettings(); // Kembali ke halaman pengaturan
+        } else {
+            alert(data.message || 'Gagal memperbarui profil.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Berhasil memperbarui profil.');
+    });
+}
 function showChangeEmail() {
     hideAllSections();
     document.getElementById('changeEmailSection').style.display = 'block';

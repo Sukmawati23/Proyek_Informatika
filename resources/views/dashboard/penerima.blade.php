@@ -60,7 +60,8 @@
             font-size: 20px;
         }
 
-       .status-box, .book-box, .book-detail, .notification-section {
+
+        .status-box, .book-box, .book-detail, .notification-section {
             background-color: #00008070;
             padding: 20px;
             border-radius: 10px;
@@ -111,7 +112,8 @@
             border-radius: 5px;
         }
 
-       .search-box input {
+
+        .search-box input {
             padding: 20px;
             width: 100%;
             max-width: 800px;
@@ -376,7 +378,7 @@
             <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Daftar Buku</a>
         </div>
 
-        <h3>Status Permintaan</h3>
+        <h3>Tabel Status Permintaan</h3>
 <div class="status-box" id="statusSection">
     <table>
         <thead>
@@ -433,8 +435,8 @@
         </div>
         <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
     </div>
-    
-     <!-- Detail Buku -->
+
+    <!-- Detail Buku -->
     <div id="bookDetailSection" class="container fade-in" style="display: none;font-size:20px;">
         <div class="book-detail">
             <h3>Detail Buku</h3>
@@ -480,9 +482,10 @@
     <!-- Notifikasi -->
     <div id="notificationsSection" class="fade-in">
         <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
+
         <h2>Notifikasi</h2>
          @foreach($notifications as $notif)
-           <div class="notif-box" style="background:#00008070;; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
+            <div class="notif-box" style="background:#00008070;; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
             
                 <strong>• {{ $notif->pesan }}</strong>
 
@@ -1025,7 +1028,8 @@
             document.getElementById('editAccountSection').style.display = 'block';
         }
 
-       function saveAccountChanges() {
+
+        function saveAccountChanges() {
     const nama = document.getElementById('editNama').value.trim();
     const alamat = document.getElementById('editAlamat').value.trim();
     const telepon = document.getElementById('editTelepon').value.trim();

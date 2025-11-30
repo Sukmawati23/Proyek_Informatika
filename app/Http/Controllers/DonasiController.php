@@ -40,14 +40,17 @@ class DonasiController extends Controller
             'user_id'      => $donasi->user_id,
             'donasi_id'    => $donasi->id,
             'judul'        => $donasi->judul_buku,
-            'penulis'      => $donasi->penulis,
+
+            'penulis'      => $donasi->penulis,     // ← FIX
             'kategori'     => $donasi->kategori,
             'status_buku'  => 'tersedia',
-            'penerbit'     => $donasi->penerbit,
+            'penerbit'     => $donasi->penerbit,   // ← FIX
+
             'tahun_terbit' => now()->year,
             'deskripsi'    => $donasi->deskripsi ?? '',
             'foto'         => $donasi->foto ?? null,
         ]);
+
 
         // ✅ Kirim notifikasi
         Notifikasi::create([
@@ -63,6 +66,7 @@ class DonasiController extends Controller
     {
         $donasis = Donasi::where('user_id', Auth::id())->latest()->get();
         $notifications = Notifikasi::where('user_id', Auth::id())->latest()->get();
+
         return view('dashboard.donatur', compact('donasis', 'notifications'));
     }
 
@@ -143,6 +147,7 @@ class DonasiController extends Controller
         ]);
     }
 
+
     return back()->with('success', 'Status donasi berhasil diperbarui.');
 }
 public function reject($id) 
@@ -153,4 +158,10 @@ public function reject($id)
     $donaturId = $donasi->user_id; // Buat notifikasi ke donatur 
     Notifikasi::create([ 'user_id' => $donaturId, 'partner_id' => $penerimaId, 'pesan' => "❌ Donasi buku \"{$donasi->judul_buku}\" ditolak. Silakan hubungi admin untuk info lebih lanjut", ]); 
     return back()->with('warning', 'Donasi berhasil ditolak.'); }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $donasi = Donasi::findOrFail($id);
+        $donasi->update(['status' => $request->status]);
+        return back()->with('success', 'Status donasi diperbarui.');
 }

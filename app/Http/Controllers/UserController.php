@@ -94,16 +94,18 @@ class UserController extends Controller
             'notif_email' => (bool) $user->notif_email,
         ]);
     }
-
     /**
      * Update user profile (name, alamat, telepon).
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+    // Di UserController.php → method updateProfile
     public function updateProfile(Request $request)
     {
-        $user = $request->user();
+
+        //perbaikanDonatur
+        $user = $request->user(); // Menggunakan $request->user() lebih aman daripada Auth::user()
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -137,7 +139,6 @@ class UserController extends Controller
     public function changeEmail(Request $request)
     {
         $user = $request->user();
-
         $validated = $request->validate([
             'current_email' => [
                 'required',
@@ -154,6 +155,7 @@ class UserController extends Controller
 
         // Update email hanya jika berbeda
         if ($user->email !== $validated['new_email']) {
+            $oldEmail = $user->email; // Simpan email lama
             $user->email = $validated['new_email'];
             $user->email_verified_at = null; // batalkan verifikasi
             $user->save();
@@ -161,7 +163,7 @@ class UserController extends Controller
             // Kirim ulang email verifikasi — hanya sekali
             $user->sendEmailVerificationNotification();
 
-             // PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
+
             Auth::login($user); // Login ulang user dengan data terbaru
         }
 
@@ -187,12 +189,10 @@ class UserController extends Controller
             ], 401);
         }
         $user = $request->user();
-
         $validated = $request->validate([
             'current_password' => 'required|string',
             'new_password' => 'required|string|min:6|confirmed',
         ]);
-
         // Verifikasi password lama
         if (! Hash::check($validated['current_password'], $user->password)) {
             return response()->json([
@@ -200,17 +200,46 @@ class UserController extends Controller
                 'message' => 'Kata sandi saat ini salah.',
             ], 422);
         }
-
         // Update password
         $user->password = Hash::make($validated['new_password']);
         
         $user->save();
+
         
         // PERBAIKAN UTAMA: Login ulang user dengan password baru
         Auth::login($user); // Login ulang user dengan data terbaru
         return response()->json([
             'success' => true,
             'message' => 'Kata sandi berhasil diperbarui.',
+
+       
+    }
+
+    /**
+     * Get user profile data for editing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProfile(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'name' => $user->name,
+                'alamat' => $user->alamat,
+                'telepon' => $user->telepon,
+                // Jika Anda ingin menampilkan foto profil, aktifkan kode ini
+                // 'foto_profil' => $user->foto_profil ? asset('storage/' . $user->foto_profil) : null,
+            ]
         ]);
     }
 }
