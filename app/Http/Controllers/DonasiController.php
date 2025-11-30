@@ -62,7 +62,8 @@ class DonasiController extends Controller
     public function index()
     {
         $donasis = Donasi::where('user_id', Auth::id())->latest()->get();
-        return view('dashboard.donatur', compact('donasis'));
+        $notifications = Notifikasi::where('user_id', Auth::id())->latest()->get();
+        return view('dashboard.donatur', compact('donasis', 'notifications'));
     }
 
     public function create()
