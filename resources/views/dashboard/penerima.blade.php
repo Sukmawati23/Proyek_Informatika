@@ -11,18 +11,20 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #000080;
+            background-color: #00002c;
             color: white;
+            font-size: 20px;
         }
 
         .container {
             padding: 20px;
             text-align: center;
+            front-size: 20px;
         }
 
         .logo {
-            width: 50px;
-            height: 50px;
+            width: 100px;
+            height: 100px;
             margin-bottom: 10px;
         }
 
@@ -32,8 +34,8 @@
         }
 
         .card-book {
-            background-color: #191970;
-            padding: 20px;
+            background-color: #00008070;
+            padding: 15px;
             border-radius: 10px;
             margin: 20px auto;
             width: 80%;
@@ -42,24 +44,25 @@
         }
 
         .card-book img {
-            width: 100px;
+            width: 150px;
             margin-bottom: 10px;
         }
 
         .btn-daftar {
             display: inline-block;
             margin-top: 10px;
-            background-color: #0000cd;
-            padding: 10px 20px;
+            background-color: #00002c;
+            padding: 20px;
             border-radius: 5px;
             text-decoration: none;
             color: white;
             font-weight: bold;
+            font-size: 20px;
         }
 
-        .status-box, .book-box, .book-detail, .notification-section {
-            background-color: #191970;
-            padding: 15px;
+       .status-box, .book-box, .book-detail, .notification-section {
+            background-color: #00008070;
+            padding: 20px;
             border-radius: 10px;
             width: 90%;
             max-width: 800px;
@@ -108,27 +111,30 @@
             border-radius: 5px;
         }
 
-        .search-box input {
-            padding: 10px;
-            width: 80%;
-            max-width: 500px;
+       .search-box input {
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
             border-radius: 5px;
             border: none;
             margin-bottom: 15px;
+            font-size: 20px;
         }
 
         .btn-kembali, .btn-ajukan {
             background-color: #ff4500;
-            padding: 10px 20px;
+            padding: 20px;
             border-radius: 5px;
             color: white;
             border: none;
             cursor: pointer;
             margin-top: 10px;
             margin-right: 10px;
+            font-size: 20px;
+            width:800px;
         }
 
-        .btn-kembali:hover, .btn-ajukan:hover {
+         .btn-kembali:hover, .btn-ajukan:hover {
             background-color: #dc143c;
         }
 
@@ -141,26 +147,30 @@
             color: #ff4500;
             margin-top: 20px;
         }
-
-        /* Profil */
+        
+         /* Profil */
         #profileSection {
             display: none;
-            background-color: #000080;
+            background-color: #00002c;
             color: white;
             min-height: 100vh;
-            padding: 30px 20px;
+            padding: 20px;
             text-align: center;
+            font-size: 20px;
         }
 
         #profileSection .title {
             color: #ADD8E6;
             margin-bottom: 20px;
+            font-size: 30px;
+            padding: 20px;
         }
 
         .profile-pic-wrapper {
             position: relative;
             display: inline-block;
             cursor: pointer;
+            
         }
 
         #fotoProfilPreview {
@@ -171,42 +181,44 @@
             object-fit: cover;
         }
 
-        .profile-pic-wrapper i {
+       .profile-pic-wrapper i {
             position: absolute;
             right: 0;
             bottom: 0;
             background: white;
             color: red;
             border-radius: 50%;
-            padding: 5px;
+            padding: 20px;
         }
 
         .profile-menu {
             margin-top: 30px;
             text-align: left;
+            font-size: 20px;
         }
 
         .profile-menu div {
-            background-color: #0000b3;
+            background-color: #00008070;
             border-radius: 8px;
-            padding: 12px;
+            padding: 20px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
             color: white;
             cursor: pointer;
+            font-size: 20px;
         }
 
         .profile-menu div i {
             margin-right: 10px;
         }
 
-        /* Notifikasi */
+         /* Notifikasi */
         #notificationsSection {
             display: none;
-            background-color: #000080;
+            background-color: #00002c;
             color: white;
-            padding: 30px 15px;
+            padding: 20px;
             min-height: 100vh;
         }
 
@@ -231,7 +243,8 @@
             margin: 0 auto 10px;
             width: 50px;
         }
-        .notif-item {
+        
+       .notif-item {
             display: flex;
             align-items: flex-start;
             gap: 15px;
@@ -257,7 +270,7 @@
             line-height: 1.4;
         }
 
-        .notif-time {
+         .notif-time {
             display: block;
             margin-top: 5px;
             font-size: 13px;
@@ -267,7 +280,7 @@
         /* Pengaturan */
         #settingsSection {
             display: none;
-            background-color: #000080;
+            background-color: #00002c;
             color: white;
             min-height: 100vh;
             padding: 20px;
@@ -326,6 +339,7 @@
             
             .status-box, .book-box, .book-detail {
                 width: 95%;
+                font-size: 20px;
             }
             
             .status-box table, .book-box table, .book-detail table {
@@ -348,18 +362,18 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
+        
     </style>
 </head>
 <body>
     <!-- Dashboard Utama -->
     <div id="dashboardSection" class="container fade-in">
         <img src="LOGO-SDB.png" class="logo" alt="Logo">
-        <h2 id="userName">Halo, {{ Auth::user()->name }}</h2>
+        <h2 id="userName">Halo,  {{ $user->name }}!</h2>
 
         <div class="card-book" id="cardBook">
             <img src="icon-daftar-buku.png" alt="Icon Daftar Buku">
-            <div><strong>Daftar Buku</strong></div>
-            <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Tampilkan</a>
+            <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Daftar Buku</a>
         </div>
 
         <h3>Status Permintaan</h3>
@@ -385,11 +399,20 @@
 </div>
     </div>
 
-    <!-- Daftar Buku -->
+   <!-- Daftar Buku -->
     <div id="bookListSection" style="display: none;" class="container fade-in">
         <h3>Daftar Buku</h3>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Cari buku..." oninput="filterBooks()">
+            <input 
+                type="text" 
+                id="searchInput" 
+                name="search_buku"
+                placeholder="Cari buku..." 
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="none"
+                spellcheck="false"
+                oninput="filterBooks()">
         </div>
         <div class="book-box">
             <table>
@@ -410,9 +433,9 @@
         </div>
         <button class="btn-kembali" onclick="hideBookList()">Kembali</button>
     </div>
-
-    <!-- Detail Buku -->
-    <div id="bookDetailSection" class="container fade-in" style="display: none;">
+    
+     <!-- Detail Buku -->
+    <div id="bookDetailSection" class="container fade-in" style="display: none;font-size:20px;">
         <div class="book-detail">
             <h3>Detail Buku</h3>
             <div class="book-detail-content">
@@ -429,7 +452,7 @@
     <div id="notificationSection" style="display: none;" class="container fade-in">
         <div class="notification-section">
             <h2>Permintaan Diajukan</h2>
-            <img src="{{ asset('img-notifikasi.png') }}" alt="✓" style="width: 120px; margin: 20px 0;">
+            <img src="{{ asset('verified-icon.png') }}" alt="✓" style="width: 120px; margin: 20px 0;">
             <h3>Permintaan telah diajukan</h3>
             <p>Permintaan buku Anda telah berhasil diajukan.</p>
             <button class="btn-daftar" onclick="kembaliKeBeranda()">Kembali ke Beranda</button>
@@ -444,7 +467,7 @@
             <i class="fas fa-camera"></i>
             <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
         </div>
-        <p style="margin-top: 10px; font-weight: bold;" id="profileName">Nama Lengkap</p>
+        <p style="margin-top: 10px; font-weight: bold;" id="profileName">{{ $user->name }}</p>
 
         <div class="profile-menu">
             <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
@@ -456,8 +479,10 @@
 
     <!-- Notifikasi -->
     <div id="notificationsSection" class="fade-in">
+        <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
+        <h2>Notifikasi</h2>
          @foreach($notifications as $notif)
-            <div class="notif-box" style="background:#1a2aff; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
+           <div class="notif-box" style="background:#00008070;; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
             
                 <strong>• {{ $notif->pesan }}</strong>
 
@@ -468,7 +493,7 @@
 
                 <!-- TOMBOL CHAT KANAN -->
           @if(!str_contains(strtolower($notif->pesan), 'ditolak'))
-    <div style="text-align:right;">
+    <div style="text-align:right; margin-top:-25px;">
         <a href="{{ route('chat.fromNotif', $notif->id) }}"
            style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
             Masuk Chat
@@ -485,23 +510,23 @@
         @endif
     </div>
 
-    <!-- Pengaturan Akun -->
+     <!-- Pengaturan Akun -->
     <div id="settingsSection" class="fade-in">
-        <h2 style="background-color:#0000b3; color:white; padding:10px; border-radius: 5px; text-align:center;">
+        <h2 style="background-color:#00008070; color:white; padding:20px; border-radius: 5px; text-align:center;">
             <i class="fas fa-cog"></i> Pengaturan Akun
         </h2>
         <div style="margin:20px 0;">
             <div style="padding:10px; border-bottom:1px solid #aaa; cursor:pointer;" onclick="showEditAccount()">
-                Edit Akun <span style="float:right;">›</span>
+                Edit Akun <span style="float:right;font-size:20px;">›</span>
             </div>
             <div style="padding:10px; border-bottom:1px solid #aaa; cursor:pointer;" onclick="showChangeEmail()">
-                Ubah Email <span style="float:right;">›</span>
+                Ubah Email <span style="float:right;font-size:20px;">›</span>
             </div>
             <div style="padding:10px; border-bottom:1px solid #aaa; cursor:pointer;" onclick="showChangePassword()">
-                Ganti Kata Sandi <span style="float:right;">›</span>
+                Ganti Kata Sandi <span style="float:right;font-size:20px;">›</span>
             </div>
             <div style="padding:10px; border-bottom:1px solid #aaa; cursor:pointer;" onclick="showPrivacy()">
-                Privasi & Keamanan <span style="float:right;">›</span>
+                Privasi & Keamanan <span style="float:right;font-size:20px;">›</span>
             </div>
         </div>
         <div style="margin: 10px 0; display: flex; align-items: center; justify-content: space-between;">
@@ -511,43 +536,43 @@
                 <span class="slider round"></span>
             </label>
         </div>
-        <button onclick="showDeleteAccountConfirm()" style="width:100%; background-color: darkred; color:white; padding:10px; border:none; border-radius:5px; font-weight:bold; margin-top: 20px;">
+        <button onclick="showDeleteAccountConfirm()" style="width:100%; background-color: darkred; color:white; padding:20px; border:none; border-radius:5px; font-weight:bold; margin-top: 20px;font-size:20px">
             Hapus Akun
         </button>
         <br><br>
-        <button onclick="showProfile()" style="width:100%; background-color: #0000b3; color:white; padding:10px; border:none; border-radius:5px;">
+        <button onclick="showProfile()" style="width:100%; background-color: #00008070; color:white; padding:20px; border:none; border-radius:5px;font-size:20px">
             Kembali
         </button>
     </div>
-
+    
     <!-- Bantuan -->
     <div id="helpSection" style="display: none;" class="fade-in">
-        <h2 style="text-align:center;"><i class="fas fa-question-circle"></i> Bantuan</h2>
-        <div style="background:white; color:#000; border-radius:10px; padding:15px; margin:20px;">
+        <h2 style="text-align:center;font-size:50px;"><i class="fas fa-question-circle"></i> Bantuan</h2>
+        <div style="background:#00008070; color:white; border-radius:10px; padding:15px; margin:20px;">
             <strong>Cara mengubah foto profil?</strong>
             <p>Anda dapat mengubah foto profil pada halaman utama profil.</p>
         </div>
-        <div style="background:white; color:#000; border-radius:10px; padding:15px; margin:20px;">
+        <div style="background:#00008070; color:white; border-radius:10px; padding:15px; margin:20px;">
             <strong>Tidak dapat mengakses akun</strong>
             <p>Coba atur ulang kata sandi atau hubungi kami untuk bantuan.</p>
         </div>
-        <div style="background:white; color:#000; border-radius:10px; padding:15px; margin:20px;">
+        <div style="background:#00008070; color:white; border-radius:10px; padding:15px; margin:20px;">
             <strong>Ketentuan pengguna</strong>
             <p>Baca syarat & ketentuan untuk informasi mengenai aturan.</p>
         </div>
-        <div style="background:white; color:#000; border-radius:10px; padding:15px; margin:20px;">
+        <div style="background:#00008070; color:white; border-radius:10px; padding:15px; margin:20px;">
             <strong>Butuh bantuan lainnya?</strong>
             <p>Hubungi kami di: <a href="mailto:donasibuku.app@gmail.com">donationbook7@gmail.com</a></p>
         </div>
-        <button onclick="showProfile()" style="margin: 20px; padding: 10px 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;">
+        <button onclick="showProfile()" style="margin: 20px; padding: 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;font-size:20px;width:1875px">
             Kembali
         </button>
     </div>
 
-    <!-- Syarat & Ketentuan -->
+   <!-- Syarat & Ketentuan -->
     <div id="termsSection" style="display: none;" class="fade-in">
-        <h2 style="color: #ADD8E6; text-align: center;">Syarat & Ketentuan Penerima</h2>
-        <div style="background: white; color: #000080; padding: 20px; border-radius: 10px; margin: 20px; text-align: left;">
+        <h2 style="color: #ADD8E6; text-align: center;font-size:30px">Syarat & Ketentuan Penerima</h2>
+        <div style="background: #00008070; height:140px;color: white padding: 50px; border-radius: 10px; margin: 20px; text-align: left;font-size:20px;">
             <ol>
                 <li>Data penerima harus benar dan dapat diverifikasi.</li>
                 <li>Donasi hanya untuk keperluan yang sesuai dengan tujuan permohonan.</li>
@@ -555,52 +580,54 @@
                 <li>Penerima wajib melaporkan jika ada perubahan data atau kebutuhan.</li>
                 <li>Dengan mendaftar, Anda setuju pada ketentuan ini.</li>
             </ol>
-            <button onclick="showProfile()" style="margin-top: 20px; padding: 10px 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;">
+            
+            <button onclick="showProfile()" style="margin-top: 20px; padding: 20px 20px; background-color: #0000b3; color: white; border: none; border-radius: 5px;font-size:20px;width:1873px;">
                 Kembali
             </button>
         </div>
     </div>
 
     <!-- Halaman Edit Akun -->
-    <div id="editAccountSection" style="display: none;" class="fade-in">
-        <h2 style="color: lightgray; text-align: center;">Edit Akun</h2>
-        <div style="margin: 20px auto; text-align: center;">
-            <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
-                <img id="fotoProfilEditPreview" src="profile-placeholder.jpg" style="width: 100px; height: 100px; border-radius: 50%; background-color: white;" />
-                <i class="fas fa-camera"></i>
-                <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;" onchange="previewFotoProfilEdit(event)" />
-            </div>
-        </div>
-        <div style="max-width: 300px; margin: auto; text-align: left; padding: 20px;">
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
-            <input type="text" id="editNama" placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
-
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
-            <input type="text" id="editAlamat" placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 8px; border-radius: 5px; border: none;" />
-
-            <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
-            <input type="text" id="editTelepon" placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 8px; border-radius: 5px; border: none;" />
-        </div>
-        <div style="text-align: center;">
-            <button style="background-color: #0000cd; color: white; padding: 10px 20px; border: none; border-radius: 8px;" onclick="saveAccountChanges()">
-                Simpan
-            </button>
-            <br><br>
-            <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;">
-                Kembali
-            </button>
+<div id="editAccountSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
+    <h2 style="color: lightgray;">Edit Akun</h2>
+    <div style="margin: 20px auto;">
+        <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfilEdit').click()">
+            <img id="fotoProfilEditPreview" src="{{ $user->foto ? asset('storage/'.$user->foto) : 'profile-placeholder.jpg' }}" 
+                 style="width: 150px; height: 150px; border-radius: 50%; background-color: white;" />
+            <i class="fas fa-camera"></i>
+            <input type="file" id="uploadFotoProfilEdit" accept="image/*" style="display:none;" onchange="previewFotoProfilEdit(event)" />
         </div>
     </div>
+    <div style="max-width: 800px; margin: auto; text-align: left;">
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> Nama Lengkap</label>
+        <input type="text" id="editNama" value="{{ $user->name }}" 
+               placeholder="Nama Lengkap" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> Alamat</label>
+        <input type="text" id="editAlamat" value="{{ $user->alamat ?? '' }}" 
+               placeholder="Alamat" style="width: 100%; margin-bottom: 10px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+
+        <label><i class="fas fa-check-circle" style="color: lime;"></i> No. Telepon</label>
+        <input type="text" id="editTelepon" value="{{ $user->telepon ?? '' }}" 
+               placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
+    </div>
+    <button style="background-color: #0000cd; color: white; padding:20px; border: none; border-radius: 8px;font-size:20px;width:500px;" 
+            onclick="saveAccountChanges()">
+        Simpan
+    </button>
+    <br><br>
+    <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;font-size:20px;">Kembali</button>
+</div>
 
     <!-- Halaman Ubah Email -->
     <div id="changeEmailSection" style="display: none;" class="fade-in">
         <h2 style="text-align: center; color: white;">Ubah Email</h2>
-        <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin: 20px; text-align: center;">
-            <img src="https://img.icons8.com/ios-filled/100/000000/new-post.png" style="width:80px; margin-bottom: 20px;" />
-            <p style="font-weight: bold; font-size: 18px;">Ubah Email</p>
-            <input type="email" placeholder="Email Saat ini" id="currentEmail" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-            <input type="email" placeholder="Email Baru" id="newEmail" style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-            <button onclick="submitEmailChange()" style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">
+        <div style="background-color: #00008070;  color: white; border-radius: 5px; padding: 20px; margin: 20px; text-align: center;">
+            <img src="https://img.icons8.com/ios-filled/100/ffffff/new-post.png" style="width:80px; margin-bottom: 20px;" />
+            <p style="font-weight: bold; font-size: 20px;">Ubah Email</p>
+            <input type="email" placeholder="Email Saat ini" id="currentEmail" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+            <input type="email" placeholder="Email Baru" id="newEmail" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+            <button onclick="submitEmailChange()" style="width:100%; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;font-size:20px">
                 PERBAHARUI EMAIL
             </button>
         </div>
@@ -612,23 +639,23 @@
         <div style="background-color:white; color:black; border-radius:10px; padding:30px; margin: 20px;">
             <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; margin-bottom:15px;" />
             <p style="font-weight:bold; font-size:18px; color:#000080;">Email berhasil diperbaharui</p>
-            <p>Email Anda telah berhasil diperbaharui</p>
+            <p>Email Anda telah berhasil diperbaharui! Silakan verifikasi di email Anda!</p>
             <button onclick="showSettings()" style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">
                 OK
             </button>
         </div>
     </div>
 
-    <!-- Halaman Ganti Kata Sandi -->
+   <!-- Halaman Ganti Kata Sandi -->
     <div id="changePasswordSection" style="display: none;" class="fade-in">
-        <h2 style="text-align: center; color: white;">Ganti Kata Sandi</h2>
-        <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin: 20px; text-align: center;">
-            <img src="https://img.icons8.com/ios-filled/100/000000/lock-2.png" style="width:80px; margin-bottom: 20px;" />
-            <p style="font-weight: bold; font-size: 18px;">Ganti Kata Sandi</p>
-            <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-            <input type="password" placeholder="Kata sandi baru" id="newPassword" style="width:100%; margin-bottom:10px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-            <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword" style="width:100%; margin-bottom:20px; padding:10px; border-radius:5px; border:1px solid #ccc;" required>
-            <button onclick="submitPasswordChange()" style="width:100%; padding:10px; background-color:#000080; color:white; border:none; border-radius:5px;">
+        <h2 style="text-align: center; color: white;font-size:30px">Ganti Kata Sandi</h2>
+        <div style="background-color: #00008070;  color: white; border-radius: 10px; padding: 20px; margin: 20px; text-align: center;">
+            <img src="https://img.icons8.com/ios-filled/100/ffffff/lock-2.png" style="width:200px; margin-bottom: 10px;" />
+            <p style="font-weight: bold; font-size: 30px;">Ganti Kata Sandi</p>
+            <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+            <input type="password" placeholder="Kata sandi baru" id="newPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+            <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+            <button onclick="submitPasswordChange()" style="width:99%;  background-color:#000080; color:white; border:none; border-radius:5px;padding:20px;font-size:20px">
                 Simpan
             </button>
         </div>
@@ -637,40 +664,40 @@
     <!-- Halaman Konfirmasi Kata Sandi Berhasil -->
     <div id="passwordSuccessSection" style="display: none;" class="fade-in">
         <h2 style="color:white; text-align: center;">Kata Sandi Berhasil Diubah</h2>
-        <div style="background-color:white; color:black; border-radius:10px; padding:30px; margin: 20px;">
-            <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; margin-bottom:15px;" />
-            <p style="font-weight:bold; font-size:18px; color:#000080;">Kata sandi Anda telah berhasil diperbaharui.</p>
-            <button onclick="showSettings()" style="margin-top:20px; padding:10px 20px; background-color:#000080; color:white; border:none; border-radius:5px;">
+        <div style="background-color:#00008070; color:black; border-radius:10px; padding:30px; margin: 20px;">
+            <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; display:block:margin: 0 auto 15px auto;" />
+            <p style="font-weight:bold; font-size:20px; text-align: center;color:white;">Kata sandi Anda telah berhasil diperbaharui.</p>
+            <button onclick="showSettings()" style="margin-top:20px; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;Font-size:20px;width:500px;">
                 Kembali ke Pengaturan
             </button>
         </div>
     </div>
 
-    <!-- Halaman Privasi & Keamanan -->
+     <!-- Halaman Privasi & Keamanan -->
     <div id="privacySection" style="display: none;" class="fade-in">
-        <h3 style="color: white; margin-bottom: 30px;">
+        <h3 style="color: white; margin-bottom: 30px;font-size:40;">
             <i class="fas fa-arrow-left" style="cursor:pointer; margin-right:10px;" onclick="showSettings()"></i> Privasi & Keamanan
         </h3>
-        <div style="background-color: white; color: #000080; border-radius: 10px; padding: 20px; margin: 20px;">
-            <p style="font-weight: bold; font-size: 18px;">Autentikasi Dua Faktor 
+        <div style="background-color: #00008070;  color: white; border-radius: 10px; padding: 20px; margin: 20px;">
+            <p style="font-weight: bold; font-size: 30px;">Autentikasi Dua Faktor 
                 <label class="switch" style="float:right;">
                     <input type="checkbox" id="twoFactorToggle" checked>
                     <span class="slider round"></span>
                 </label>
             </p>
-            <p style="margin-top: 10px; color: black;">Tambahkan lapisan keamanan tambahan pada akun Anda.</p>
+            <p style="margin-top: 10px; color: white;font-size:20px;">Tambahkan lapisan keamanan tambahan pada akun Anda.</p>
         </div>
-        <button onclick="showSettings()" style="margin: 20px; padding: 10px; width: calc(100% - 40px); background-color: #0000cd; color: white; border: none; border-radius: 5px;">
+        <button onclick="showSettings()" style="margin: 20px; padding: 20px; width: calc(100% - 40px); background-color: #0000cd; color: white; border: none; border-radius: 5px;font-size:20px">
             Kembali
         </button>
     </div>
 
-    <!-- Halaman Konfirmasi Hapus Akun -->
+     <!-- Halaman Konfirmasi Hapus Akun -->
     <div id="deleteAccountConfirm" style="display: none;" class="fade-in">
         <h2 style="text-align:center; color: #ADD8E6;">Konfirmasi Penghapusan Akun</h2>
         <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin: 20px;">
-            <p style="font-weight: bold;">Apakah Anda yakin ingin menghapus akun Anda?</p>
-            <p style="font-size: 14px;">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan hilang secara permanen.</p>
+            <p style="font-weight: bold;font-size:30px;">Apakah Anda yakin ingin menghapus akun Anda?</p>
+            <p style="font-size: 20pxpx;">Tindakan ini tidak dapat dibatalkan. Semua data Anda akan hilang secara permanen.</p>
             <div style="background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin-top: 10px;">
                 <strong style="color: red;">PERINGATAN:</strong>
                 <ul style="padding-left: 20px;">
@@ -679,17 +706,17 @@
                 </ul>
             </div>
             <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-                <button onclick="showSettings()" style="padding: 10px 20px; background-color: gray; color: white; border: none; border-radius: 5px;">
+                <button onclick="showSettings()" style="padding: 20px; background-color: gray; color: white; border: none; border-radius: 5px;font-size:20px;">
                     Batalkan
                 </button>
-                <button onclick="confirmDeleteAccount()" style="padding: 10px 20px; background-color: red; color: white; border: none; border-radius: 5px;">
+                <button onclick="confirmDeleteAccount()" style="padding: 20px; background-color: red; color: white; border: none; border-radius: 5px;font-size:20px;">
                     Ya, Hapus Akun
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Halaman Akun Berhasil Dihapus -->
+   <!-- Halaman Akun Berhasil Dihapus -->
     <div id="deleteSuccess" style="display: none;" class="fade-in">
         <h2 style="margin-top: 100px; text-align: center;">Akun Berhasil Dihapus</h2>
         <p style="margin: 20px 0; text-align: center;">
@@ -775,22 +802,32 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             
-            const userData = JSON.parse(localStorage.getItem('userData')) || {
-                namaLengkap: "{{ Auth::user()->name }}",
-                email: "{{ Auth::user()->email }}",
-                alamat: "",
-                telepon: "",
-                fotoProfil: "profile-placeholder.jpg"
-            };
+            // Ambil data dari server (via Auth::user()) sebagai sumber utama
+    const serverName = "{{ Auth::user()->name }}";
+    const serverEmail = "{{ Auth::user()->email }}";
+    const serverAlamat = "{{ Auth::user()->alamat ?? '' }}";
+    const serverTelepon = "{{ Auth::user()->telepon ?? '' }}";
 
-            document.getElementById("userName").textContent = `Halo, ${userData.namaLengkap}!`;
-            document.getElementById("profileName").textContent = userData.namaLengkap;
-            document.getElementById("fotoProfilPreview").src = userData.fotoProfil;
-            document.getElementById("fotoProfilEditPreview").src = userData.fotoProfil;
-            document.getElementById("editNama").value = userData.namaLengkap;
-            document.getElementById("editAlamat").value = userData.alamat;
-            document.getElementById("editTelepon").value = userData.telepon;
-            document.getElementById("currentEmail").value = userData.email;
+    let userData = {
+        namaLengkap: serverName,
+        email: serverEmail,
+        alamat: serverAlamat,
+        telepon: serverTelepon,
+        fotoProfil: "profile-placeholder.jpg" // Atau gunakan $user->foto jika ada
+    };
+
+    // Simpan ke localStorage (opsional, untuk performa)
+    localStorage.setItem('userData', JSON.stringify(userData));
+
+             // Update tampilan
+    document.getElementById("userName").textContent = `Halo, ${userData.namaLengkap}!`;
+    document.getElementById("profileName").textContent = userData.namaLengkap;
+    document.getElementById("fotoProfilPreview").src = userData.fotoProfil;
+    document.getElementById("fotoProfilEditPreview").src = userData.fotoProfil;
+    document.getElementById("editNama").value = userData.namaLengkap;
+    document.getElementById("editAlamat").value = userData.alamat;
+    document.getElementById("editTelepon").value = userData.telepon;
+    document.getElementById("currentEmail").value = userData.email;
 
             const emailNotif = localStorage.getItem('emailNotif') === 'true';
             document.getElementById('emailNotifCheckbox').checked = emailNotif;
@@ -820,7 +857,7 @@
             currentBookId = parseInt(bookId);
             const book = books.find(b => b.id === currentBookId);
             if (!book) {
-                alert('❌ Buku tidak ditemukan. Coba refresh halaman.');
+                alert('Buku tidak ditemukan. Coba refresh halaman.');
                 return;
             }
             const content = document.getElementById('bookDetailContent');
@@ -881,8 +918,28 @@
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
         }
 
+       
+        // ✅ Helper: capitalize
+        function ucfirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
         function filterBooks() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
+            const input = document.getElementById('searchInput');
+            const q = (input.value || '').toLowerCase().trim();
+
+            // Kalau kosong → tampilkan semua buku lagi
+            if (!q) {
+                displayBooks(books);
+                return;
+            }
+
+            // Kalau yang keisi itu email (ada @) → anggap tidak valid, tampilkan semua
+            if (q.includes('@')) {
+                displayBooks(books);
+                return;
+            }
+
             const filtered = books.filter(b =>
                 b.title.toLowerCase().includes(q) ||
                 b.category.toLowerCase().includes(q) ||
@@ -931,6 +988,20 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+        function previewFotoProfil(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = document.getElementById('fotoProfilPreview');
+                img.src = reader.result;
+                
+                // Simpan ke localStorage (simulasi)
+                const userData = JSON.parse(localStorage.getItem('userData')) || {};
+                userData.fotoProfil = reader.result;
+                localStorage.setItem('userData', JSON.stringify(userData));
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
 
         function previewFotoProfilEdit(event) {
             const input = event.target;
@@ -954,49 +1025,52 @@
             document.getElementById('editAccountSection').style.display = 'block';
         }
 
-        function saveAccountChanges() {
-    const nama = document.getElementById('editNama').value;
-    const alamat = document.getElementById('editAlamat').value;
-    const telepon = document.getElementById('editTelepon').value;
+       function saveAccountChanges() {
+    const nama = document.getElementById('editNama').value.trim();
+    const alamat = document.getElementById('editAlamat').value.trim();
+    const telepon = document.getElementById('editTelepon').value.trim();
+
+    if (!nama) {
+        alert("Nama lengkap wajib diisi.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', nama);
+    formData.append('alamat', alamat);
+    formData.append('telepon', telepon);
+
+    // Jika ada file foto yang diupload
+    const fileInput = document.getElementById('uploadFotoProfilEdit');
+    if (fileInput.files.length > 0) {
+        formData.append('foto', fileInput.files[0]);
+    }
 
     fetch('/profile/update', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Authorization': 'Bearer ' + localStorage.getItem('auth_token') // Jika pakai Sanctum
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            // Jangan set Content-Type jika pakai FormData → biar browser set otomatis
         },
-        body: JSON.stringify({
-            name: nama,
-            alamat: alamat,
-            telepon: telepon
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Perbarui localStorage jika masih digunakan untuk tampilan
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData.namaLengkap = nama;
-            userData.alamat = alamat;
-            userData.telepon = telepon;
-            localStorage.setItem('userData', JSON.stringify(userData));
-
-            // Perbarui tampilan
+            alert(data.message || 'Profil berhasil diperbarui.');
+            // Update tampilan nama di halaman utama
             document.getElementById("userName").textContent = `Halo, ${nama}!`;
             document.getElementById("profileName").textContent = nama;
-            alert(data.message);
-            showSettings();
+            showSettings(); // kembali ke pengaturan
         } else {
-            alert(data.message || 'Gagal memperbarui profil.');
+            alert('Gagal memperbarui profil: ' + (data.message || 'Terjadi kesalahan.'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan. Silakan coba lagi.');
+        alert('Terjadi kesalahan saat menyimpan data.');
     });
 }
-
         function showChangeEmail() {
             hideAllSections();
             document.getElementById('changeEmailSection').style.display = 'block';
@@ -1046,7 +1120,7 @@
             document.getElementById('changePasswordSection').style.display = 'block';
         }
 
-        function submitPasswordChange() {
+         function submitPasswordChange() {
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
