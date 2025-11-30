@@ -985,27 +985,27 @@
             </div>
         </div>
         <table class="table">
-            <thead>
-                <tr>
-                    <th>Tipe</th>
-                    <th>Nama</th>
-                    <th>Ulasan</th>
-                    <th>Rating</th>
-                    <th>Tanggal</th>
-                </tr>
-            </thead>
-            <tbody id="ulasanTableBody">
-                @foreach($reviews as $review)
-                <tr>
-                    <td>{{ $review->type }}</td>
-                    <td>{{ $review->name }}</td>
-                    <td>{{ $review->comment }}</td>
-                    <td>{{ $review->rating }} / 5</td>
-                    <td>{{ $review->date }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <thead>
+        <tr>
+            <th>Penilai</th>
+            <th>Untuk</th>
+            <th>Rating</th>
+            <th>Ulasan</th>
+            <th>Tanggal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($reviews as $review)
+        <tr>
+            <td>{{ $review->reviewer->name }} ({{ $review->reviewer_role }})</td>
+            <td>{{ $review->reviewed->name }} ({{ $review->reviewed_role }})</td>
+            <td>{{ $review->rating }} / 5</td>
+            <td>{{ $review->comment ?? '-' }}</td>
+            <td>{{ $review->created_at->format('d M Y') }}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
     </div>
 
             <!-- Pengaturan Page -->

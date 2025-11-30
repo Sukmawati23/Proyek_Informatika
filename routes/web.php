@@ -14,6 +14,7 @@ use App\Http\Controllers\PengajuanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChatController;
 use App\Models\User;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/chat/{notifId}', [ChatController::class, 'showFromNotification'])->name('chat.fromNotif');
 Route::post('/chat/{partnerId}/send', [ChatController::class, 'send'])->name('chat.send');
@@ -85,6 +86,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/{room}', [ChatController::class, 'show'])->name('chat.show');
     Route::post('/chat/{room}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+
+    // Ulasan
+    Route::get('/ulasan/{pengajuanId}/form', [ReviewController::class, 'showForm'])->name('ulasan.form');
+    Route::post('/ulasan', [ReviewController::class, 'store'])->name('ulasan.store');
 });
 
 // === Admin-only Routes ===

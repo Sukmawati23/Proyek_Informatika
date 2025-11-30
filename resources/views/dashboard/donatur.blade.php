@@ -360,6 +360,30 @@
         <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
         <br><span style="font-size:0.85em; color:#666;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
         <br><span style="font-size:0.85em; color:#666;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
+
+        {{-- Cek apakah ada pengajuan yang disetujui --}}
+        @php
+            $pengajuan = $pengajuanMap[$donasi->id] ?? null;
+        @endphp
+
+        @if($pengajuan)
+            <br><span style="font-size:0.85em; color:green;">✅ Buku telah diajukan oleh: {{ $pengajuan->user->name ?? 'Penerima' }}</span>
+            
+            @php
+                $ulasan = $ulasanMap[$donasi->id] ?? null;
+            @endphp
+
+            @if($ulasan)
+                <br><span style="font-size:0.85em; color:#FFD700;">⭐ {{ $ulasan->rating }}/5 — "{{ $ulasan->comment ?? 'Tanpa komentar' }}"</span>
+            @else
+                <br>
+                <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn btn-warning btn-sm" style="font-size:0.8em; padding:2px 6px; margin-top:4px;">
+                    Beri Ulasan ke Penerima
+                </a>
+            @endif
+        @else
+            <br><span style="font-size:0.85em; color:#aaa;">belum diajukan penerima</span>
+        @endif
     </li>
 @empty
     <li>Belum ada donasi.</li>

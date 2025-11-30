@@ -384,14 +384,17 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($pengajuans as $pengajuan)
-                        <tr>
-                            <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
-                            <td>{{ ucfirst($pengajuan->status) }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="2">Belum ada permintaan.</td></tr>
-                    @endforelse
+        @foreach($pengajuans as $pengajuan)
+    <tr>
+        <td>{{ $pengajuan->buku?->judul ?? '-' }}</td>
+        <td>{{ ucfirst($pengajuan->status) }}</td>
+        <td>
+            @if($pengajuan->status === 'disetujui')
+                <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn btn-sm btn-warning">Beri Ulasan</a>
+            @endif
+        </td>
+    </tr>
+@endforeach
         </tbody>
     </table>
 </div>
