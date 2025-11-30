@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -108,7 +109,16 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'alamat' => 'nullable|string|max:255',
             'telepon' => 'nullable|string|max:15',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada (opsional)
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            $validated['foto'] = $request->file('foto')->store('profil', 'public');
+        }
 
         $user->update($validated);
 
@@ -132,7 +142,7 @@ class UserController extends Controller
             'current_email' => [
                 'required',
                 'email',
-                'exists:users,email',
+                'exists: users, email',
                 function ($attribute, $value, $fail) use ($user) {
                     if ($value !== $user->email) {
                         $fail('Email saat ini tidak sesuai.');
@@ -150,6 +160,9 @@ class UserController extends Controller
 
             // Kirim ulang email verifikasi — hanya sekali
             $user->sendEmailVerificationNotification();
+
+             // PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
+            Auth::login($user); // Login ulang user dengan data terbaru
         }
 
         return response()->json([
@@ -190,14 +203,14 @@ class UserController extends Controller
 
         // Update password
         $user->password = Hash::make($validated['new_password']);
+        
         $user->save();
-
-        // Logout dari semua perangkat kecuali saat ini
-        Auth::logoutOtherDevices($validated['current_password']);
-
+        
+        // PERBAIKAN UTAMA: Login ulang user dengan password baru
+        Auth::login($user); // Login ulang user dengan data terbaru
         return response()->json([
             'success' => true,
-            'message' => 'Kata sandi berhasil diperbarui. Anda telah logout dari perangkat lain.',
+            'message' => 'Kata sandi berhasil diperbarui.',
         ]);
     }
 }
