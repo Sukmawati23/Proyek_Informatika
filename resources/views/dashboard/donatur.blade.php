@@ -21,21 +21,38 @@
             padding: 20px;
             border-radius: 10px;
         }
+        
         h1 {
             text-align: center;
             color: #333;
             font-size: 20px;
         }
+        
         .logo {
             display: block;
             margin: 0 auto 20px;
             max-width: 200px;
         }
+        
         form {
+            width: 90%;              /* lebar form */
+            margin: 0 auto;          /* supaya berada di tengah */
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
+
+        form label {
+            text-align: left;   /* tetap rata kiri label */
+            font-weight: 600;
+        }
+
+        form input,
+        form select,
+        form textarea {
+            width: 100%;        /* input mengikuti lebar form */
+        }
+        
         button {
             padding: 20px;
             background-color: #000080;
@@ -45,6 +62,7 @@
             cursor: pointer;
             font-size: 20px;
         }
+        
         button:hover {
             background-color: #0056b3;
         }
@@ -58,11 +76,13 @@
             padding-top: 20px;
             font-size: 25px;
         }
+        
         .status-title {
             font-weight: bold;
             margin-top: 20px;
             font-size: 30px;
         }
+        
         .nav {
             display: flex;
             justify-content: space-around;
@@ -75,11 +95,13 @@
             left: 0;
             right: 0;
         }
+
         .nav i {
             font-size: 24px;
             cursor: pointer;
             color: white;
         }
+        
         .success-message {
             display: none;
             text-align: center;
@@ -91,6 +113,7 @@
             border-radius: 5px;
             font-size: 20px;
         }
+        
         .success-message img {
             max-width: 50px;
             display: block;
@@ -98,7 +121,7 @@
         }
 
         /* Profil */
-        #profileSection {
+       #profileSection {
             display: none;
             background-color: #00002c;
             color: white;
@@ -106,11 +129,13 @@
             padding: 30px 20px;
             text-align: center;
         }
-        #profileSection .title {
+        
+       #profileSection .title {
             color: #ADD8E6;
             margin-bottom: 20px;
             font-size: 30px;
         }
+        
         .profile-pic-wrapper {
             position: relative;
             display: inline-block;
@@ -136,6 +161,7 @@
             margin-top: 30px;
             text-align: left;
         }
+        
         .profile-menu div {
             background-color: #00008070; 
             border-radius: 8px;
@@ -146,14 +172,16 @@
             color: white;
             cursor: pointer;
         }
+        
         .profile-menu div i {
             margin-right: 10px;
         }
+        
         .logout-link {
             text-decoration: none;
         }
 
-        /* Notifikasi */
+         /* Notifikasi */
         #notificationSection {
             display: none;
             background-color: #00002c;
@@ -161,11 +189,24 @@
             padding: 30px 15px;
             height: 100vh;
         }
+        
         #notificationSection h2 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 40px;
         }
+        
+        .notif-card {
+            background-color: #00008070;
+            color: white;
+            padding: 15px 20px;           /* lebih nyaman */
+            border-radius: 10px;
+            margin: 10px auto;            /* center + jarak antar card */
+            width: 100%;                  /* full width */
+            box-sizing: border-box;       /* memastikan padding tidak melebihi lebar */
+            font-family: Arial, sans-serif;
+        }
+
         .notif-card {
             background-color: #00008070;
             color: white;
@@ -176,19 +217,22 @@
             font-family: Arial, sans-serif;
             font-size: 25px;
         }
+        
         .notif-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .notif-footer small {
             font-size: 12px;
             color: #ddd;
         }
+        
         .notif-card small {
             color: #ccc;
         }
+        
         .notification-icon {
             display: block;
             margin: 0 auto 10px;
@@ -320,6 +364,7 @@
         </select>
 
         <label for="kondisi">Kondisi Buku</label>
+
         <input style="padding: 15px;font-size:15px;"type="text" id="kondisi" name="kondisi" placeholder="Masukkan kondisi buku" required>
 
         <!-- Tambahkan ini setelah field "Kondisi Buku" -->
@@ -342,7 +387,7 @@
     </form>
 
 
-        <div class="success-message" id="successMessage">
+       <div class="success-message" id="successMessage">
             <img src="checkmark.png" alt="Checkmark">
             <h2>Donasi Berhasil</h2>
             <p>Terima kasih telah mendonasikan buku!</p>
@@ -364,7 +409,7 @@
 @empty
     <li>Belum ada donasi.</li>
 @endforelse
-            </ul>
+             </ul>
             <div class="status-title">Status Pengiriman:</div>
             @php
                 $waitingCount = $donasis->where('status', 'menunggu')->count();
@@ -405,8 +450,18 @@
         @forelse($notifications as $notif)
             <div class="notif-card">
                 <p>• {{ $notif->pesan }}</p>
-                <div class="notif-footer">
+
+                <div class="notif-footer" style="display:flex; justify-content:space-between; align-items:center;">
                     <small>{{ $notif->created_at->diffForHumans() }}</small>
+                    
+                     @if(str_contains(strtolower($notif->pesan), 'disetujui',))
+    <div style="text-align:right;">
+        <a href="{{ route('chat.fromNotif', $notif->id) }}"
+           style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
+            Masuk Chat
+        </a>
+    </div>
+@endif
                 </div>
             </div>
         @empty
@@ -414,7 +469,6 @@
         @endforelse
     </div>
 </div>
-
 
         <!-- Pengaturan Akun -->
         <div id="settingsSection">
@@ -466,6 +520,7 @@
             </div>
         </div>
         
+
         <!-- Syarat & Ketentuan -->
         <div id="termsSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
             <h2 style="color: #ADD8E6;">Syarat & Ketentuan Donatur</h2>
@@ -599,8 +654,6 @@
 </div>
 
 
-
-
 <!-- Navigasi Bawah -->
         <div class="nav">
             <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
@@ -691,6 +744,7 @@ if (namaDonatur) {
             document.querySelector('.donation-history').style.display = 'none';
         }
 
+
         function showSettings() {
              hideAllSections();
             document.getElementById('settingsSection').style.display = 'block';
@@ -736,7 +790,8 @@ if (namaDonatur) {
             document.getElementById('termsSection').style.display = 'block';
             document.querySelector('.donation-history').style.display = 'none';
         }
-        // Tambahkan fungsi konfirmasi logout di JavaScript
+        
+         // Tambahkan fungsi konfirmasi logout di JavaScript
         function confirmLogout() {
             const confirmation = confirm("Apakah Anda yakin ingin logout?");
             if (confirmation) {// Logika untuk logout, misalnya menghapus session atau redirect
@@ -756,6 +811,7 @@ if (namaDonatur) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
 
 
 // === Fungsi untuk menampilkan halaman Edit Akun ===
@@ -806,6 +862,45 @@ function saveAccountChanges() {
         alert("Nama lengkap wajib diisi.");
         return;
     }
+
+    // Kirim data ke server
+    fetch('/profile/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            name: nama,
+            alamat: alamat,
+            telepon: telepon
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui tampilan
+            document.getElementById("userName").textContent = `Halo, ${nama}!`;
+            document.getElementById("profileName").textContent = nama;
+            // Perbarui localStorage jika digunakan untuk tampilan
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.namaLengkap = nama;
+            userData.alamat = alamat;
+            userData.telepon = telepon;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            // Tampilkan pesan sukses dan kembali ke pengaturan
+            alert(data.message || 'Profil berhasil diperbarui!');
+            showSettings(); // Kembali ke halaman pengaturan
+        } else {
+            alert(data.message || 'Gagal memperbarui profil.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Berhasil memperbarui profil.');
+    });
+}
+
 
     // Kirim data ke server
     fetch('/profile/update', {
@@ -916,8 +1011,6 @@ function hideAllSections() {
     });
 }
 
-
-
 function showChangePassword() {
     hideAllSections();
     document.getElementById('changePasswordSection').style.display = 'block';
@@ -979,8 +1072,7 @@ function saveNotifPreference() {
         console.error("Gagal menyimpan status notifikasi:", error);
     });
 }
-
-
+        
 // Muat status saat halaman dimuat
 window.addEventListener('DOMContentLoaded', () => {
     const checkbox = document.getElementById('emailNotifCheckbox');

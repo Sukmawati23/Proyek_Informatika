@@ -12,10 +12,15 @@ class Notifikasi extends Model
 
     protected $table = 'notifications';
 
-    protected $fillable = ['user_id', 'pesan'];
+    protected $fillable = ['user_id','partner_id', 'pesan'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+    public function partner()
+{
+    return $this->belongsTo(User::class, 'partner_id');
+}
+
 }

@@ -60,6 +60,7 @@
             font-size: 20px;
         }
 
+
         .status-box, .book-box, .book-detail, .notification-section {
             background-color: #00008070;
             padding: 20px;
@@ -111,6 +112,7 @@
             border-radius: 5px;
         }
 
+
         .search-box input {
             padding: 20px;
             width: 100%;
@@ -134,7 +136,7 @@
             width:800px;
         }
 
-        .btn-kembali:hover, .btn-ajukan:hover {
+         .btn-kembali:hover, .btn-ajukan:hover {
             background-color: #dc143c;
         }
 
@@ -147,8 +149,8 @@
             color: #ff4500;
             margin-top: 20px;
         }
-
-        /* Profil */
+        
+         /* Profil */
         #profileSection {
             display: none;
             background-color: #00002c;
@@ -181,7 +183,7 @@
             object-fit: cover;
         }
 
-        .profile-pic-wrapper i {
+       .profile-pic-wrapper i {
             position: absolute;
             right: 0;
             bottom: 0;
@@ -213,7 +215,7 @@
             margin-right: 10px;
         }
 
-        /* Notifikasi */
+         /* Notifikasi */
         #notificationsSection {
             display: none;
             background-color: #00002c;
@@ -243,7 +245,8 @@
             margin: 0 auto 10px;
             width: 50px;
         }
-        .notif-item {
+        
+       .notif-item {
             display: flex;
             align-items: flex-start;
             gap: 15px;
@@ -269,7 +272,7 @@
             line-height: 1.4;
         }
 
-        .notif-time {
+         .notif-time {
             display: block;
             margin-top: 5px;
             font-size: 13px;
@@ -361,6 +364,7 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
+        
     </style>
 </head>
 <body>
@@ -397,7 +401,7 @@
 </div>
     </div>
 
-    <!-- Daftar Buku -->
+   <!-- Daftar Buku -->
     <div id="bookListSection" style="display: none;" class="container fade-in">
         <h3>Daftar Buku</h3>
         <div class="search-box">
@@ -486,15 +490,20 @@
                 <strong>• {{ $notif->pesan }}</strong>
 
                 <div style="margin-top:8px; font-size:14px; opacity:0.8;">
-                    {{ $notif->created_at->format('d M Y, H:i') }}
-                </div>
+    {{ $notif->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i') }} WIB
+</div>
+
 
                 <!-- TOMBOL CHAT KANAN -->
-                <div style="text-align:right; margin-top:-25px;">
-                    <a href="/chat/{{ $notif->id }}" style="color:white; font-weight:bold; text-decoration:underline;">
-                        Masuk Chat
-                    </a>
-                </div>
+          @if(!str_contains(strtolower($notif->pesan), 'ditolak'))
+    <div style="text-align:right; margin-top:-25px;">
+        <a href="{{ route('chat.fromNotif', $notif->id) }}"
+           style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
+            Masuk Chat
+        </a>
+    </div>
+@endif
+
 
             </div>
         @endforeach
@@ -504,7 +513,7 @@
         @endif
     </div>
 
-    <!-- Pengaturan Akun -->
+     <!-- Pengaturan Akun -->
     <div id="settingsSection" class="fade-in">
         <h2 style="background-color:#00008070; color:white; padding:20px; border-radius: 5px; text-align:center;">
             <i class="fas fa-cog"></i> Pengaturan Akun
@@ -538,7 +547,7 @@
             Kembali
         </button>
     </div>
-
+    
     <!-- Bantuan -->
     <div id="helpSection" style="display: none;" class="fade-in">
         <h2 style="text-align:center;font-size:50px;"><i class="fas fa-question-circle"></i> Bantuan</h2>
@@ -563,7 +572,7 @@
         </button>
     </div>
 
-    <!-- Syarat & Ketentuan -->
+   <!-- Syarat & Ketentuan -->
     <div id="termsSection" style="display: none;" class="fade-in">
         <h2 style="color: #ADD8E6; text-align: center;font-size:30px">Syarat & Ketentuan Penerima</h2>
         <div style="background: #00008070; height:140px;color: white padding: 50px; border-radius: 10px; margin: 20px; text-align: left;font-size:20px;">
@@ -640,7 +649,7 @@
         </div>
     </div>
 
-    <!-- Halaman Ganti Kata Sandi -->
+   <!-- Halaman Ganti Kata Sandi -->
     <div id="changePasswordSection" style="display: none;" class="fade-in">
         <h2 style="text-align: center; color: white;font-size:30px">Ganti Kata Sandi</h2>
         <div style="background-color: #00008070;  color: white; border-radius: 10px; padding: 20px; margin: 20px; text-align: center;">
@@ -667,7 +676,7 @@
         </div>
     </div>
 
-    <!-- Halaman Privasi & Keamanan -->
+     <!-- Halaman Privasi & Keamanan -->
     <div id="privacySection" style="display: none;" class="fade-in">
         <h3 style="color: white; margin-bottom: 30px;font-size:40;">
             <i class="fas fa-arrow-left" style="cursor:pointer; margin-right:10px;" onclick="showSettings()"></i> Privasi & Keamanan
@@ -686,7 +695,7 @@
         </button>
     </div>
 
-    <!-- Halaman Konfirmasi Hapus Akun -->
+     <!-- Halaman Konfirmasi Hapus Akun -->
     <div id="deleteAccountConfirm" style="display: none;" class="fade-in">
         <h2 style="text-align:center; color: #ADD8E6;">Konfirmasi Penghapusan Akun</h2>
         <div style="background-color: white; color: black; border-radius: 10px; padding: 20px; margin: 20px;">
@@ -710,7 +719,7 @@
         </div>
     </div>
 
-    <!-- Halaman Akun Berhasil Dihapus -->
+   <!-- Halaman Akun Berhasil Dihapus -->
     <div id="deleteSuccess" style="display: none;" class="fade-in">
         <h2 style="margin-top: 100px; text-align: center;">Akun Berhasil Dihapus</h2>
         <p style="margin: 20px 0; text-align: center;">
@@ -851,7 +860,7 @@
             currentBookId = parseInt(bookId);
             const book = books.find(b => b.id === currentBookId);
             if (!book) {
-                alert('❌ Buku tidak ditemukan. Coba refresh halaman.');
+                alert('Buku tidak ditemukan. Coba refresh halaman.');
                 return;
             }
             const content = document.getElementById('bookDetailContent');
@@ -907,6 +916,12 @@
             });
         }
 
+        // ✅ Helper: capitalize
+        function ucfirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
+       
         // ✅ Helper: capitalize
         function ucfirst(str) {
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -976,6 +991,20 @@
             };
             reader.readAsDataURL(input.files[0]);
         }
+        function previewFotoProfil(event) {
+            const input = event.target;
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = document.getElementById('fotoProfilPreview');
+                img.src = reader.result;
+                
+                // Simpan ke localStorage (simulasi)
+                const userData = JSON.parse(localStorage.getItem('userData')) || {};
+                userData.fotoProfil = reader.result;
+                localStorage.setItem('userData', JSON.stringify(userData));
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
 
         function previewFotoProfilEdit(event) {
             const input = event.target;
@@ -998,6 +1027,7 @@
             hideAllSections();
             document.getElementById('editAccountSection').style.display = 'block';
         }
+
 
         function saveAccountChanges() {
     const nama = document.getElementById('editNama').value.trim();
@@ -1045,7 +1075,6 @@
         alert('Terjadi kesalahan saat menyimpan data.');
     });
 }
-
         function showChangeEmail() {
             hideAllSections();
             document.getElementById('changeEmailSection').style.display = 'block';
@@ -1095,7 +1124,7 @@
             document.getElementById('changePasswordSection').style.display = 'block';
         }
 
-        function submitPasswordChange() {
+         function submitPasswordChange() {
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;

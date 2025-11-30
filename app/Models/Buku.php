@@ -16,7 +16,7 @@ class Buku extends Model
         'judul',
         'penulis',
         'kategori',
-        'status_buku',  // ✅ 'tersedia', 'diajukan', 'terkirim'
+        'status_buku',  // 'tersedia', 'diajukan', 'terkirim'
         'penerbit',
         'tahun_terbit',
         'deskripsi',
