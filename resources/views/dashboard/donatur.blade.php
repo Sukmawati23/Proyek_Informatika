@@ -267,16 +267,13 @@
         border-radius: 24px;
         }
 
-
-
     </style>
 </head>
 <body>
     <div class="container">
         <img src="LOGO-SDB.png" alt="Logo" class="logo">
-        <h1>Dashboard Donatur</h1>
-        <p id="welcomeText">Selamat Datang! </p>
-        </p>
+        <h1 style="font-size: 30px">Dashboard Donatur</h1>
+        <p id="welcomeText">Selamat datang!</p>
         
         {{-- Pesan sukses --}}
         @if(session('success'))
@@ -377,7 +374,7 @@
             <p>Diterima: {{ $receivedCount }} buku</p>
         </div>
 
-       <!-- Profil -->
+        <!-- Profil -->
         <div id="profileSection">
             <p class="title">Profil Donatur</p>
             <div class="profile-pic-wrapper" onclick="document.getElementById('uploadFotoProfil').click()">
@@ -406,27 +403,21 @@
     <h2>Notifikasi</h2>
     <div id="notifContainer">
         @forelse($notifications as $notif)
-            <div class="notif-card">
-                <p>• {{ $notif->pesan }}</p>
-
-                <div class="notif-footer" style="display:flex; justify-content:space-between; align-items:center;">
-                    <small>{{ $notif->created_at->diffForHumans() }}</small>
-                    
-                     @if(str_contains(strtolower($notif->pesan), 'disetujui',))
-    <div style="text-align:right;">
-        <a href="{{ route('chat.fromNotif', $notif->id) }}"
-           style="background-color:#000080; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; font-weight:bold;">
-            Masuk Chat
-        </a>
-    </div>
-@endif
-                </div>
-            </div>
+<div class="notif-box">
+    <strong>• {{ $notif->pesan }}</strong>
+    <div>{{ $notif->created_at->format('d M Y, H:i') }}</div>
+    @if($notif->chatRoom)
+        <div style="text-align:right; margin-top:-25px;">
+            <a href="{{ route('chat.show', $notif->chatRoom) }}" class="chat-link">Masuk Chat</a>
+        </div>
+    @endif
+</div>
         @empty
             <p style="text-align: center; margin-top: 20px;">Tidak ada notifikasi baru.</p>
         @endforelse
     </div>
 </div>
+
 
         <!-- Pengaturan Akun -->
         <div id="settingsSection">
@@ -445,17 +436,18 @@
             <div style="margin: 10px 0; display: flex; align-items: center; justify-content: space-between;">
                 <span>Kirim notifikasi via email</span>
                 <input type="checkbox" id="emailNotifCheckbox" onchange="saveNotifPreference()" />
-                </div>
+
+            </div>
             <button onclick="showDeleteAccountConfirm()" style="width:100%; background-color: darkred; color:white; padding:20px; border:none; border-radius:5px; font-weight:bold;font-size:20px;">
     Hapus Akun
 </button>
-<br><br>
+
+            <br><br>
             <button onclick="showProfile()" style="width:100%; background-color: #000080; color:white; padding:20px; border:none; border-radius:5px;font-size:20px;">
                 Kembali
             </button>
         </div>
 
-        
         <!-- Bantuan -->
         <div id="helpSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px;">
             <h2 style="text-align:center;font-size:40px;"><i class="fas fa-question-circle"></i> Bantuan</h2>
@@ -476,7 +468,6 @@
                 <p>Hubungi kami di: <a href="mailto:donasibuku.app@gmail.com">donationbook7@gmail.com</a></p>
             </div>
         </div>
-
         
         <!-- Syarat & Ketentuan -->
         <div id="termsSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
@@ -519,8 +510,6 @@
     <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;font-size:20px;">Kembali</button>
 </div>
 
-
-
 <!-- Halaman Ubah Email -->
 <div id="changeEmailSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px;">
     <h2 style="text-align: center; color: white;">Ubah Email</h2>
@@ -548,7 +537,8 @@
     <h2 style="text-align: center; color: white;">Ganti Kata Sandi</h2>
     <div style="background-color: #00008070; color: WHITE; border-radius: 10px; padding: 20px; text-align: center;">
         <img src="https://img.icons8.com/ios-filled/100/ffffff/lock-2.png" style="width:100px; margin-bottom: 20px;" />
-         <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
+        
+        <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
         <input type="password" placeholder="Kata sandi baru" id="newPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
         <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
         <button onclick="submitPasswordChange()" style="width:100%; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;font-size:20px;">Simpan</button>
@@ -611,12 +601,17 @@
     <button onclick="goToHome()" style="background-color: white; color: #000080; padding: 20px; border: none; border-radius: 5px;width:500px;font-size:20px;">Kembali ke Beranda</button>
 </div>
 
+
+
+
 <!-- Navigasi Bawah -->
         <div class="nav">
             <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
             <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
             <i class="fas fa-user" title="Profil" onclick="showProfile()"></i>
         </div>
+
+
     </div>
 
     <script>
@@ -649,7 +644,7 @@ if (namaDonatur) {
         <p>• Buku ‘${title}’ sudah diterima.</p>
         <div class="notif-footer">
             <small>${time}</small>
-            <a href="${chatLink}" class="chat-link">Masuk Chat</a>
+            <a href="/chat/{{ $notif->chat_room_id ?? '#' }}" class="chat-link">Masuk Chat</a>
         </div>
     `;
     notifContainer.appendChild(notifCard);
@@ -700,12 +695,17 @@ if (namaDonatur) {
         }
 
         function showSettings() {
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'none';
+             hideAllSections();
             document.getElementById('settingsSection').style.display = 'block';
-            document.querySelector('.donation-history').style.display = 'none';
+            // Pastikan tidak ada elemen lain yang tertinggal
+            document.getElementById('editAccountSection').style.display = 'none';
+            document.getElementById('changeEmailSection').style.display = 'none';
+            document.getElementById('emailSuccessSection').style.display = 'none';
+            document.getElementById('changePasswordSection').style.display = 'none';
+            document.getElementById('passwordSuccessSection').style.display = 'none';
+            document.getElementById('privacySection').style.display = 'none';
+            document.getElementById('deleteAccountConfirm').style.display = 'none';
+            document.getElementById('deleteSuccess').style.display = 'none';
         }
 
         function previewFotoProfil(event) {
@@ -761,47 +761,157 @@ if (namaDonatur) {
 }
 
 
-        function showEditAccount() {
-    // Sembunyikan semua tampilan lain
-    document.getElementById('donationForm').style.display = 'none';
-    document.getElementById('successMessage').style.display = 'none';
-    document.getElementById('notificationSection').style.display = 'none';
-    document.getElementById('profileSection').style.display = 'none';
-    document.getElementById('settingsSection').style.display = 'none';
+// === Fungsi untuk menampilkan halaman Edit Akun ===
+function showEditAccount() {
+    hideAllSections(); // Pastikan semua section disembunyikan
     document.getElementById('editAccountSection').style.display = 'block';
-    document.querySelector('.donation-history').style.display = 'none';
+
+    // Ambil data pengguna dari server
+    fetch('/profile/get', { // Menambahkan route baru
+        method: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const user = data.user;
+            // Isi form dengan data pengguna
+            document.getElementById('editNama').value = user.name || '';
+            document.getElementById('editAlamat').value = user.alamat || '';
+            document.getElementById('editTelepon').value = user.telepon || '';
+            // Update preview foto profil jika ada
+            if (user.foto_profil) {
+                document.getElementById('fotoProfilEditPreview').src = user.foto_profil;
+                document.getElementById('fotoProfilPreview').src = user.foto_profil; // Juga update di profil utama
+            }
+        } else {
+            alert('Gagal memuat data profil. Silakan coba lagi.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memuat data profil.');
+    });
 }
 
 
 function saveAccountChanges() {
-    alert("Data akun berhasil disimpan!");
-}
+    // Ambil nilai dari input field
+    const nama = document.getElementById('editNama').value;
+    const alamat = document.getElementById('editAlamat').value;
+    const telepon = document.getElementById('editTelepon').value;
 
+    // Validasi input sederhana
+    if (!nama.trim()) {
+        alert("Nama lengkap wajib diisi.");
+        return;
+    }
+
+    // Kirim data ke server
+    fetch('/profile/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            name: nama,
+            alamat: alamat,
+            telepon: telepon
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Perbarui tampilan
+            document.getElementById("userName").textContent = `Halo, ${nama}!`;
+            document.getElementById("profileName").textContent = nama;
+            // Perbarui localStorage jika digunakan untuk tampilan
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.namaLengkap = nama;
+            userData.alamat = alamat;
+            userData.telepon = telepon;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            // Tampilkan pesan sukses dan kembali ke pengaturan
+            alert(data.message || 'Profil berhasil diperbarui!');
+            showSettings(); // Kembali ke halaman pengaturan
+        } else {
+            alert(data.message || 'Gagal memperbarui profil.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Berhasil memperbarui profil.');
+    });
+}
 function showChangeEmail() {
     hideAllSections();
     document.getElementById('changeEmailSection').style.display = 'block';
+
+    // Ambil data user dari localStorage atau dari server (jika ada)
+    const userData = JSON.parse(localStorage.getItem('userData')) || {};
+    const currentEmail = userData.email || "{{ Auth::user()->email }}";
+
+    // Isi field "Email Saat ini" dengan email yang sedang digunakan
+    document.getElementById('currentEmail').value = currentEmail;
+
+    // Kosongkan field "Email Baru" agar pengguna bisa mengisinya
+    document.getElementById('newEmail').value = '';
 }
 
 function submitEmailChange() {
     const currentEmail = document.getElementById('currentEmail').value;
     const newEmail = document.getElementById('newEmail').value;
-
     if (!currentEmail || !newEmail) {
         alert("Harap isi semua field.");
         return;
     }
+    fetch('/profile/change-email', { // Pastikan URL ini benar
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            current_email: currentEmail,
+            new_email: newEmail
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // ✅ PERBAIKAN UTAMA: Perbarui localStorage dengan email baru
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData.email = newEmail; // Simpan email baru ke localStorage
+            localStorage.setItem('userData', JSON.stringify(userData));
 
-    // Simulasi pengubahan email berhasil
-    document.getElementById('changeEmailSection').style.display = 'none';
-    document.getElementById('emailSuccessSection').style.display = 'block';
+            // ✅ Perbarui juga tampilan input "Email Saat ini" agar sesuai
+            document.getElementById('currentEmail').value = newEmail;
+
+            // Tampilkan pesan sukses
+            hideAllSections();
+            document.getElementById('emailSuccessSection').style.display = 'block';
+        } else {
+            alert(data.message || 'Gagal mengubah email.');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan. Cek koneksi dan coba lagi.');
+    });
 }
 
 function hideAllSections() {
     const sections = [
-        'donationForm', 'successMessage', 'notificationSection',
-        'profileSection', 'settingsSection', 'editAccountSection',
-        'helpSection', 'termsSection', 'changeEmailSection', 'emailSuccessSection',
-        'changePasswordSection', 'passwordSuccessSection', 'privacySection'
+        'dashboardSection', 'bookListSection', 'bookDetailSection', 
+        'notificationSection', 'profileSection', 'notificationsSection',
+        'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
+        'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
+        'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
+        'deleteSuccess'
     ];
     sections.forEach(id => {
         const el = document.getElementById(id);

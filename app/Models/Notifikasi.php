@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\ChatRoom;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,15 +13,15 @@ class Notifikasi extends Model
 
     protected $table = 'notifications';
 
-    protected $fillable = ['user_id','partner_id', 'pesan'];
+    protected $fillable = ['user_id', 'pesan', 'chat_room_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function partner()
-{
-    return $this->belongsTo(User::class, 'partner_id');
-}
 
+    public function chatRoom()
+    {
+        return $this->belongsTo(\App\Models\ChatRoom::class);
+    }
 }

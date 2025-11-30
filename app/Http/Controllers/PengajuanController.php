@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Events\PengajuanDisetujui;
 
 class PengajuanController extends Controller
 {
@@ -18,7 +19,7 @@ class PengajuanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'buku_id' => 'required|exists:bukus, id',
+            'buku_id' => 'required|exists:bukus,id',
             'jumlah' => 'required|integer|min:1',
         ]);
 
@@ -49,7 +50,12 @@ class PengajuanController extends Controller
             'pengajuan_id' => $pengajuan->id,
         ]);
     }
-  
+
+
+
+    /**
+     * Admin melihat semua pengajuan
+     */
     public function index()
     {
         $pengajuans = Pengajuan::with(['user', 'buku'])
@@ -77,30 +83,31 @@ class PengajuanController extends Controller
             $pengajuan->update(['status' => $request->status]);
 
 
-            $judulBuku = optional($pengajuan->buku)->judul ?? '[Judul tidak tersedia]';
-           $donaturId = optional($pengajuan->buku->donasi)->user_id;
-            //pesan untuk penerima
-           $pesan = $request->status === 'disetujui'
-                ? "Buku \"{$judulBuku}\" sudah diverifikasi oleh admin."
+            /**
+             * ❗ FIX PENTING:
+             * Jangan ubah status buku saat pengajuan disetujui / ditolak.
+             * Buku tetap TERSIMPAN sebagai 'tersedia'
+             * sampai admin memilih siapa yang akhirnya menerima buku (fitur lain).
+             */
+
+
+            // Buat notifikasi
+            $judulBuku = $pengajuan->buku->judul ?? '[Judul tidak tersedia]';
+
+            $pesan = $request->status === 'disetujui'
+                ? "Pengajuan buku \"{$judulBuku}\" telah disetujui."
                 : "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
-                //pesan untuk donatur
-                // Pesan untuk donatur (bisa sama atau disesuaikan)
-            $pesanDonatur = $request->status === 'disetujui'
-             ? "Pengajuan permintaan buku  \"{$judulBuku}\" dari penerima sudah disetujui oleh Admin."
-             : "Pengajuan permintaan buku \"{$judulBuku}\" dari penerima ditolak oleh Admin.";
-           // Notifikasi untuk penerima
+
             Notifikasi::create([
-             'user_id' => $pengajuan->user_id,   // penerima
-             'partner_id' => $donaturId,         // donatur
-             'pesan' => $pesan
+                'user_id' => $pengajuan->user_id,
+                'pesan'   => $pesan
             ]);
 
-// Notifikasi untuk donatur
-Notifikasi::create([
-    'user_id' => $donaturId,            // donatur
-    'partner_id' => $pengajuan->user_id,// penerima
-    'pesan' => $pesanDonatur
-]);
+            // ✅ Trigger event jika disetujui
+            if ($request->status === 'disetujui') {
+                event(new PengajuanDisetujui($pengajuan));
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Status pengajuan berhasil diperbarui.',

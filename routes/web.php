@@ -81,6 +81,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
     Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
+
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{room}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{room}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
 });
 
 // === Admin-only Routes ===
