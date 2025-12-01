@@ -13,7 +13,7 @@
 
     @if($sudahUlasan)
         <div class="alert alert-info">Anda sudah memberikan ulasan untuk transaksi ini.</div>
-        <a href="{{ url()->previous() }}" class="btn btn-secondary">Kembali</a>
+        <button onclick="window.history.back()" class="btn btn-secondary">Kembali</button>
     @else
         <form method="POST" action="{{ route('ulasan.store') }}">
             @csrf
