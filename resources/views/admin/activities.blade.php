@@ -3,7 +3,7 @@
 <div class="container">
     <h3>Semua Aktivitas</h3>
     <table class="table">
-        <thead>
+        <thead> 
             <tr>
                 <th>Waktu</th>
                 <th>Aktivitas</th>
