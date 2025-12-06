@@ -123,6 +123,12 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
     Route::post('/admin/pengajuan/{id}/status', [PengajuanController::class, 'updateStatus'])
         ->name('admin.pengajuan.status');
+
+    // Route untuk menampilkan semua aktivitas
+    Route::get('/admin/activities', [DashboardController::class, 'allActivities'])->name('admin.activities');
+
+    Route::get('/admin/activities', [DashboardController::class, 'allActivities'])
+        ->name('admin.activities');
 });
 
 // === Hapus User (aman via UserController) ===

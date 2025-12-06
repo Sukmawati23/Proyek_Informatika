@@ -74,7 +74,7 @@ class DashboardController extends Controller
                 'chart_penerima_data' => $penerimaData,
                 'chart_donasi_data' => $donasiData,
                 // Data tabel — ganti `collect()` jika sudah punya model Notifikasi/ActivityLog
-                'activities'    => collect(),
+                'activities' => \App\Models\Notifikasi::with('user')->latest()->take(10)->get(),
                 'donaturs' => User::where('role', 'donatur')->latest()->take(10)->get(),
                 'penerimas' => User::where('role', 'penerima')->latest()->take(10)->get(),
                 'donasis'       => Donasi::with('user')->latest()->take(10)->get(),
@@ -410,6 +410,12 @@ class DashboardController extends Controller
             'success' => true,
             'message' => 'Laporan berhasil dihapus.'
         ]);
+    }
+
+    public function allActivities()
+    {
+        $activities = \App\Models\Notifikasi::with('user')->latest()->paginate(20);
+        return view('admin.activities', compact('activities'));
     }
 
     public function getNotifikasi()

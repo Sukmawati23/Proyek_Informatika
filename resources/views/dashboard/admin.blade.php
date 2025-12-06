@@ -572,7 +572,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Aktivitas Terkini</h3>
-                        <a href="#" class="btn btn-primary">Lihat Semua</a>
+                        <a href="{{ route('admin.activities') }}" class="btn btn-primary">Lihat Semua</a>
                     </div>
                     <table class="table">
                         <thead>
@@ -580,16 +580,15 @@
                                 <th>Waktu</th>
                                 <th>Aktivitas</th>
                                 <th>Pengguna</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($activities as $activity)
                             <tr>
                                 <td>{{ $activity->created_at }}</td>
-                                <td>{{ $activity->description }}</td>
-                                <td>{{ $activity->user->name }}</td>
-                                <td>{{ $activity->status }}</td>
+                                <td>{{ $activity->pesan}}</td>
+                                <td>{{ $activity->user->name ?? 'System' }}</td>
+                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>
