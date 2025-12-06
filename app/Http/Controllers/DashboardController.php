@@ -9,6 +9,8 @@ use App\Models\Buku;
 use App\Models\Donasi;
 use App\Models\Pengajuan;
 use App\Models\Notifikasi;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -18,6 +20,8 @@ use App\Models\Report;
 
 class DashboardController extends Controller
 {
+
+
     public function index()
     {
         $user = Auth::user();
@@ -138,7 +142,196 @@ class DashboardController extends Controller
         return redirect('/');
     }
 
-    // === Metode untuk menghasilkan laporan ===
+    public function downloadReport($id)
+    {
+        $report = Report::findOrFail($id);
+
+        $type = $report->type;
+        $startDate = $report->start_date;
+        $endDate = $report->end_date;
+        $format = $report->format;
+        $filename = pathinfo($report->file_name, PATHINFO_FILENAME);
+
+        $data = $this->getReportData($type, $startDate, $endDate);
+
+        if ($format === 'excel') {
+            return $this->exportToExcel($data, $type, $filename);
+        } else {
+            return $this->exportToPDF($data, $type, $filename);
+        }
+    }
+
+    private function getReportData($type, $startDate, $endDate)
+    {
+        switch ($type) {
+            case 'donatur':
+                return User::where('role', 'donatur')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->orderBy('created_at', 'desc')
+                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
+            case 'penerima':
+                return User::where('role', 'penerima')
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->orderBy('created_at', 'desc')
+                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
+            case 'donasi':
+                return Donasi::with('user')
+                    ->whereBetween('tanggal', [$startDate, $endDate])
+                    ->orderBy('tanggal', 'desc')
+                    ->get(['id', 'judul_buku', 'kategori', 'status', 'tanggal', 'user_id']);
+            case 'verifikasi':
+                return Pengajuan::with(['user', 'buku'])
+                    ->whereBetween('tanggal', [$startDate, $endDate])
+                    ->orderBy('tanggal', 'desc')
+                    ->get(['id', 'user_id', 'buku_id', 'status', 'tanggal']);
+            case 'ulasan':
+                return Review::with(['reviewer', 'reviewed'])
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->orderBy('created_at', 'desc')
+                    ->get(['id', 'reviewer_id', 'reviewed_id', 'rating', 'comment', 'created_at']);
+            default:
+                return collect();
+        }
+    }
+
+    private function exportToExcel($data, $type, $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}.csv",
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ];
+
+        $output = fopen('php://output', 'w');
+        fputcsv($output, $this->getReportHeaders($type));
+        foreach ($data as $item) {
+            fputcsv($output, $this->getReportRow($item, $type));
+        }
+        fclose($output);
+        exit;
+    }
+
+    // === Helper: Ekspor ke PDF ===
+    private function exportToPDF($data, $type, $filename)
+    {
+        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' . $filename . '</title></head><body>';
+        $html .= '<h2>' . $filename . '</h2>';
+        $html .= '<table border="1" cellpadding="5" cellspacing="0">';
+        $html .= '<thead><tr>';
+        foreach ($this->getReportHeaders($type) as $header) {
+            $html .= "<th>{$header}</th>";
+        }
+        $html .= '</tr></thead><tbody>';
+        foreach ($data as $item) {
+            $html .= '<tr>';
+            foreach ($this->getReportRow($item, $type) as $cell) {
+                $html .= "<td>" . htmlspecialchars($cell ?? '-') . "</td>";
+            }
+            $html .= '</tr>';
+        }
+        $html .= '</tbody></table></body></html>';
+
+        return response($html, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename={$filename}.pdf",
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ]);
+    }
+
+    // === Helper: Mendapatkan header laporan ===
+    private function getReportHeaders($type)
+    {
+        return match ($type) {
+            'donatur' => ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'],
+            'penerima' => ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'],
+            'donasi' => ['ID', 'Judul Buku', 'Donatur', 'Kategori', 'Status', 'Tanggal Donasi'],
+            'verifikasi' => ['ID Pengajuan', 'Judul Buku', 'Penerima', 'Status', 'Tanggal'],
+            'ulasan' => ['ID', 'Penulis', 'Penerima', 'Rating', 'Ulasan', 'Tanggal'],
+            default => ['ID', 'Data'],
+        };
+    }
+
+    // === Helper: Mendapatkan baris laporan ===
+    private function getReportRow($item, $type)
+    {
+        return match ($type) {
+            'donatur' => [
+                $item->id,
+                $item->name,
+                $item->email,
+                $item->alamat ?? '-',
+                $item->telepon ?? '-',
+                $item->email_verified_at ? 'Aktif' : 'Belum Verifikasi',
+                $item->created_at->format('d/m/Y H:i')
+            ],
+            'penerima' => [
+                $item->id,
+                $item->name,
+                $item->email,
+                $item->alamat ?? '-',
+                $item->telepon ?? '-',
+                $item->email_verified_at ? 'Aktif' : 'Belum Verifikasi',
+                $item->created_at->format('d/m/Y H:i')
+            ],
+            'donasi' => [
+                $item->id,
+                $item->judul_buku,
+                $item->user?->name ?? '-',
+                $item->kategori,
+                ucfirst($item->status),
+                $item->tanggal->format('d/m/Y')
+            ],
+            'verifikasi' => [
+                $item->id,
+                $item->buku?->judul ?? '-',
+                $item->user?->name ?? '-',
+                ucfirst($item->status),
+                $item->tanggal->format('d/m/Y')
+            ],
+            'ulasan' => [
+                $item->id,
+                $item->reviewer?->name ?? '-',
+                $item->reviewed?->name ?? '-',
+                $item->rating . '/5',
+                $item->comment ?? '-',
+                $item->created_at->format('d/m/Y H:i')
+            ],
+            default => [$item->id, json_encode($item)],
+        };
+    }
+
+    // === Metode untuk menghapus laporan ===
+    public function deleteReport($id)
+    {
+        $report = Report::findOrFail($id);
+        $report->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan berhasil dihapus.'
+        ]);
+    }
+
+    public function allActivities()
+    {
+        $activities = \App\Models\Notifikasi::with('user')->latest()->paginate(20);
+        return view('admin.activities', compact('activities'));
+    }
+
+    public function getNotifikasi()
+    {
+        $notifs = Auth::user()
+            ->notifications()
+            ->latest()
+            ->get();
+
+        return response()->json($notifs);
+    }
+
     public function generateReport(Request $request)
     {
         $request->validate([
@@ -186,12 +379,14 @@ class DashboardController extends Controller
                 break;
         }
 
-        // === Simpan entri laporan ke database ===
-        \App\Models\Report::create([
+        // Simpan entri laporan ke database
+        Report::create([
             'file_name' => "Laporan_{$type}_" . now()->format('Y-m-d') . ".pdf",
             'type'      => $type,
             'format'    => 'pdf',
-            'date'      => now()
+            'date'      => now(),
+            'start_date' => $startDate,
+            'end_date'   => $endDate,
         ]);
 
         return response()->json([
@@ -199,232 +394,5 @@ class DashboardController extends Controller
             'data' => $data,
             'message' => 'Laporan berhasil dihasilkan.'
         ]);
-    }
-
-    // === Metode untuk mendownload laporan ===
-    public function downloadReport(Request $request)
-    {
-        $request->validate([
-            'format' => 'required|in:pdf,excel',
-            'type' => 'required|in:donatur,penerima,donasi,verifikasi,ulasan',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-
-        $format = $request->input('format');
-        $type = $request->input('type');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        // Ambil data
-        $data = [];
-        switch ($type) {
-            case 'donatur':
-                $data = User::where('role', 'donatur')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
-                break;
-            case 'penerima':
-                $data = User::where('role', 'penerima')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
-                break;
-            case 'donasi':
-                $data = Donasi::with('user')
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->orderBy('tanggal', 'desc')
-                    ->get(['id', 'judul_buku', 'kategori', 'status', 'tanggal', 'user_id']);
-                break;
-            case 'verifikasi':
-                $data = Pengajuan::with(['user', 'buku'])
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->orderBy('tanggal', 'desc')
-                    ->get(['id', 'user_id', 'buku_id', 'status', 'tanggal']);
-                break;
-            case 'ulasan':
-                $data = Review::with(['reviewer', 'reviewed'])
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'reviewer_id', 'reviewed_id', 'rating', 'comment', 'created_at']);
-                break;
-        }
-
-        // Nama file
-        $filename = "Laporan_{$type}_{$startDate}_to_{$endDate}";
-
-        // Ekspor ke format yang diminta
-        if ($format === 'excel') {
-            return $this->exportToExcel($data, $type, $filename);
-        } else { // pdf
-            return $this->exportToPDF($data, $type, $filename);
-        }
-    }
-
-    // === Helper: Ekspor ke Excel ===
-    private function exportToExcel($data, $type, $filename)
-    {
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename={$filename}.csv",
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0'
-        ];
-
-        $output = fopen('php://output', 'w');
-        fputcsv($output, $this->getReportHeaders($type));
-
-        foreach ($data as $item) {
-            fputcsv($output, $this->getReportRow($item, $type));
-        }
-
-        fclose($output);
-        exit;
-    }
-
-    // === Helper: Ekspor ke PDF ===
-    private function exportToPDF($data, $type, $filename)
-    {
-
-        $html = '<!DOCTYPE html><html><head><title>' . $filename . '</title></head><body>';
-        $html .= '<h2>' . $filename . '</h2>';
-        $html .= '<table border="1" cellpadding="5" cellspacing="0">';
-        $html .= '<thead><tr>';
-
-        // Header
-        foreach ($this->getReportHeaders($type) as $header) {
-            $html .= "<th>{$header}</th>";
-        }
-        $html .= '</tr></thead><tbody>';
-
-        // Data
-        foreach ($data as $item) {
-            $html .= '<tr>';
-            foreach ($this->getReportRow($item, $type) as $cell) {
-                $html .= "<td>" . htmlspecialchars($cell) . "</td>";
-            }
-            $html .= '</tr>';
-        }
-
-        $html .= '</tbody></table></body></html>';
-
-
-        $headers = [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => "attachment; filename={$filename}.pdf",
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0'
-        ];
-
-
-        return response($html, 200, $headers);
-    }
-
-    // === Helper: Mendapatkan header laporan ===
-    private function getReportHeaders($type)
-    {
-        switch ($type) {
-            case 'donatur':
-                return ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'];
-            case 'penerima':
-                return ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'];
-            case 'donasi':
-                return ['ID', 'Judul Buku', 'Donatur', 'Kategori', 'Status', 'Tanggal Donasi'];
-            case 'verifikasi':
-                return ['ID Pengajuan', 'Judul Buku', 'Penerima', 'Status', 'Tanggal'];
-            case 'ulasan':
-                return ['ID', 'Penulis', 'Penerima', 'Rating', 'Ulasan', 'Tanggal'];
-            default:
-                return ['ID', 'Data'];
-        }
-    }
-
-    // === Helper: Mendapatkan baris laporan ===
-    private function getReportRow($item, $type)
-    {
-        switch ($type) {
-            case 'donatur':
-                return [
-                    $item->id,
-                    $item->name,
-                    $item->email,
-                    $item->alamat ?? '-',
-                    $item->telepon ?? '-',
-                    //$item->is_active ? 'Aktif' : 'Nonaktif',
-                    $item->email_verified_at ? 'Aktif' : 'Belum Verifikasi',
-                    $item->created_at->format('d/m/Y H:i')
-                ];
-            case 'penerima':
-                return [
-                    $item->id,
-                    $item->name,
-                    $item->email,
-                    $item->alamat ?? '-',
-                    $item->telepon ?? '-',
-                    //$item->is_active ? 'Aktif' : 'Nonaktif',
-                    $item->email_verified_at ? 'Aktif' : 'Belum Verifikasi',
-                    $item->created_at->format('d/m/Y H:i')
-                ];
-            case 'donasi':
-                return [
-                    $item->id,
-                    $item->judul_buku,
-                    $item->user->name ?? '-',
-                    $item->kategori,
-                    ucfirst($item->status),
-                    $item->tanggal->format('d/m/Y')
-                ];
-            case 'verifikasi':
-                return [
-                    $item->id,
-                    $item->buku->judul ?? '-',
-                    $item->user->name ?? '-',
-                    ucfirst($item->status),
-                    $item->tanggal->format('d/m/Y')
-                ];
-            case 'ulasan':
-                return [
-                    $item->id,
-                    $item->reviewer->name ?? '-',
-                    $item->reviewed->name ?? '-',
-                    $item->rating . '/5',
-                    $item->comment ?? '-',
-                    $item->created_at->format('d/m/Y H:i')
-                ];
-            default:
-                return [$item->id, json_encode($item)];
-        }
-    }
-
-    // === Metode untuk menghapus laporan ===
-    public function deleteReport($id)
-    {
-        $report = Report::findOrFail($id);
-        $report->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan berhasil dihapus.'
-        ]);
-    }
-
-    public function allActivities()
-    {
-        $activities = \App\Models\Notifikasi::with('user')->latest()->paginate(20);
-        return view('admin.activities', compact('activities'));
-    }
-
-    public function getNotifikasi()
-    {
-        $notifs = Auth::user()
-            ->notifications()
-            ->latest()
-            ->get();
-
-        return response()->json($notifs);
     }
 }
