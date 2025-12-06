@@ -899,108 +899,94 @@
                     </div>
                 </div>
             </div>
-            
+            </div>
+
             <!-- Laporan Page -->
 <div id="laporan" class="page">
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Laporan</h3>
-        </div>
-        <div class="card-body">
-            <!-- Form untuk memilih jenis laporan, rentang tanggal, dan format -->
-            <div class="form-group">
-                <label for="reportType">Jenis Laporan</label>
-                <select id="reportType" class="form-control">
-                    <option value="donatur">Laporan Donatur</option>
-                    <option value="penerima">Laporan Penerima</option>
-                    <option value="donasi">Laporan Donasi</option>
-                    <option value="verifikasi">Laporan Verifikasi</option>
-                    <option value="ulasan">Laporan Ulasan & Rating</option>
-                </select>
-            </div>
+    <div class="card-header">
+        <h3 class="card-title">Generate Laporan</h3>
+    </div>
+    <div class="card-body">
+        <!-- Form Generate Laporan -->
+        <form id="generateReportForm">
+            @csrf
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group col-md-3">
+                    <label for="reportType">Jenis Laporan</label>
+                    <select id="reportType" class="form-control" required>
+                        <option value="donatur">Donatur</option>
+                        <option value="penerima">Penerima</option>
+                        <option value="donasi">Donasi Buku</option>
+                        <option value="verifikasi">Verifikasi</option>
+                        <option value="ulasan">Ulasan & Rating</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
                     <label for="startDate">Dari Tanggal</label>
-                    <input type="date" id="startDate" class="form-control">
+                    <input type="date" id="startDate" class="form-control" required>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-3">
                     <label for="endDate">Sampai Tanggal</label>
-                    <input type="date" id="endDate" class="form-control">
+                    <input type="date" id="endDate" class="form-control" required>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="reportFormat">Format</label>
+                    <select id="reportFormat" class="form-control" required>
+                        <option value="pdf">PDF</option>
+                        <option value="excel">Excel (CSV)</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Generate</button>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="reportFormat">Format Laporan</label>
-                <select id="reportFormat" class="form-control">
-                    <option value="pdf">PDF</option>
-                    <option value="excel">Excel</option>
-                </select>
-            </div>
-            <button class="btn btn-primary" onclick="generateReport()">Generate Laporan</button>
-        </div>
-        <!-- Pesan dan Hasil Laporan -->
-<div id="reportMessage" class="alert" style="display:none;"></div>
-<div id="reportResult" style="display:none;">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title" id="reportTitle">Hasil Laporan</h3>
-        </div>
-        <div class="card-body">
-            <p>Total Data: <span id="totalData">0</span></p>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr id="reportHeaders"></tr>
-                    </thead>
-                    <tbody id="reportBody"></tbody>
-                </table>
-            </div>
+        </form>
+
+        <!-- Tempat Tampilkan Hasil (opsional) -->
+        <div id="reportMessage" class="mt-3" style="display:none;"></div>
+
+        <!-- Tabel Laporan Terakhir -->
+        <h4 class="mt-4">Laporan Terakhir dihasilkan</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nama File</th>
+                        <th>Jenis</th>
+                        <th>Tanggal</th>
+                        <th>Format</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="generatedReportsList">
+                    @if($reports->isEmpty())
+                        <tr>
+                            <td colspan="5" class="text-center">Belum ada laporan yang dihasilkan.</td>
+                        </tr>
+                    @else
+                        @foreach($reports as $report)
+                            <tr data-id="{{ $report->id }}">
+                                <td>{{ $report->file_name }}</td>
+                                <td>{{ $report->type }}</td>
+                                <td>{{ $report->date ? \Carbon\Carbon::parse($report->date)->format('d/m/Y H:i') : '-' }}</td>
+                                <td>{{ strtoupper($report->format) }}</td>
+                                <td>
+                                    <a href="{{ route('download.report', $report->id) }}" class="btn btn-success btn-sm">Download</a>
+                                    <form action="{{ route('delete.report', $report->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-    </div>
-    <!-- Bagian ini seharusnya menampilkan daftar laporan yang sudah di-generate -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Laporan Terakhir dihasilkan</h3>
-        </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nama File</th>
-                    <th>Jenis</th>
-                    <th>Tanggal</th>
-                    <th>Format</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="generatedReportsList">
-                @if($reports->isEmpty())
-                    <tr>
-                        <td colspan="5" class="text-center">Belum ada laporan yang dihasilkan.</td>
-                    </tr>
-                @else
-                    @foreach($reports as $report)
-                    <tr data-id="{{ $report->id }}">
-                        <td>{{ $report->file_name }}</td>
-                        <td>{{ $report->type }}</td>
-                        <td>{{ $report->date }}</td>
-                        <td>{{ strtoupper($report->format) }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ route('download.report', $report->id) }}" class="btn btn-success btn-sm">Download</a>
-                                <form action="{{ route('delete.report', $report->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                @endif
-            </tbody>
-        </table>
-    </div>
 </div>
 
             <!-- Pengaturan Page -->
@@ -2250,6 +2236,73 @@ function showReportMessage(type, message) {
         msgDiv.style.display = 'none';
     }, 5000);
 }
+
+document.getElementById('generateReportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = {
+        type: document.getElementById('reportType').value,
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value,
+        format: document.getElementById('reportFormat').value,
+        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    };
+
+    fetch("{{ route('generate.report') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': formData._token
+        },
+        body: JSON.stringify({
+            type: formData.type,
+            start_date: formData.start_date,
+            end_date: formData.end_date,
+            format: formData.format
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const msgDiv = document.getElementById('reportMessage');
+        if (data.success) {
+            msgDiv.className = 'alert alert-success';
+            msgDiv.textContent = 'Laporan berhasil dihasilkan!';
+            // Refresh halaman agar daftar laporan terbaru muncul
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            msgDiv.className = 'alert alert-danger';
+            msgDiv.textContent = data.message || 'Gagal membuat laporan.';
+        }
+        msgDiv.style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const msgDiv = document.getElementById('reportMessage');
+        msgDiv.className = 'alert alert-danger';
+        msgDiv.textContent = 'Terjadi kesalahan saat membuat laporan.';
+        msgDiv.style.display = 'block';
+    });
+});
+
+const navLinks = document.querySelectorAll('.nav-link');
+const pages = document.querySelectorAll('.page');
+
+navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Remove active class from all links and pages
+        navLinks.forEach(nl => nl.classList.remove('active'));
+        pages.forEach(page => page.classList.remove('active'));
+        // Add active class to clicked link
+        this.classList.add('active');
+        // Show corresponding page
+        const pageId = this.getAttribute('data-page');
+        document.getElementById(pageId).classList.add('active');
+    });
+});
+
 </script>
 </body>
 </html>

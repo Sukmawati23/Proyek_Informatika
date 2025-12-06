@@ -78,20 +78,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
-    Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
-
-    // Rute untuk generate laporan
-    Route::post('/generate-report', [DashboardController::class, 'generateReport'])->name('generate.report');
-    // Rute untuk download laporan
-    Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])->name('download.report');
-    // Rute untuk hapus laporan
-    Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])->name('delete.report');
-
-    // Di web.php
-    Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])
-        ->name('download.report')
-        ->middleware('auth', 'is_admin');
-
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/{room}', [ChatController::class, 'show'])->name('chat.show');
     Route::post('/chat/{room}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
@@ -128,6 +114,21 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
     Route::get('/admin/activities', [DashboardController::class, 'allActivities'])
         ->name('admin.activities');
+
+    Route::get('/laporan', [DashboardController::class, 'index'])->name('laporan');
+
+    // Rute untuk generate laporan
+    Route::post('/generate-report', [DashboardController::class, 'generateReport'])
+        ->name('generate.report')
+        ->middleware(['auth', 'is_admin']);
+
+    // Rute untuk hapus laporan
+    Route::delete('/reports/{report}', [DashboardController::class, 'deleteReport'])
+        ->name('delete.report');
+
+    Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])
+        ->name('download.report')
+        ->middleware('auth', 'is_admin');
 });
 
 // === Hapus User (aman via UserController) ===
