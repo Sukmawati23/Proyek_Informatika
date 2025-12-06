@@ -22,7 +22,7 @@
                     <th>Judul Buku</th>
                     <th>Kategori</th>
                     <th>Kondisi</th>
-                    <th>Status</th> <!-- ✅ tambahkan kolom status -->
+                    <th>Status</th> 
                     <th>Aksi</th>
                 </tr>
             </thead>

@@ -143,7 +143,7 @@ class UserController extends Controller
             'current_email' => [
                 'required',
                 'email',
-                'exists:users,email',
+                'exists: users, email',
                 function ($attribute, $value, $fail) use ($user) {
                     if ($value !== $user->email) {
                         $fail('Email saat ini tidak sesuai.');
@@ -163,7 +163,7 @@ class UserController extends Controller
             // Kirim ulang email verifikasi — hanya sekali
             $user->sendEmailVerificationNotification();
 
-            // ✅ PERBAIKAN UTAMA: Perbarui session user agar Auth::user() langsung menampilkan email baru
+
             Auth::login($user); // Login ulang user dengan data terbaru
         }
 
@@ -202,13 +202,17 @@ class UserController extends Controller
         }
         // Update password
         $user->password = Hash::make($validated['new_password']);
+        
         $user->save();
-        // ✅ PERBAIKAN UTAMA: Login ulang user dengan password baru
+
+        
+        // PERBAIKAN UTAMA: Login ulang user dengan password baru
         Auth::login($user); // Login ulang user dengan data terbaru
         return response()->json([
             'success' => true,
             'message' => 'Kata sandi berhasil diperbarui.',
-        ]);
+
+       
     }
 
     /**
