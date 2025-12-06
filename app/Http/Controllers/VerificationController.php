@@ -17,7 +17,7 @@ class VerificationController extends Controller
     }
 
     /**
-     * ✅ Perbaikan: Custom verify — support email change
+     * Perbaikan: Custom verify — support email change
      */
     public function verify(Request $request)
     {
@@ -33,7 +33,7 @@ class VerificationController extends Controller
             return response()->view('errors.403', [], 403);
         }
 
-        // ⭐️ Update: Verifikasi email apa pun — cocokkan ke email SAAAT INI
+        // Update: Verifikasi email apa pun — cocokkan ke email SAAAT INI
         // Karena kita tahu user baru saja ubah email & kirim verifikasi ulang
         if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();

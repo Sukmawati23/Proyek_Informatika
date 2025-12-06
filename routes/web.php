@@ -16,7 +16,6 @@ use App\Http\Controllers\ChatController;
 use App\Models\User;
 use App\Http\Controllers\ReviewController;
 
-
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
 

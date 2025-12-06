@@ -12,12 +12,12 @@ class Donasi extends Model
     use HasFactory;
 
     protected $casts = [
-        'tanggal' => 'date', // ✅ ini yang kurang
+        'tanggal' => 'date', 
     ];
 
     protected $fillable = [
         'user_id',
-        'penerima_id',      // ✅ pastikan ini ada
+        'penerima_id',      
         'judul_buku',
         'kategori',
         'kondisi',
@@ -30,13 +30,13 @@ class Donasi extends Model
         'status',
     ];
 
-    // ✅ Relasi ke donatur (alias clearer dari `user()`)
+    // Relasi ke donatur (alias clearer dari `user()`)
     public function donatur()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // ✅ Relasi ke penerima (nullable)
+    // Relasi ke penerima (nullable)
     public function penerima()
     {
         return $this->belongsTo(User::class, 'penerima_id');
