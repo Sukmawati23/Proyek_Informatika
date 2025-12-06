@@ -58,4 +58,18 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Donasi::class, 'penerima_id');
     }
+
+    public function getTotalDonasiAttribute()
+    {
+        return $this->donasis()->sum('jumlah');
+    }
+
+    public function getTotalDiterimaAttribute()
+    {
+        // Ambil semua pengajuan yang disetujui oleh penerima ini
+        $pengajuans = Pengajuan::where('user_id', $this->id)->where('status', 'disetujui')->get();
+
+        // Jumlahkan kolom `jumlah` dari setiap pengajuan
+        return $pengajuans->sum('jumlah');
+    }
 }

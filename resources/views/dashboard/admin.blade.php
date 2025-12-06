@@ -631,7 +631,7 @@
                         <td>{{ $donatur->name }}</td>
                         <td>{{ $donatur->email }}</td>
                         <td>{{ $donatur->telepon }}</td> 
-                        <td>{{ $donatur->total_donations ?? 0 }} buku</td>
+                        <td>{{ $donatur->total_donasi }} buku</td>
                         <td>
                             @if($donatur->is_active)
                                 <span class="badge badge-success">Aktif</span>
@@ -687,7 +687,7 @@
                                 <td>{{ $penerima->name }}</td>
                                 <td>{{ $penerima->alamat }}</td>
                                 <td>{{ $penerima->telepon }}</td>
-                                <td>{{ $penerima->total_received }} buku</td>
+                                <td>{{ $penerima->total_diterima }} buku</td>
                                 <td>
                                     @if($penerima->is_active)
                                         <span class="badge badge-success">Aktif</span>
