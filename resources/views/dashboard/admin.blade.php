@@ -902,111 +902,107 @@
             </div>
             
             <!-- Laporan Page -->
-            <div id="laporan" class="page">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Laporan</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="reportType">Jenis Laporan</label>
-                            <select id="reportType" class="form-control">
-                                <option value="donatur">Laporan Donatur</option>
-                                <option value="penerima">Laporan Penerima</option>
-                                <option value="donasi">Laporan Donasi</option>
-                                <option value="verifikasi">Laporan Verifikasi</option>
-                                <option value="ulasan">Laporan Ulasan & Rating</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="startDate">Dari Tanggal</label>
-                                <input type="date" id="startDate" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="endDate">Sampai Tanggal</label>
-                                <input type="date" id="endDate" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="reportFormat">Format Laporan</label>
-                            <select id="reportFormat" class="form-control">
-                                <option value="pdf">PDF</option>
-                                <option value="excel">Excel</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary">Generate Laporan</button>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Laporan Terakhir dihasilkan</h3>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nama File</th>
-                                <th>Jenis</th>
-                                <th>Tanggal</th>
-                                <th>Format</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($reports as $report)
-                            <tr>
-                                <td>{{ $report->file_name }}</td>
-                                <td>{{ $report->type }}</td>
-                                <td>{{ $report->date }}</td>
-                                <td>{{ strtoupper($report->format) }}</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="btn btn-success btn-sm">Download</button>
-                                        <button class="btn btn-danger btn-sm">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-             <!-- Laporan Ulasan & Rating (dalam halaman laporan) -->
-    <div id="ulasanReport" class="card" style="display: none;">
+<div id="laporan" class="page">
+    <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Laporan Ulasan & Rating</h3>
-            <div class="search-filter" style="margin: 0; padding: 0;">
-                <select id="ulasanFilter" class="form-control" style="width: auto;">
-                    <option value="all">Semua</option>
-                    <option value="donatur">Donatur Saja</option>
-                    <option value="penerima">Penerima Saja</option>
+            <h3 class="card-title">Laporan</h3>
+        </div>
+        <div class="card-body">
+            <!-- Form untuk memilih jenis laporan, rentang tanggal, dan format -->
+            <div class="form-group">
+                <label for="reportType">Jenis Laporan</label>
+                <select id="reportType" class="form-control">
+                    <option value="donatur">Laporan Donatur</option>
+                    <option value="penerima">Laporan Penerima</option>
+                    <option value="donasi">Laporan Donasi</option>
+                    <option value="verifikasi">Laporan Verifikasi</option>
+                    <option value="ulasan">Laporan Ulasan & Rating</option>
                 </select>
             </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startDate">Dari Tanggal</label>
+                    <input type="date" id="startDate" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">Sampai Tanggal</label>
+                    <input type="date" id="endDate" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reportFormat">Format Laporan</label>
+                <select id="reportFormat" class="form-control">
+                    <option value="pdf">PDF</option>
+                    <option value="excel">Excel</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="generateReport()">Generate Laporan</button>
+        </div>
+        <!-- Pesan dan Hasil Laporan -->
+<div id="reportMessage" class="alert" style="display:none;"></div>
+<div id="reportResult" style="display:none;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title" id="reportTitle">Hasil Laporan</h3>
+        </div>
+        <div class="card-body">
+            <p>Total Data: <span id="totalData">0</span></p>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr id="reportHeaders"></tr>
+                    </thead>
+                    <tbody id="reportBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+    <!-- Bagian ini seharusnya menampilkan daftar laporan yang sudah di-generate -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Laporan Terakhir dihasilkan</h3>
         </div>
         <table class="table">
-    <thead>
-        <tr>
-            <th>Penilai</th>
-            <th>Untuk</th>
-            <th>Rating</th>
-            <th>Ulasan</th>
-            <th>Tanggal</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($reviews as $review)
-        <tr>
-            <td>{{ $review->reviewer->name }} ({{ $review->reviewer_role }})</td>
-            <td>{{ $review->reviewed->name }} ({{ $review->reviewed_role }})</td>
-            <td>{{ $review->rating }} / 5</td>
-            <td>{{ $review->comment ?? '-' }}</td>
-            <td>{{ $review->created_at->format('d M Y') }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+            <thead>
+                <tr>
+                    <th>Nama File</th>
+                    <th>Jenis</th>
+                    <th>Tanggal</th>
+                    <th>Format</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="generatedReportsList">
+                @if($reports->isEmpty())
+                    <tr>
+                        <td colspan="5" class="text-center">Belum ada laporan yang dihasilkan.</td>
+                    </tr>
+                @else
+                    @foreach($reports as $report)
+                    <tr data-id="{{ $report->id }}">
+                        <td>{{ $report->file_name }}</td>
+                        <td>{{ $report->type }}</td>
+                        <td>{{ $report->date }}</td>
+                        <td>{{ strtoupper($report->format) }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ route('download.report', $report->id) }}" class="btn btn-success btn-sm">Download</a>
+                                <form action="{{ route('delete.report', $report->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus laporan ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
     </div>
+</div>
 
             <!-- Pengaturan Page -->
             <div id="pengaturan" class="page">
@@ -2104,6 +2100,168 @@ function updatePengajuanStatus(selectElement, pengajuanId) {
     });
 }
 
+// === Fungsi untuk menghasilkan laporan ===
+function generateReport() {
+    const reportType = document.getElementById('reportType').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    if (!reportType || !startDate || !endDate) {
+        showReportMessage('warning', 'Silakan pilih jenis laporan dan rentang tanggal.');
+        return;
+    }
+    // Tampilkan loading
+    document.getElementById('reportMessage').style.display = 'none';
+    document.getElementById('reportResult').style.display = 'none';
+    fetch('/generate-report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            type: reportType,
+            start_date: startDate,
+            end_date: endDate
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Isi tabel hasil laporan
+            populateReportTable(data.data, reportType);
+            document.getElementById('reportTitle').textContent = `Hasil Laporan: ${getReportTypeName(reportType)}`;
+            document.getElementById('totalData').textContent = data.data.length;
+            document.getElementById('reportResult').style.display = 'block';
+            showReportMessage('success', 'Laporan berhasil dihasilkan!');
+        } else {
+            showReportMessage('danger', data.message || 'Gagal menghasilkan laporan.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showReportMessage('danger', 'Terjadi kesalahan. Silakan coba lagi.');
+    });
+}
+
+// === Fungsi untuk mengisi tabel laporan ===
+function populateReportTable(data, type) {
+    const headers = document.getElementById('reportHeaders');
+    const body = document.getElementById('reportBody');
+    // Kosongkan tabel
+    headers.innerHTML = '';
+    body.innerHTML = '';
+    if (data.length === 0) {
+        body.innerHTML = '<tr><td colspan="10" class="text-center">Tidak ada data yang ditemukan.</td></tr>';
+        return;
+    }
+    // Tentukan header berdasarkan tipe laporan
+    let columns = [];
+    switch(type) {
+        case 'donatur':
+            columns = ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'];
+            break;
+        case 'penerima':
+            columns = ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Status', 'Tanggal Dibuat'];
+            break;
+        case 'donasi':
+            columns = ['ID', 'Judul Buku', 'Donatur', 'Kategori', 'Status', 'Tanggal Donasi'];
+            break;
+        case 'verifikasi':
+            columns = ['ID Pengajuan', 'Judul Buku', 'Penerima', 'Status', 'Tanggal'];
+            break;
+        case 'ulasan':
+            columns = ['ID', 'Penulis', 'Penerima', 'Rating', 'Ulasan', 'Tanggal'];
+            break;
+        default:
+            columns = ['ID', 'Data'];
+    }
+    // Buat header
+    columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        headers.appendChild(th);
+    });
+    // Buat baris data
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        switch(type) {
+            case 'donatur':
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.alamat || '-'}</td>
+                    <td>${item.telepon || '-'}</td>
+                    <td>${item.is_active ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-warning">Nonaktif</span>'}</td>
+                    <td>${new Date(item.created_at).toLocaleString()}</td>
+                `;
+                break;
+            case 'penerima':
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.alamat || '-'}</td>
+                    <td>${item.telepon || '-'}</td>
+                    <td>${item.is_active ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-warning">Nonaktif</span>'}</td>
+                    <td>${new Date(item.created_at).toLocaleString()}</td>
+                `;
+                break;
+            case 'donasi':
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.judul_buku}</td>
+                    <td>${item.donatur?.name || '-'}</td>
+                    <td>${item.kategori}</td>
+                    <td>${item.status === 'menunggu' ? '<span class="badge badge-warning">Menunggu</span>' : item.status === 'diverifikasi' ? '<span class="badge badge-success">Diverifikasi</span>' : item.status === 'ditolak' ? '<span class="badge badge-danger">Ditolak</span>' : '<span class="badge badge-primary">Terkirim</span>'}</td>
+                    <td>${new Date(item.tanggal).toLocaleDateString()}</td>
+                `;
+                break;
+            case 'verifikasi':
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.buku?.judul || '-'}</td>
+                    <td>${item.user?.name || '-'}</td>
+                    <td>${item.status === 'menunggu' ? '<span class="badge badge-warning">Menunggu</span>' : item.status === 'disetujui' ? '<span class="badge badge-success">Disetujui</span>' : '<span class="badge badge-danger">Ditolak</span>'}</td>
+                    <td>${new Date(item.tanggal).toLocaleDateString()}</td>
+                `;
+                break;
+            case 'ulasan':
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.reviewer?.name || '-'}</td>
+                    <td>${item.reviewed?.name || '-'}</td>
+                    <td>${item.rating}/5</td>
+                    <td>${item.comment || '-'}</td>
+                    <td>${new Date(item.created_at).toLocaleDateString()}</td>
+                `;
+                break;
+            default:
+                row.innerHTML = `<td>${item.id}</td><td>${JSON.stringify(item)}</td>`;
+        }
+        body.appendChild(row);
+    });
+}
+// === Helper Functions ===
+function getReportTypeName(type) {
+    const names = {
+        'donatur': 'Donatur',
+        'penerima': 'Penerima',
+        'donasi': 'Donasi Buku',
+        'verifikasi': 'Verifikasi',
+        'ulasan': 'Ulasan & Rating'
+    };
+    return names[type] || type;
+}
+function showReportMessage(type, message) {
+    const msgDiv = document.getElementById('reportMessage');
+    msgDiv.className = `alert alert-${type}`;
+    msgDiv.textContent = message;
+    msgDiv.style.display = 'block';
+    setTimeout(() => {
+        msgDiv.style.display = 'none';
+    }, 5000);
+}
 </script>
 </body>
 </html>
