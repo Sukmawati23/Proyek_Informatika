@@ -16,9 +16,6 @@ use App\Http\Controllers\ChatController;
 use App\Models\User;
 use App\Http\Controllers\ReviewController;
 
-Route::get('/chat/{notifId}', [ChatController::class, 'showFromNotification'])->name('chat.fromNotif');
-Route::post('/chat/{partnerId}/send', [ChatController::class, 'send'])->name('chat.send');
-
 // === Guest Routes (tanpa autentikasi) ===
 Route::get('/', [LandingController::class, 'index']);
 
@@ -83,6 +80,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/laporan', [DashboardController::class, 'laporan'])->name('laporan');
 
+    // Rute untuk generate laporan
+    Route::post('/generate-report', [DashboardController::class, 'generateReport'])->name('generate.report');
+    // Rute untuk download laporan
+    Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])->name('download.report');
+    // Rute untuk hapus laporan
+    Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])->name('delete.report');
+
+    // Di web.php
+    Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])
+        ->name('download.report')
+        ->middleware('auth', 'is_admin');
+
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/{room}', [ChatController::class, 'show'])->name('chat.show');
     Route::post('/chat/{room}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
@@ -128,12 +137,3 @@ Route::delete('/penerima/{id}', [UserController::class, 'destroyPenerima'])
 
 Route::get('/api/notifikasi', [\App\Http\Controllers\DashboardController::class, 'getNotifikasi'])
     ->middleware('auth');
-
-// Rute untuk generate laporan
-Route::post('/generate-report', [DashboardController::class, 'generateReport'])->name('generate.report');
-
-// Rute untuk download laporan
-Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])->name('download.report');
-
-// Rute untuk hapus laporan
-Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])->name('delete.report');
