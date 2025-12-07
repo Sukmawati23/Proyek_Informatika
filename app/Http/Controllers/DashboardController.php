@@ -122,6 +122,7 @@ class DashboardController extends Controller
                 'pengajuanMap' => $pengajuanMap,
                 'ulasanMap' => $ulasanMap,
                 'notifications' => $user->notifications()->latest()->take(5)->get(),
+                'user' => $user,
             ]);
         }
 
