@@ -520,8 +520,6 @@
                         </div>
                     </div>
                     <div class="user-dropdown">
-                        <a href="#" id="profileLink"><i class="fas fa-fw fa-user"></i> Profil</a>
-                        <a href="#" class="nav-link" data-page="pengaturan"><i class="fas fa-fw fa-cog"></i> Pengaturan</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -990,236 +988,134 @@
 </div>
 
             <!-- Pengaturan Page -->
-            <div id="pengaturan" class="page">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Pengaturan Sistem</h3>
+<div id="pengaturan" class="page">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Pengaturan Sistem</h3>
+        </div>
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="profile">Profil Admin</div>
+                <div class="tab" data-tab="system">Sistem</div>
+                <div class="tab" data-tab="notifications">Notifikasi</div>
+                <div class="tab" data-tab="security">Keamanan</div>
+            </div>
+
+            <!-- Profil Admin Tab -->
+            <div class="tab-content active" id="profile-tab">
+                <form id="updateProfileForm">
+                    @csrf
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="adminName">Nama Admin</label>
+                            <input type="text" id="adminName" class="form-control" value="{{ Auth::user()->name }}" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="adminEmail">Email</label>
+                            <input type="email" id="adminEmail" class="form-control" value="{{ Auth::user()->email }}" required>
+                        </div>
                     </div>
-                    <div class="tab-container">
-                        <div class="tabs">
-                            <div class="tab active" data-tab="profile">Profil Admin</div>
-                            <div class="tab" data-tab="system">Sistem</div>
-                            <div class="tab" data-tab="notifications">Notifikasi</div>
-                            <div class="tab" data-tab="security">Keamanan</div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="adminTelepon">Telepon</label>
+                            <input type="text" id="adminTelepon" class="form-control" value="{{ Auth::user()->telepon }}">
                         </div>
-                        
-                        <div class="tab-content active" id="profile-tab">
-                            <form>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="adminName">Nama Admin</label>
-                                        <input type="text" id="adminName" class="form-control" value="Admin BookDonation">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="adminEmail">Email</label>
-                                        <input type="email" id="adminEmail" class="form-control" value="admin@bookdonation.com">
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="adminPhone">Telepon</label>
-                                        <input type="text" id="adminPhone" class="form-control" value="08123456789">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="adminRole">Role</label>
-                                        <input type="text" id="adminRole" class="form-control" value="Super Admin" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="adminPhoto">Foto Profil</label>
-                                    <input type="file" id="adminPhoto" class="form-control">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                            </form>
+                        <div class="form-group col-md-6">
+                            <label for="adminRole">Role</label>
+                            <input type="text" id="adminRole" class="form-control" value="{{ Auth::user()->role }}" disabled>
                         </div>
-                        
-                        <div class="tab-content" id="system-tab">
-                            <div class="settings-section">
-                                <h4>Pengaturan Umum</h4>
-                                <form>
-                                    <div class="form-group">
-                                        <label for="siteName">Nama Situs</label>
-                                        <input type="text" id="siteName" class="form-control" value="BookDonation">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="siteDescription">Deskripsi Situs</label>
-                                        <textarea id="siteDescription" class="form-control">Platform donasi buku untuk pendidikan anak Indonesia</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="timezone">Zona Waktu</label>
-                                        <select id="timezone" class="form-control">
-                                            <option value="WIB">WIB (UTC+7)</option>
-                                            <option value="WITA">WITA (UTC+8)</option>
-                                            <option value="WIT">WIT (UTC+9)</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
-                                </form>
-                            </div>
-                            
-                            <div class="settings-section">
-                                <h4>Pengaturan Donasi</h4>
-                                <form>
-                                    <div class="form-group">
-                                        <label for="maxBooks">Maksimal Buku per Donasi</label>
-                                        <input type="number" id="maxBooks" class="form-control" value="10">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="verificationDays">Waktu Verifikasi (hari)</label>
-                                        <input type="number" id="verificationDays" class="form-control" value="3">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="autoApprove" checked>
-                                            Auto-approve donatur terdaftar
-                                        </label>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
-                                </form>
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminFoto">Foto Profil</label>
+                        <input type="file" id="adminFoto" class="form-control-file" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </form>
+            </div>
+
+            <!-- Sistem Tab -->
+            <div class="tab-content" id="system-tab">
+                <form id="updateSystemForm">
+                    @csrf
+                    <div class="form-group">
+                        <label for="siteName">Nama Situs</label>
+                        <input type="text" id="siteName" class="form-control" value="BookDonation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="siteDescription">Deskripsi Situs</label>
+                        <textarea id="siteDescription" class="form-control" rows="3" required>Platform donasi buku untuk pendidikan anak Indonesia</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </form>
+            </div>
+
+            <!-- Notifikasi Tab -->
+            <div class="tab-content" id="notifications-tab">
+                <form id="updateNotificationsForm">
+                    @csrf
+                    <div class="form-group">
+                        <label>Pengaturan Umum</label>
+                        <div class="form-check">
+                            <input type="checkbox" id="notifyDonasiBaru" class="form-check-input">
+                            <label for="notifyDonasiBaru" class="form-check-label">Notifikasi untuk donasi baru</label>
                         </div>
-                        
-                        <div class="tab-content" id="notifications-tab">
-                            <div class="settings-section">
-                                <h4>Pengaturan Notifikasi</h4>
-                                <form>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="notifNewDonation" checked>
-                                            Notifikasi untuk donasi baru
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="notifNewRecipient" checked>
-                                            Notifikasi untuk penerima baru
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="notifVerification" checked>
-                                            Notifikasi untuk verifikasi
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>
-                                            <input type="checkbox" id="emailNotifications" checked>
-                                            Aktifkan notifikasi email
-                                        </label>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
-                                </form>
-                            </div>
-                            
-                            <div class="settings-section">
-                                <h4>Notifikasi Terakhir</h4>
-                                <div class="notification-item">
-    <div>
-        @if($donasis->isNotEmpty())
-            @php
-                $donasi = $donasis->first();
-            @endphp
-            <strong>Donasi baru</strong>
-            <p>{{ $donasi->judul_buku }} oleh {{ optional($donasi->user)->name ?? '-' }}</p>
-            <p>1 buku</p> {{-- karena saat ini tabel donasi belum punya field jumlah, anggap 1 --}}
-        @else
-            <p>Tidak ada donasi terbaru.</p>
-        @endif
-    </div>
-    <span>
-        @if($donasis->isNotEmpty())
-            {{ $donasis->first()->created_at->diffForHumans() }}
-        @else
-            -
-        @endif
-    </span>
-</div>
-                                <div class="notification-item">
-    <div>
-        @if($penerimas->isNotEmpty())
-            @php $penerima = $penerimas->first(); @endphp
-            <strong>Penerima baru</strong>
-            <p>{{ $penerima->name }} telah bergabung</p>
-        @else
-            <p>Tidak ada penerima baru.</p>
-        @endif
-    </div>
-    <span>
-        @if($penerimas->isNotEmpty())
-            {{ $penerimas->first()->created_at->diffForHumans() }}
-        @else
-            -
-        @endif
-    </span>
-</div>
-                               <div class="notification-item">
-    <div>
-        @if($verifications->isNotEmpty())
-            <strong>{{ $verifications->count() }} donasi menunggu verifikasi</strong>
-        @else
-            <strong>Tidak ada donasi menunggu verifikasi</strong>
-        @endif
-    </div>
-    <span>Baru saja</span>
-</div>
-                            </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="notifyPenerimaBaru" class="form-check-input">
+                            <label for="notifyPenerimaBaru" class="form-check-label">Notifikasi untuk penerima baru</label>
                         </div>
-                        
-                        <div class="tab-content" id="security-tab">
-                            <div class="settings-section">
-                                <h4>Keamanan Akun</h4>
-                                <form>
-                                    <div class="form-group">
-                                        <label for="currentPassword">Password Saat Ini</label>
-                                        <input type="password" id="currentPassword" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="newPassword">Password Baru</label>
-                                        <input type="password" id="newPassword" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="confirmPassword">Konfirmasi Password Baru</label>
-                                        <input type="password" id="confirmPassword" class="form-control">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Ubah Password</button>
-                                </form>
-                            </div>
-                            
-                            <div class="settings-section">
-                                <h4>Sesi Aktif</h4>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Perangkat</th>
-                                            <th>IP Address</th>
-                                            <th>Terakhir Aktif</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($sessions as $session)
-                                        <tr>
-                                            <td>{{ $session->device }}</td>
-                                            <td>{{ $session->ip_address }}</td>
-                                            <td>{{ $session->last_active }}</td>
-                                            <td>
-                                                <button class="btn btn-danger btn-sm">Logout</button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="notifyVerifikasi" class="form-check-input">
+                            <label for="notifyVerifikasi" class="form-check-label">Notifikasi untuk verifikasi</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="enableEmailNotify" class="form-check-input">
+                            <label for="enableEmailNotify" class="form-check-label">Aktifkan notifikasi email</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </form>
+
+                <div class="mt-4">
+                    <h5>Notifikasi Terakhir</h5>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Donasi baru diterima
+                            <span class="badge badge-secondary badge-pill">1 jam lalu</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Penerima baru terdaftar
+                            <span class="badge badge-secondary badge-pill">2 jam lalu</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Verifikasi diperlukan
+                            <span class="badge badge-secondary badge-pill">3 jam lalu</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="footer">
-                <p>&copy; 2023 BookDonation. All rights reserved.</p>
+
+            <!-- Keamanan Tab -->
+            <div class="tab-content" id="security-tab">
+                <form id="changePasswordForm">
+                    @csrf
+                    <div class="form-group">
+                        <label for="currentPassword">Password Saat Ini</label>
+                        <input type="password" id="currentPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password Baru</label>
+                        <input type="password" id="newPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ubah Password</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
     
     <!-- Profile Modal -->
     <div id="profileModal" class="modal">
@@ -1252,6 +1148,7 @@
             </form>
         </div>
     </div>
+    
     
     <!-- Modal Tambah Donatur -->
 <div id="addDonaturModal" class="modal">
@@ -2302,6 +2199,44 @@ navLinks.forEach(link => {
         document.getElementById(pageId).classList.add('active');
     });
 });
+
+// Tab Switching
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Remove active class from all tabs and content
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+
+        // Add active class to clicked tab
+        this.classList.add('active');
+
+        // Show corresponding content
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId + '-tab').classList.add('active');
+    });
+});
+
+// Form Handling (Contoh sederhana)
+document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Profil berhasil diperbarui!');
+});
+
+document.getElementById('updateSystemForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Pengaturan sistem berhasil diperbarui!');
+});
+
+document.getElementById('updateNotificationsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Pengaturan notifikasi berhasil diperbarui!');
+});
+
+document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Password berhasil diubah!');
+});
+
 
 </script>
 </body>
