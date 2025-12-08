@@ -3,80 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <title>Daftar Sebagai Donatur</title>
+    
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- ICON -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
         body {
-            background-color: #00002c;
-            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000018, #001133);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
         }
 
         .container {
-            width: 800px;
-            margin: 50px auto;
-            padding: 50px;
-            border-radius: 10px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 55px 50px;
+            background: rgba(0, 0, 30, 0.65);
+            border-radius: 22px;
+            border: 1px solid rgba(0, 150, 255, 0.25);
+            backdrop-filter: blur(14px);
             color: white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.55);
         }
 
         .container img {
             display: block;
-            margin: 0 auto 10px;
-            width: 150px;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,150,255,0.45);
         }
 
         .container h2 {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 25px;
-            font-size: 25px;
+            font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 25px;
         }
 
         .form-group {
-            margin-bottom: 10px;
-            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
         }
 
         .form-group i {
-            margin-right: 8px;
+            margin-right: 10px;
+            color: #66c8ff;
         }
 
         .form-control {
-            width: 93%;
-            padding: 20px;
-            margin-top: 5px;
-            border: none;
-            border-radius: 5px;
-            font-size: 20px;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(0, 0, 55, 0.45);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 17px;
+            outline: none;
+            transition: 0.3s;
         }
 
         .form-control:focus {
-            outline: none;
+            border-color: #0099ff;
+            box-shadow: 0 0 10px rgba(0,150,255,0.4);
         }
 
         .form-check {
-            margin: 10px 0;
+            margin: 20px 0;
+            font-size: 16px;
         }
 
         .form-check-label {
-            font-size: 20px;
+            margin-left: 6px;
         }
 
         .btn-submit {
-            width: 98%;
+            width: 100%;
             padding: 20px;
-            background-color: white;
-            color: #00002c;
+            background: linear-gradient(135deg, #007adf, #00b5ff);
             border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
+            border-radius: 12px;
+            color: white;
             font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
         }
 
         .btn-submit:hover {
-            background-color: #ddd;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0,150,255,0.4);
+        }
+
+        .alert-danger {
+            background: rgba(255,0,0,0.25);
+            padding: 15px;
+            border-left: 3px solid #ff4444;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .alert-danger ul {
+            margin: 0;
+            padding: 0 0 0 20px;
+        }
+
+        @media(max-width:480px) {
+            .container {
+                padding: 35px 25px;
+            }
+            .btn-submit {
+                font-size: 18px;
+                padding: 16px;
+            }
         }
     </style>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="container">

@@ -3,69 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <title>Lupa Kata Sandi</title>
+    
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- ICON -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #00002c;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding: 50px;
-            font-size: 20px;
+            background: linear-gradient(135deg, #000018, #001133);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+            align-items: center;
+            min-height: 100vh;
         }
+
         .container {
-            width: 90%;
-            max-width: 700px; /* Batas lebar maksimal */
-            padding: 30px;
-            color: white;
+            width: 100%;
+            max-width: 1000px;
+            padding: 55px 45px;
+            background: rgba(0, 0, 30, 0.65);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            border: 1px solid rgba(0,150,255,0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.55);
             text-align: center;
-            margin: auto;
-            font-size: 20px;
+            color: white;
         }
-        .container h2 {
+
+        .container img {
+            width: 140px;
+            height: 140px;
             margin-bottom: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,150,255,0.45);
+        }
+
+        .container h2 {
             font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
+
+        .container p {
+            margin-bottom: 25px;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
         .form-control {
-            width: 94%;
-            padding: 20px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 20px;
+            width: 100%;
+            padding: 18px;
+            background: rgba(0, 0, 55, 0.45);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            outline: none;
+            transition: .3s;
         }
+
+        .form-control:focus {
+            border-color: #0099ff;
+            box-shadow: 0 0 10px rgba(0,150,255,.4);
+        }
+
         .btn-submit {
             width: 100%;
-            padding: 20px;
-            background-color: white;
-            font-size: 20px;
-            color: #00002c;
+            padding: 18px;
+            background: linear-gradient(135deg, #007adf, #00b5ff);
             border: none;
-            border-radius: 5px;
-            font-weight: bold;
+            border-radius: 12px;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
             cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
         }
+
         .btn-submit:hover {
-            background-color: #ddd;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0,150,255,0.4);
+        }
+
+        .back-link {
+            color: #bcdcff;
+            margin-top: 18px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: white;
+        }
+
+        .status-box {
+            background: rgba(0, 180, 255, 0.2);
+            padding: 12px;
+            border-left: 3px solid #00b5ff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        @media(max-width:480px) {
+            .container {
+                padding: 35px 25px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="{{ asset('LOGO-SDB.png') }}" alt="Logo" style="width: 40%; margin-bottom: 10px;">
+        <img src="{{ asset('LOGO-SDB.png') }}" alt="Logo">
         <h2>Lupa Kata Sandi</h2>
         <p>Masukkan email Anda untuk mengatur ulang kata sandi</p>
         
         @if (session('status'))
-            <div class="error-message">{{ session('status') }}</div>
+            <div class="status-box">{{ session('status') }}</div>
         @endif
         <form method="POST" action="{{ route('password.email') }}">
             @csrf
-            <div class="form-group">
-                <input type="email" name="email" class="form-control" placeholder="Email" required>
-            </div>
+            
+                <input type="email" name="email" class="form-control" placeholder="Masukkan Email" required>
+            
             <button type="submit" class="btn-submit">Kirim Tautan Reset</button>
         </form>
         
-        <a href="{{ route('login') }}" style="color: white; display: block; margin: 10px 0;">Kembali ke Masuk</a>
+        <a href="{{ route('login') }}" class="back-link">← Kembali ke Halaman Masuk</a>
     </div>
 </body>
 </html>

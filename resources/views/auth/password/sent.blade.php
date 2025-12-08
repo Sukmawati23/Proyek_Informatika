@@ -3,61 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Email Terkirim</title>
-    <style>
+     <style>
         body {
             background-color: #00002c;
             font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding: 50px;
-            font-size: 20px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            color: white;
         }
+
         .container {
-            width: 800px;
-            margin: auto;
-            background-color: #f0f0f0;
-            padding: 30px;
-            border-radius: 10px;
-            color: #00002c;
+            width: 90%;
+            max-width: 1000px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 123, 255, 0.25);
+            backdrop-filter: blur(6px);
         }
-        .container h2 {
+
+        .container img {
+            width: 45%;
             margin-bottom: 20px;
-            font-size: 30px;
         }
-        .btn-submit {
-            width: 100%;
-            padding: 20px;
-            background-color: white;
-            color: #00002c;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 20px
+
+        .container h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .container p {
+            color: black;
+            margin: 5px 0 12px;
+            font-size: 16px;
         }
 
         .btn {
-            width: 90%;
-            padding: 20px;
-            background-color: #00002c;
+            margin-top: 25px;
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background: #00002c;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
-            font-size: 20px;
-            margin-top: 20px;
+            font-size: 18px;
+            transition: .2s;
         }
+
         .btn:hover {
-            background-color: #000066;
-            font-size: 20px
+            opacity: 0.85;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="{{ asset('email-image.png') }}" alt="Email" style="width: 40%; margin-bottom: 20px;">
+        <img src="{{ asset('email-image.png') }}" alt="Email" >
         <h2>Email Terkirim!</h2>
         <p>Silahkan periksa email Anda!</p>
         <p>Kami telah mengirimkan tautan untuk mengatur ulang kata sandi ke alamat email Anda.</p>
