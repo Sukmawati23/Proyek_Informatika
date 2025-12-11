@@ -12,12 +12,14 @@
             margin: 0;
             padding: 0;
             font-size: 25px;
+            background-color: #001447 !important;
+            color: white !important;
         }
         
         .container {
             font-size: 25px;
             margin: auto;
-            background-color: white;
+            background-color: transparent;
             padding: 20px;
             border-radius: 10px;
         }
@@ -29,13 +31,9 @@
         .logo {
             display: block;
             margin: 0 auto 20px;
-            max-width: 200px;
+            max-width: 160px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    
         button {
             padding: 20px;
             background-color: #000080;
@@ -267,14 +265,295 @@
         border-radius: 24px;
         }
 
+        .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #001B70;
+    border-top: 2px solid #ddd;
+    z-index: 999;
+}
+
+.bottom-nav button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 13px;
+    text-align: center;
+}
+
+.bottom-nav i {
+    font-size: 22px;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.active-tab {
+    color: #4FD1C5 !important;
+}
+#homeSection {
+    margin-bottom: 100px;  
+}
+
+        /* Tombol donasi */
+        #donationForm button {
+            width: 100%;
+            background-color: #001a66;
+            color: white;
+            padding: 14px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
+        }
+        h2, h1, h3 {
+            text-align: center;
+        }
+
+        /* Success message agar rapi */
+        .success-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ===== BACKGROUND HALAMAN ===== */
+body {
+    background-color: #001447 !important;
+    color: white !important;
+}
+/* ===== JUDUL HALO USER ===== */
+.greeting-title {
+    color: white !important;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 34px;
+    font-weight: bold;
+}
+
+/* ===== FORM WRAPPER PUTIH ===== */
+.form-wrapper {
+    background: #fff !important;
+    padding: 50px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+.form-wrapper input,
+.form-wrapper select,
+.form-wrapper textarea {
+    width: 100%;
+    padding: 14px;
+    font-size: 17px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff !important;
+    color: #000 !important;
+    margin-bottom: 15px;
+}
+
+.form-wrapper label {
+    color: #000 !important;
+    font-weight: 600;
+}
+
+/* ===== CARD LOGO ===== */
+.logo-card {
+    background: #001B70;
+    padding: 35px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 520px;
+    margin: 20px auto 10px auto;
+    text-align: center;
+}
+
+/* ===== NAVBAR PUTIH ===== */
+.bottom-nav {
+    background: white !important;
+    border-top: 2px solid #dcdcdc !important;
+}
+
+.bottom-nav button {
+    color: #001B70 !important;
+}
+
+.bottom-nav i {
+    color: #001B70 !important;
+}
+
+/* Tab aktif */
+.active-tab {
+    color: #007bff !important;
+}
+
+/* ===== TABEL STATUS (PUTIH) ===== */
+.status-table-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 94%;
+    margin: 20px auto;
+    color: black;
+}
+
+.status-table-container table th {
+    background: #001B70 !important;
+    color: white !important;
+}
+
+.status-table-container table td {
+    color: black !important;
+}
+
+.welcome-text {
+    text-align: center;             /* rata tengah */
+    margin-top: 30px;               /* beri jarak */
+    font-size: 28px;
+    color: white;
+    font-weight: 600;
+}
+
+.hide-header {
+    display: none !important;
+}
+
+#riwayatSection h2 {
+    margin-top: 30px !important;
+    margin-bottom: 20px !important;
+    text-align: center;
+}
+
+/* ===== CARD RIWAYAT YANG LEBIH RAPI ===== */
+.riwayat-card {
+    background: white;
+    color: black;
+    padding: 18px 25px;
+    border-radius: 12px;
+    margin: 20px auto;     /* kasih jarak dari atas & bawah */
+    width: 100%;
+    max-width: 100% !important; ;   
+    box-sizing: border-box;   /* BIAR TIDAK PANJANG */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+#riwayatSection .container,
+#riwayatSection .wrapper,
+#riwayatSection .content,
+#riwayatSection .box {
+    background: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+#riwayatSection {
+    background: transparent !important;
+}
+
+#riwayatSection > div {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.container {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* KOTAK PUTIH UNTUK NOTIFIKASI */
+
+.notif-box {
+    background: white;
+    color: black;
+    padding: 18px 20px;
+    border-radius: 12px;
+    margin: 15px 0;
+    width: 100% !important;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.2);
+    box-sizing: border-box; 
+}
+
+/* KOTAK NOTIFIKASI FULL WIDTH */
+#notifContainer {
+    width: 100%;
+    padding: 0 20px; /* biar ada ruang kiri kanan dikit */
+    box-sizing: border-box;
+}
+
+/* KOTAK NOTIFIKASI FULL WIDTH */
+#notifContainer {
+    width: 100%;
+    padding: 0 20px; /* biar ada ruang kiri kanan dikit */
+    box-sizing: border-box;
+}
+.notif-box a.chat-link {
+    color: #001B70;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#statusSection h2 {
+    font-size: 35px !important;
+    margin-bottom: 40px !important;  /* atur jarak sesuai selera */
+}
+
+#riwayatSection h2 {
+    font-size: 35px !important;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.section-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    filter: invert(100%); /* biar putih kyk icon notif */
+}
+
+.section-title {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ICON BESAR UNTUK RIWAYAT DONASI & STATUS */
+.section-icon-large {
+    font-size: 80px;        /* 🔥 PERBESAR ICON DI SINI */
+    color: white;           /* 🔥 JADI PUTIH */
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/*.form-header {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto -10px auto; // tepat di atas formulir 
+    color: white;
+    font-size: 26px;
+    font-weight: 500;
+    text-align: left;   // supaya tidak rata tengah 
+    padding-left: 10px;
+    }*/
+
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="LOGO-SDB.png" alt="Logo" class="logo">
-        <h1 style="font-size: 30px">Dashboard Donatur</h1>
-        <p id="welcomeText">Selamat datang, {{ $user->name }}!</p>
-        
+
         {{-- Pesan sukses --}}
         @if(session('success'))
         <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
@@ -295,6 +574,11 @@
         @endif
 
         <!-- Form Donasi -->
+        <div id="homeSection" class="form-container">
+            <img src="LOGO-SDB.png" alt="Logo" class="logo">
+            <h3 class="greeting-title">Halo, {{ $user->name }}!</h3>
+            <p class="welcome-text">Selamat datang!</p>
+            <div class="form-wrapper">
         <form id="donationForm" action="{{ route('donasi.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -340,7 +624,7 @@
 
         <button type="submit">Donasikan Buku</button>
     </form>
-
+    </div>
 
         <div class="success-message" id="successMessage">
             <img src="checkmark.png" alt="Checkmark">
@@ -348,55 +632,98 @@
             <p>Terima kasih telah mendonasikan buku!</p>
             <button onclick="addAnotherDonation()">Tambah Donasi Lagi</button>
         </div>
+    </div>
 
-        <div class="donation-history">
-            <h2>Riwayat Donasi</h2>
-            <div class="status-title">Riwayat Donasi Anda:</div>
-            <ul>
-                @forelse($donasis as $donasi)
-    <li>
-        <strong>{{ $donasi->judul_buku }}</strong> — 
-        <em>{{ ucfirst($donasi->status) }}</em>
-        <small>({{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }})</small>
-        <br><span style="font-size:0.85em; color:#666;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
-        <br><span style="font-size:0.85em; color:#666;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
+       <!-- ========== RIWAYAT DONASI SECTION ========== -->
+<div id="riwayatSection" style="display:none; padding-bottom:80px;">
 
-        {{-- Cek apakah ada pengajuan yang disetujui --}}
+    <!-- ICON RIWAYAT -->
+<i class="fas fa-book section-icon-large"></i>
+
+    <h2 style="font-size:26px; text-align:center; color:white; margin-bottom:20px;">
+        Riwayat Donasi Anda
+    </h2>
+
+
+    <div class="riwayat-card">
+    <!-- ====== LIST RIWAYAT BUKU ====== -->
+    <div style="margin-bottom:25px;">
+        @forelse($donasis as $donasi)
+            <div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:12px; box-shadow:0 2px 6px rgba(0,0,0,0.07);">
+
+                <strong style="font-size:18px;">{{ $donasi->judul_buku }}</strong>
+                — <em>{{ ucfirst($donasi->status) }}</em><br>
+
+                <small style="color:#666;">
+                    {{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }}
+                </small>
+
+                <br><span style="font-size:0.85em; color:#555;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
+                <br><span style="font-size:0.85em; color:#555;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
+
+                @php
+                    $pengajuan = $pengajuanMap[$donasi->id] ?? null;
+                @endphp
+
+                @if($pengajuan)
+                    <br>
+                    <span style="font-size:0.85em; color:green; display:block; margin-top:4px;">
+                        ✅ Telah diajukan oleh: {{ $pengajuan->user->name ?? 'Penerima' }}
+                    </span>
+
+                    @php
+                        $ulasan = $ulasanMap[$donasi->id] ?? null;
+                    @endphp
+
+                    @if($ulasan)
+                        <span style="font-size:0.85em; color:#FFD700;">
+                            ⭐ {{ $ulasan->rating }}/5 — "{{ $ulasan->comment ?? 'Tanpa komentar' }}"
+                        </span>
+                    @else
+                        <a href="{{ route('ulasan.form', $pengajuan->id) }}" 
+                           class="btn btn-warning btn-sm" 
+                           style="font-size:0.8em; padding:4px 8px; margin-top:6px; display:inline-block;">
+                            Beri Ulasan ke Penerima
+                        </a>
+                    @endif
+                @else
+                    <br>
+                    <span style="font-size:0.85em; color:#aaa;">
+                        belum diajukan penerima
+                    </span>
+                @endif
+
+            </div>
+        @empty
+            <p style="color:#777; font-size:16px;">Belum ada donasi.</p>
+        @endforelse
+    </div>
+    </div>
+</div>
+
+<!-- ========== STATUS PENGIRIMAN SECTION (TERPISAH) ========== -->
+<div id="statusSection" style="display:none; padding-bottom:80px;">
+    <!-- ICON STATUS -->
+    <i class="fas fa-shipping-fast section-icon-large"></i>
+
+    <h3 style="font-size:26px; text-align:center; color:white; margin-bottom:20px;">
+        Status Pengiriman
+    </h3>
+
+
+
+    <div class="riwayat-card">
         @php
-            $pengajuan = $pengajuanMap[$donasi->id] ?? null;
+            $waitingCount = $donasis->where('status', 'menunggu')->count();
+            $receivedCount = $donasis->where('status', 'diterima')->count();
         @endphp
 
-        @if($pengajuan)
-            <br><span style="font-size:0.85em; color:green;">✅ Buku telah diajukan oleh: {{ $pengajuan->user->name ?? 'Penerima' }}</span>
-            
-            @php
-                $ulasan = $ulasanMap[$donasi->id] ?? null;
-            @endphp
-
-            @if($ulasan)
-                <br><span style="font-size:0.85em; color:#FFD700;">⭐ {{ $ulasan->rating }}/5 — "{{ $ulasan->comment ?? 'Tanpa komentar' }}"</span>
-            @else
-                <br>
-                <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn btn-warning btn-sm" style="font-size:0.8em; padding:2px 6px; margin-top:4px;">
-                    Beri Ulasan ke Penerima
-                </a>
-            @endif
-        @else
-            <br><span style="font-size:0.85em; color:#aaa;">belum diajukan penerima</span>
-        @endif
-    </li>
-@empty
-    <li>Belum ada donasi.</li>
-@endforelse
-            </ul>
-            <div class="status-title">Status Pengiriman:</div>
-            @php
-                $waitingCount = $donasis->where('status', 'menunggu')->count();
-                $receivedCount = $donasis->where('status', 'diterima')->count();
-            @endphp
-            <p>Menunggu: {{ $waitingCount }} buku</p>
-            <p>Diterima: {{ $receivedCount }} buku</p>
+        <p style="margin:6px 0;">📦 Menunggu: <strong>{{ $waitingCount }}</strong> buku</p>
+        <p style="margin:6px 0;">📗 Diterima: <strong>{{ $receivedCount }}</strong> buku</p>
         </div>
+    </div>
+
+
 
         <!-- Profil -->
         <div id="profileSection">
@@ -406,7 +733,9 @@
                 <i class="fas fa-camera"></i>
                 <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
             </div>
-            <p style="margin-top: 10px; font-weight: bold;"id="profileName">{{ $user->name }}</p>
+            <p style="margin-top: 10px; font-weight: bold;">
+                {{ Auth::user()->name }}
+            </p>
 
             <div class="profile-menu">
                 <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
@@ -415,11 +744,11 @@
                 <div onclick="showTerms()"><i class="fas fa-file-alt"></i> Syarat & Ketentuan</div>
                 <!-- Ubah bagian Logout di HTML -->
                 <div onclick="confirmLogout()" 
-    style="display: flex; align-items: center; gap: 10px; padding: 20px; cursor: pointer; color: white; font-size: 25px; text-decoration: none;">
-    <i class="fas fa-sign-out-alt"></i> Logout
-</div>
+        style="display: flex; align-items: center; gap: 10px; padding: 20px; cursor: pointer; color: white; font-size: 25px; text-decoration: none;">
+        <i class="fas fa-sign-out-alt"></i> Logout
             </div>
         </div>
+    </div>
 
         <!-- Notifikasi -->
 <div id="notificationSection" style="display:none;">
@@ -626,14 +955,33 @@
 </div>
 
 
-
-
 <!-- Navigasi Bawah -->
-        <div class="nav">
-            <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
-            <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
-            <i class="fas fa-user" title="Profil" onclick="showProfile()"></i>
-        </div>
+        <div class="bottom-nav">
+    <button onclick="showHome()" id="tabHome">
+        <i class="fas fa-home"></i>
+        Home
+    </button>
+
+    <button onclick="showRiwayat()" id="tabRiwayat">
+        <i class="fas fa-book"></i>
+        Riwayat
+    </button>
+
+    <button onclick="showNotifications()" id="tabNotif">
+        <i class="fas fa-bell"></i>
+        Notif
+    </button>
+
+    <button onclick="showStatus()" id="tabStatus">
+        <i class="fas fa-truck"></i>
+        Status
+    </button>
+
+    <button onclick="showProfile()" id="tabProfile">
+        <i class="fas fa-user"></i>
+        Profil
+    </button>
+</div>
 
 
     </div>
@@ -1041,6 +1389,73 @@ function hideAllSections() {
         if (el) el.style.display = 'none';
     });
 } 
+
+function hideAllSections() {
+    const sections = [
+        "homeSection",
+        "riwayatSection",
+        "notificationSection",
+        "profileSection",
+        "settingsSection",
+        "helpSection",
+        "termsSection",
+        "editAccountSection",
+        "changeEmailSection",
+        "emailSuccessSection",
+        "changePasswordSection",
+        "passwordSuccessSection",
+        "privacySection",
+        "deleteAccountConfirm",
+        "deleteSuccess"
+    ];
+
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    document.querySelectorAll(".bottom-nav button").forEach(btn => {
+        btn.classList.remove("active-tab");
+    });
+}
+
+function showHome() {
+    hideAllSections();
+    document.getElementById("homeSection").style.display = "block";
+    document.getElementById("tabHome").classList.add("active-tab");
+}
+
+function showRiwayat() {
+    hideAllSections();
+    document.getElementById("riwayatSection").style.display = "block";
+    document.getElementById("tabRiwayat").classList.add("active-tab");
+}
+
+function showNotifications() {
+    hideAllSections();
+    document.getElementById("notificationSection").style.display = "block";
+    document.getElementById("tabNotif").classList.add("active-tab");
+}
+
+function showStatus() {
+    hideAllSections();
+    document.getElementById("statusSection").style.display = "block";
+}
+
+function showProfile() {
+    hideAllSections();
+    document.getElementById("profileSection").style.display = "block";
+    document.getElementById("tabProfile").classList.add("active-tab");
+}
+
+function hideAllSections() {
+    document.getElementById("homeSection").style.display = "none";
+    document.getElementById("riwayatSection").style.display = "none";
+    document.getElementById("statusSection").style.display = "none";
+    document.getElementById("notificationSection").style.display = "none";
+    document.getElementById("profileSection").style.display = "none";
+}
+
         </script>  
     </body>
 </html>
