@@ -554,6 +554,10 @@ body {
 <body>
     <div class="container">
 
+        <img src="LOGO-SDB.png" alt="Logo" class="logo">
+        <h1 style="font-size: 30px">Dashboard Donatur</h1>
+        <p id="welcomeText">Selamat datang, {{ $user->name }}!</p>
+
         {{-- Pesan sukses --}}
         @if(session('success'))
         <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
@@ -733,9 +737,9 @@ body {
                 <i class="fas fa-camera"></i>
                 <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
             </div>
-            <p style="margin-top: 10px; font-weight: bold;">
-                {{ Auth::user()->name }}
-            </p>
+
+             <p style="margin-top: 10px; font-weight: bold;"id="profileName">{{ $user->name }}</p>
+
 
             <div class="profile-menu">
                 <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
