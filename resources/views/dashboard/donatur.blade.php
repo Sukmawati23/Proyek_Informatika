@@ -214,6 +214,7 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
+            color: black;
         }
 
         .switch {
