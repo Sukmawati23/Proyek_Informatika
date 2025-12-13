@@ -554,11 +554,6 @@ body {
 </head>
 <body>
     <div class="container">
-
-        <img src="LOGO-SDB.png" alt="Logo" class="logo">
-        <h1 style="font-size: 30px">Dashboard Donatur</h1>
-        <p id="welcomeText">Selamat datang, {{ $user->name }}!</p>
-
         {{-- Pesan sukses --}}
         @if(session('success'))
         <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 10px; transition: 0.5s;">
