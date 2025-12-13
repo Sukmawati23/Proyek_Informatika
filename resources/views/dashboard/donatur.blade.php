@@ -273,7 +273,7 @@
     <div class="container">
         <img src="LOGO-SDB.png" alt="Logo" class="logo">
         <h1 style="font-size: 30px">Dashboard Donatur</h1>
-        <p id="welcomeText">Selamat datang, {{ $user->name }}!</p>
+        <p id="welcomeText">Selamat datang!</p>
         
         {{-- Pesan sukses --}}
         @if(session('success'))
@@ -406,7 +406,7 @@
                 <i class="fas fa-camera"></i>
                 <input type="file" id="uploadFotoProfil" accept="image/*" style="display:none;" onchange="previewFotoProfil(event)" />
             </div>
-            <p style="margin-top: 10px; font-weight: bold;"id="profileName">{{ $user->name }}</p>
+            <p style="margin-top: 10px; font-weight: bold;">Nama Lengkap</p>
 
             <div class="profile-menu">
                 <div onclick="showSettings()"><i class="fas fa-cog"></i> Pengaturan</div>
