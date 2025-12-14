@@ -771,71 +771,243 @@ body {
     </div>
 </div>
 
-
         <!-- Pengaturan Akun -->
-        <div id="settingsSection">
-            <h2 style="background-color:#000080; color:white; padding:10px; border-radius: 5px; text-align:center;">
-                <i class="fas fa-cog"></i> Pengaturan Akun
-            </h2>
-            <div style="margin:20px 0;">
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showEditAccount()">Edit Akun <span style="float:right;">›</span></div>
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangeEmail()">Ubah Email <span style="float:right;">›</span></div>
+<div id="settingsSection" style="display:none; background-color:#00002c; min-height:100vh; padding:20px;">
 
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangePassword()">Ganti Kata Sandi <span style="float:right;">›</span></div>
+    <!-- HEADER -->
+    <h2 style="background-color:#000080; color:white; padding:12px; border-radius:8px; text-align:center;">
+        <i class="fas fa-cog"></i> Pengaturan Akun
+    </h2>
 
-                <div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showPrivacy()">Privasi & Keamanan <span style="float:right;">›</span></div>
+    <!-- CARD PUTIH (INI SAJA YANG PUTIH) -->
+    <div style="
+        background:white;
+        border-radius:12px;
+        margin-top:20px;
+        padding:10px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.2);
+        color:#000;
+    ">
 
-            </div>
-            <div style="margin: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                <span>Kirim notifikasi via email</span>
-                <input type="checkbox" id="emailNotifCheckbox" onchange="saveNotifPreference()" />
-
-            </div>
-            <button onclick="showDeleteAccountConfirm()" style="width:100%; background-color: darkred; color:white; padding:20px; border:none; border-radius:5px; font-weight:bold;font-size:20px;">
-    Hapus Akun
-</button>
-
-            <br><br>
-            <button onclick="showProfile()" style="width:100%; background-color: #000080; color:white; padding:20px; border:none; border-radius:5px;font-size:20px;">
-                Kembali
-            </button>
+        <div style="padding:15px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showEditAccount()">
+            Edit Akun <span style="float:right;">›</span>
         </div>
+
+        <div style="padding:15px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangeEmail()">
+            Ubah Email <span style="float:right;">›</span>
+        </div>
+
+        <div style="padding:15px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="showChangePassword()">
+            Ganti Kata Sandi <span style="float:right;">›</span>
+        </div>
+
+        <div style="padding:15px; cursor:pointer;" onclick="showPrivacy()">
+            Privasi & Keamanan <span style="float:right;">›</span>
+        </div>
+    </div>
+
+    <!-- OPSI BAWAH -->
+    <div style="
+        background:white;
+        border-radius:12px;
+        margin-top:20px;
+        padding:15px;
+        color:#000;
+    ">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Kirim notifikasi via email</span>
+            <input type="checkbox" id="emailNotifCheckbox" />
+        </div>
+    </div>
+
+    <!-- BUTTON HAPUS -->
+    <button onclick="showDeleteAccountConfirm()" style="
+        width:100%;
+        margin-top:20px;
+        background-color:darkred;
+        color:white;
+        padding:18px;
+        border:none;
+        border-radius:10px;
+        font-size:18px;
+        font-weight:bold;
+    ">
+        Hapus Akun
+    </button>
+
+    <button onclick="showProfile()" style="
+        width:100%;
+        margin-top:15px;
+        background-color:#000080;
+        color:white;
+        padding:18px;
+        border:none;
+        border-radius:10px;
+        font-size:18px;
+    ">
+        Kembali
+    </button>
+
+</div>
+
 
         <!-- Bantuan -->
-        <div id="helpSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px;">
-            <h2 style="text-align:center;font-size:40px;"><i class="fas fa-question-circle"></i> Bantuan</h2>
-            <div style="background:#00008070; color:white; border-radius:10px; padding:15px; margin-top:20px;">
-                <strong>Cara mengubah foto profil?</strong>
-                <p>Anda dapat mengubah foto profil pada halaman utama profil.</p>
-            </div>
-            <div style="background:#00008070; color:white; border-radius:10px; padding:20px; margin-top:15px;">
-                <strong>Tidak dapat mengakses akun</strong>
-                <p>Coba atur ulang kata sandi atau hubungi kami untuk bantuan.</p>
-            </div>
-            <div style="background:#00008070; color:white; border-radius:10px; padding:25px; margin-top:15px;">
-                <strong>Ketentuan pengguna</strong>
-                <p>Baca syarat & ketentuan untuk informasi mengenai aturan.</p>
-            </div>
-            <div style="background:#00008070; color:white; border-radius:10px; padding:25px; margin-top:15px;">
-                <strong>Butuh bantuan lainnya?</strong>
-                <p>Hubungi kami di: <a href="mailto:donasibuku.app@gmail.com">donationbook7@gmail.com</a></p>
-            </div>
+<div id="helpSection" style="display:none; background-color:#00002c; min-height:100vh; padding:20px;">
+
+    <!-- HEADER -->
+    <h2 style="
+        background-color:#000080;
+        color:white;
+        padding:12px;
+        border-radius:8px;
+        text-align:center;
+        margin-bottom:20px;
+        font-size:40px;
+    ">
+        <i class="fas fa-question-circle"></i> Bantuan
+    </h2>
+
+    <!-- WRAPPER -->
+    <div style="max-width:3000px; margin:auto;">
+
+        <!-- CARD 1 -->
+        <div style="
+            background:white;
+            border-radius:14px;
+            padding:25px;
+            margin-bottom:18px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+        ">
+            <strong style="font-size:22px; color:#000080;">
+                Cara mengubah foto profil?
+            </strong>
+            <p style="margin-top:10px; font-size:20px; color:#333;">
+                Anda dapat mengubah foto profil pada halaman utama profil.
+            </p>
         </div>
+
+        <!-- CARD 2 -->
+        <div style="
+            background:white;
+            border-radius:14px;
+            padding:25px;
+            margin-bottom:18px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+        ">
+            <strong style="font-size:22px; color:#000080;">
+                Tidak dapat mengakses akun
+            </strong>
+            <p style="margin-top:10px; font-size:20px; color:#333;">
+                Coba atur ulang kata sandi atau hubungi kami untuk bantuan.
+            </p>
+        </div>
+
+        <!-- CARD 3 -->
+        <div style="
+            background:white;
+            border-radius:14px;
+            padding:25px;
+            margin-bottom:18px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+        ">
+            <strong style="font-size:22px; color:#000080;">
+                Ketentuan pengguna
+            </strong>
+            <p style="margin-top:10px; font-size:20px; color:#333;">
+                Baca syarat & ketentuan untuk informasi mengenai aturan.
+            </p>
+        </div>
+
+        <!-- CARD 4 -->
+        <div style="
+            background:white;
+            border-radius:14px;
+            padding:25px;
+            margin-bottom:25px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+        ">
+            <strong style="font-size:22px; color:#000080;">
+                Butuh bantuan lainnya?
+            </strong>
+            <p style="margin-top:10px; font-size:20px; color:#333;">
+                Hubungi kami di:
+                <a href="mailto:donationbook7@gmail.com" style="color:#000080; font-weight:bold;">
+                    donationbook7@gmail.com
+                </a>
+            </p>
+        </div>
+
+        <!-- BUTTON KEMBALI -->
+        <button onclick="showProfile()" style="
+            width:100%;
+            padding:18px;
+            background-color:#000080;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:20px;
+            font-weight:bold;
+        ">
+            Kembali
+        </button>
+
+    </div>
+</div>
+
+
         
-        <!-- Syarat & Ketentuan -->
-        <div id="termsSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
-            <h2 style="color: #ADD8E6;">Syarat & Ketentuan Donatur</h2>
-            <div style="background: #00008070; color: white; padding: 20px; border-radius: 10px; text-align: left;">
-                <ol>
-                    <li>Data yang Anda isi harus benar dan lengkap.</li>
-                    <li>Data Anda aman dan tidak akan dibagikan tanpa izin.</li>
-                    <li>Donasi yang diberikan tidak bisa diminta kembali.</li>
-                    <li>Donasi akan digunakan sesuai tujuan program.</li>
-                    <li>Dengan mendaftar, Anda setuju pada ketentuan ini.</li>
-                </ol>
-                <button onclick="showProfile()" style="margin-top: 20px; padding: 20px; background-color: #000080; color: white; border: none; border-radius: 5px;font-size:20px;width:1600px;">Kembali</button>
-            </div>
-        </div>
+           <!-- Syarat & Ketentuan -->
+<div id="termsSection" style="display:none; background-color:#00002c; min-height:100vh; padding:20px;">
+
+    <!-- HEADER -->
+    <h2 style="
+        background-color:#000080;
+        color:white;
+        padding:12px;
+        border-radius:8px;
+        text-align:center;
+        margin-bottom:20px;
+    ">
+        <i class="fas fa-file-contract"></i> Syarat & Ketentuan Donatur
+    </h2>
+    <!-- CARD PUTIH -->
+    <div style="
+    background:white;
+    border-radius:14px;
+    padding:35px 30px;
+    max-width:3000px;   /* ⬅️ LEBIH PANJANG */
+    margin:auto;
+    color:#000;
+    box-shadow:0 6px 16px rgba(0,0,0,0.3);
+">
+        <ol style="
+        font-size:28px;    
+        line-height:1.9;
+        padding-left:30px;
+        ">
+            <li>Data yang Anda isi harus benar dan lengkap.</li>
+            <li>Data Anda aman dan tidak akan dibagikan tanpa izin.</li>                
+            <li>Donasi yang diberikan tidak bisa diminta kembali.</li>
+            <li>Donasi akan digunakan sesuai tujuan program.</li>
+            <li>Dengan mendaftar, Anda setuju pada ketentuan ini.</li>
+        </ol>
+
+        <!-- BUTTON -->
+        <button onclick="showProfile()" style="
+        margin-top:35px;
+        width:100%;
+        padding:20px;
+        background-color:#000080;
+        color:white;
+        border:none;
+        border-radius:10px;
+        font-size:20px;
+        font-weight:bold;
+        ">
+            Kembali
+        </button>
+    </div>
+</div>
 
         <!-- Halaman Edit Akun -->
 <div id="editAccountSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
@@ -859,21 +1031,53 @@ body {
         <input type="text" id="editTelepon" placeholder="Nomor Telepon" style="width: 100%; margin-bottom: 20px; padding: 20px; border-radius: 5px; border: none;font-size:20px;" />
     </div>
     <button style="background-color: #0000cd; color: white; padding:20px; border: none; border-radius: 8px;font-size:20px;width:500px;" onclick="saveAccountChanges()">Simpan</button>
-    <br><br>
-    <button onclick="showSettings()" style="color: white; background: none; border: none; text-decoration: underline;font-size:20px;">Kembali</button>
+<br><br>
+<button onclick="showSettings()" style="background-color:#0000cd; color:white; padding:20px; border:none; border-radius:8px; font-size:20px; width:500px;">
+    Kembali
+</button>
 </div>
 
 <!-- Halaman Ubah Email -->
 <div id="changeEmailSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px;">
+    
     <h2 style="text-align: center; color: white;">Ubah Email</h2>
-    <div style="background-color: #00008070; color: white; border-radius: 10px; padding: 20px; text-align: center;">
-        <img src="https://img.icons8.com/ios-filled/100/ffffff/new-post.png" style="width:100px; margin-bottom: 20px;" />
-        
-        <input type="email" placeholder="Email Saat ini" id="currentEmail" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
-        <input type="email" placeholder="Email Baru" id="newEmail" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
-        <button onclick="submitEmailChange()" style="width:100%; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;font-size:20px;">PERBAHARUI EMAIL</button>
+
+    <div style="
+        background-color: #00008070;
+        color: white;
+        border-radius: 10px;
+        padding: 30px 20px;
+        text-align: center;
+        max-width: 800px;
+        margin: auto;
+    ">
+        <img src="https://img.icons8.com/ios-filled/100/ffffff/new-post.png"
+             style="width:100px; margin-bottom: 25px;" />
+
+        <input type="email" placeholder="Email Saat ini" id="currentEmail"
+            style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc; font-size:20px;"
+            required>
+
+        <input type="email" placeholder="Email Baru" id="newEmail"
+            style="width:97%; margin-bottom:25px; padding:20px; border-radius:5px; border:1px solid #ccc; font-size:20px;"
+            required>
+
+        <!-- TOMBOL UTAMA (TIDAK DIUBAH) -->
+        <button onclick="submitEmailChange()"
+            style="width:500px; padding:20px; background-color:#000080; color:white; border:none; border-radius:8px; font-size:20px;">
+            PERBAHARUI EMAIL
+        </button>
+
+        <br><br>
+
+        <!-- TOMBOL KEMBALI (SAMA UKURAN) -->
+        <button onclick="showSettings()"
+            style="width:500px; padding:20px; background-color:#000080; color:white; border:none; border-radius:8px; font-size:20px;">
+            Kembali
+        </button>
     </div>
 </div>
+
 
 <!-- Halaman Konfirmasi Email Berhasil -->
 <div id="emailSuccessSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
@@ -887,16 +1091,49 @@ body {
 
 <!-- Halaman Ganti Kata Sandi -->
 <div id="changePasswordSection" style="display: none; background-color: #00002C; color: white; min-height: 100vh; padding: 30px 20px;">
+    
     <h2 style="text-align: center; color: white;">Ganti Kata Sandi</h2>
-    <div style="background-color: #00008070; color: WHITE; border-radius: 10px; padding: 20px; text-align: center;">
-        <img src="https://img.icons8.com/ios-filled/100/ffffff/lock-2.png" style="width:100px; margin-bottom: 20px;" />
-        
-        <input type="password" placeholder="Kata sandi saat ini" id="currentPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
-        <input type="password" placeholder="Kata sandi baru" id="newPassword" style="width:97%; margin-bottom:10px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
-        <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword" style="width:97%; margin-bottom:20px; padding:20px; border-radius:5px; border:1px solid #ccc;font-size:20px;" required>
-        <button onclick="submitPasswordChange()" style="width:100%; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;font-size:20px;">Simpan</button>
+
+    <div style="
+        background-color: #00008070;
+        color: white;
+        border-radius: 10px;
+        padding: 30px 20px;
+        text-align: center;
+        max-width: 800px;
+        margin: auto;
+    ">
+        <img src="https://img.icons8.com/ios-filled/100/ffffff/lock-2.png"
+             style="width:100px; margin-bottom: 25px;" />
+
+        <input type="password" placeholder="Kata sandi saat ini" id="currentPassword"
+            style="width:97%; margin-bottom:15px; padding:20px; border-radius:5px; border:1px solid #ccc; font-size:20px;"
+            required>
+
+        <input type="password" placeholder="Kata sandi baru" id="newPassword"
+            style="width:97%; margin-bottom:15px; padding:20px; border-radius:5px; border:1px solid #ccc; font-size:20px;"
+            required>
+
+        <input type="password" placeholder="Konfirmasi kata sandi" id="confirmPassword"
+            style="width:97%; margin-bottom:25px; padding:20px; border-radius:5px; border:1px solid #ccc; font-size:20px;"
+            required>
+
+        <!-- TOMBOL SIMPAN (TIDAK DIUBAH) -->
+        <button onclick="submitPasswordChange()"
+            style="width:500px; padding:20px; background-color:#000080; color:white; border:none; border-radius:8px; font-size:20px;">
+            Simpan
+        </button>
+
+        <br><br>
+
+        <!-- TOMBOL KEMBALI (UKURAN SAMA) -->
+        <button onclick="showSettings()"
+            style="width:500px; padding:20px; background-color:#000080; color:white; border:none; border-radius:8px; font-size:20px;">
+            Kembali
+        </button>
     </div>
 </div>
+
 
 <!-- Halaman Konfirmasi Kata Sandi Berhasil -->
 <div id="passwordSuccessSection" style="display: none; background-color: #00002c; color: white; min-height: 100vh; padding: 30px 20px; text-align: center;">
@@ -1051,7 +1288,6 @@ if (namaDonatur) {
         }
 
         function showNotifications() {
-            document.getElementById('donationForm').style.display = 'none';
             document.getElementById('notificationSection').style.display = 'block';
             document.getElementById('profileSection').style.display = 'none';
             document.getElementById('settingsSection').style.display = 'none';
@@ -1059,7 +1295,6 @@ if (namaDonatur) {
         }
 
         function showProfile() {
-            document.getElementById('donationForm').style.display = 'none';
             document.getElementById('notificationSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'block';
             document.getElementById('settingsSection').style.display = 'none';
@@ -1067,18 +1302,9 @@ if (namaDonatur) {
         }
 
         function showSettings() {
-             hideAllSections();
-            document.getElementById('settingsSection').style.display = 'block';
-            // Pastikan tidak ada elemen lain yang tertinggal
-            document.getElementById('editAccountSection').style.display = 'none';
-            document.getElementById('changeEmailSection').style.display = 'none';
-            document.getElementById('emailSuccessSection').style.display = 'none';
-            document.getElementById('changePasswordSection').style.display = 'none';
-            document.getElementById('passwordSuccessSection').style.display = 'none';
-            document.getElementById('privacySection').style.display = 'none';
-            document.getElementById('deleteAccountConfirm').style.display = 'none';
-            document.getElementById('deleteSuccess').style.display = 'none';
-        }
+    hideAllSections();
+    document.getElementById("settingsSection").style.display = "block";
+}
 
         function previewFotoProfil(event) {
             const input = event.target;
@@ -1092,7 +1318,6 @@ if (namaDonatur) {
         }
 
         function showHelp() {
-            document.getElementById('donationForm').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
             document.getElementById('notificationSection').style.display = 'none';
             document.getElementById('profileSection').style.display = 'none';
@@ -1102,15 +1327,9 @@ if (namaDonatur) {
         }
         
         function showTerms() {
-            document.getElementById('donationForm').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('notificationSection').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'none';
-            document.getElementById('settingsSection').style.display = 'none';
-            document.getElementById('helpSection').style.display = 'none';
-            document.getElementById('termsSection').style.display = 'block';
-            document.querySelector('.donation-history').style.display = 'none';
-        }
+    hideAllSections();
+    document.getElementById("termsSection").style.display = "block";
+}
         // Tambahkan fungsi konfirmasi logout di JavaScript
         function confirmLogout() {
             const confirmation = confirm("Apakah Anda yakin ingin logout?");
@@ -1276,22 +1495,6 @@ function submitEmailChange() {
     });
 }
 
-function hideAllSections() {
-    const sections = [
-        'dashboardSection', 'bookListSection', 'bookDetailSection', 
-        'notificationSection', 'profileSection', 'notificationsSection',
-        'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
-        'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
-        'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
-        'deleteSuccess'
-    ];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-}
-
-
 
 function showChangePassword() {
     hideAllSections();
@@ -1383,17 +1586,10 @@ function goToHome() {
 }
 
 function hideAllSections() {
-    const sections = ['donationForm', 'successMessage', 'notificationSection', 'profileSection', 'settingsSection', 'editAccountSection', 'helpSection', 'termsSection', 'deleteAccountConfirm', 'deleteSuccess'];
-    sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-} 
-
-function hideAllSections() {
     const sections = [
         "homeSection",
         "riwayatSection",
+        "statusSection",
         "notificationSection",
         "profileSection",
         "settingsSection",
@@ -1413,17 +1609,25 @@ function hideAllSections() {
         const el = document.getElementById(id);
         if (el) el.style.display = "none";
     });
+}
+
 
     document.querySelectorAll(".bottom-nav button").forEach(btn => {
         btn.classList.remove("active-tab");
     });
-}
+
 
 function showHome() {
     hideAllSections();
+
     document.getElementById("homeSection").style.display = "block";
-    document.getElementById("tabHome").classList.add("active-tab");
+
+    // 🔥 WAJIB: kembalikan isi home
+    document.getElementById("donationForm").style.display = "block";
+    document.getElementById("successMessage").style.display = "none";
 }
+
+
 
 function showRiwayat() {
     hideAllSections();
@@ -1446,14 +1650,6 @@ function showProfile() {
     hideAllSections();
     document.getElementById("profileSection").style.display = "block";
     document.getElementById("tabProfile").classList.add("active-tab");
-}
-
-function hideAllSections() {
-    document.getElementById("homeSection").style.display = "none";
-    document.getElementById("riwayatSection").style.display = "none";
-    document.getElementById("statusSection").style.display = "none";
-    document.getElementById("notificationSection").style.display = "none";
-    document.getElementById("profileSection").style.display = "none";
 }
 
         </script>  
