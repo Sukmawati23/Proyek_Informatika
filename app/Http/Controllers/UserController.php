@@ -202,16 +202,14 @@ class UserController extends Controller
         }
         // Update password
         $user->password = Hash::make($validated['new_password']);
-
         $user->save();
 
+        //Login ulang user dengan password baru
+        Auth::login($user); // Ini memperbarui sesi dengan credentials terbaru
 
-        // PERBAIKAN UTAMA: Login ulang user dengan password baru
-        Auth::login($user); // Login ulang user dengan data terbaru
         return response()->json([
             'success' => true,
             'message' => 'Kata sandi berhasil diperbarui.',
-
         ]);
     }
 
