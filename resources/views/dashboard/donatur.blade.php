@@ -1516,10 +1516,33 @@ function submitPasswordChange() {
         return;
     }
 
-    // Simulasi validasi berhasil
-    document.getElementById('changePasswordSection').style.display = 'none';
-    document.getElementById('passwordSuccessSection').style.display = 'block';
+    fetch('/profile/change-password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            current_password: current,           // ✅ benar
+            new_password: newPass,              // ✅ benar
+            new_password_confirmation: confirmPass // ✅ benar
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Kata sandi berhasil diperbarui.');
+            showSettings();
+        } else {
+            alert(data.message || 'Gagal mengganti kata sandi. Silakan coba lagi.');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Terjadi kesalahan. Coba lagi.');
+    });
 }
+
 
 function showPrivacy() {
     hideAllSections();
