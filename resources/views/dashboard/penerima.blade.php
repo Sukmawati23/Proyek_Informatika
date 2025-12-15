@@ -276,6 +276,12 @@
             opacity: 0.7;
         }
 
+        .book-title {
+            margin: 0;
+            font-size: 25px;
+            font-weight: 600;
+            color: #ffffffff;
+        }
         /* Pengaturan */
         #settingsSection {
             display: none;
@@ -330,6 +336,24 @@
             transform: translateX(22px);
         }
 
+        .btn-ulasan {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #d3d2d2ff;
+            border: 2px solid #021d5cff; /* biru elegan */
+            color: #162e6eff;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .btn-ulasan:hover {
+            background: #1e3a8a;
+            color: white;
+        }
+
+
         /* Responsive */
         @media (max-width: 768px) {
             .card-book {
@@ -369,10 +393,11 @@
         <img src="LOGO-SDB.png" class="logo" alt="Logo">
         <h2 id="userName">Halo,  {{ $user->name }}!</h2>
 
-        <div class="card-book" id="cardBook">
-            <img src="icon-daftar-buku.png" alt="Icon Daftar Buku">
-            <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()">Daftar Buku</a>
-        </div>
+       <div class="card-book" id="cardBook">
+    <img src="icon-daftar-buku.png" alt="Icon Daftar Buku" class="book-icon">
+    <a href="#daftar-buku" class="btn-daftar" onclick="showBookList()"> Daftar Buku</a>
+</div>
+
 
         <h3>Tabel Status Permintaan</h3>
 <div class="status-box" id="statusSection">
@@ -381,6 +406,7 @@
             <tr>
                 <th>Judul Buku</th>
                 <th>Status</th>
+                <th>Ulasan</th>
             </tr>
         </thead>
         <tbody>
@@ -390,7 +416,9 @@
         <td>{{ ucfirst($pengajuan->status) }}</td>
         <td>
             @if($pengajuan->status === 'disetujui')
-                <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn btn-sm btn-warning">Beri Ulasan</a>
+        <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn-ulasan">
+            Beri Ulasan
+        </a>
             @endif
         </td>
     </tr>
@@ -402,23 +430,29 @@
 
    <!-- Bagian baru: Tombol Chat dengan Donatur -->
 @if($pengajuans->where('status', 'disetujui')->isNotEmpty())
-    <div class="chat-section" style="margin-top: 30px; padding: 20px; background-color: #00008070; border-radius: 10px;">
-        <h3>Chat dengan Donatur</h3>
+    <div class="chat-section mt-6 p-4 rounded-lg bg-blue-900/60 text-white">
+        
+    <!-- Navigasi Bawah -->
+    <div class="nav">
+        <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
+        <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
+        <i class="fas fa-user" title="Profil" onclick="showProfile()"></i>
+    </div>
+
         @foreach($pengajuans->where('status', 'disetujui') as $pengajuan)
             @php
-                $buku = $pengajuan->buku;
-                $donasi = $buku->donasi;
-                // Cari room chat yang sesuai
-                $room = \App\Models\ChatRoom::where('donasi_id', $donasi->id)
-                    ->where('penerima_id', $pengajuan->user_id)
-                    ->first();
+                $buku = $pengajuan->buku ?? null;
+                $donasi = $buku?->donasi ?? null;
+                $room = $pengajuan->chatRoom ?? null; // ✅ idealnya dari relasi
             @endphp
-            @if($room)
-                <div style="background:#00008070; padding:15px; margin-bottom:15px; border-radius:8px; color:white;">
-                    <strong>Buku:</strong> {{ $buku->judul }}<br>
-                    <strong>Donatur:</strong> {{ $donasi->user?->name ?? '-' }}<br>
-                    <a href="{{ route('chat.show', $room) }}" 
-                       style="color:white; font-weight:bold; text-decoration:underline; display:inline-block; margin-top:5px;">
+
+            @if($room && $buku && $donasi)
+                <div class="p-3 mb-3 rounded bg-blue-800/60">
+                    <div><strong>Buku:</strong> {{ $buku->judul }}</div>
+                    <div><strong>Donatur:</strong> {{ $donasi->user?->name ?? '-' }}</div>
+
+                    <a href="{{ route('chat.show', $room->id) }}"
+                       class="inline-block mt-2 underline font-medium">
                         Masuk Chat
                     </a>
                 </div>
@@ -427,9 +461,11 @@
     </div>
 @endif
 
+
     <!-- Daftar Buku -->
     <div id="bookListSection" style="display: none;" class="container fade-in">
         <h3>Daftar Buku</h3>
+        
         <div class="search-box">
             <input 
                 type="text" 
@@ -485,6 +521,7 @@
             <p>Permintaan buku Anda telah berhasil diajukan.</p>
             <button class="btn-daftar" onclick="kembaliKeBeranda()">Kembali ke Beranda</button>
         </div>
+        <div id="notifContainer"></div>
     </div>
 
     <!-- Profil -->
@@ -504,31 +541,57 @@
             <div onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </div>
     </div>
+<!-- Notifikasi -->
+<div id="notificationsSection" class="fade-in" style="display:none">
 
-    <!-- Notifikasi -->
-    <div id="notificationsSection" class="fade-in">
-        <img src="bell-icon.png" alt="Notifikasi" style="width:100px; display:block; margin:auto;">
+    <img src="bell-icon.png" alt="Notifikasi"
+         style="width:100px; display:block; margin:auto;">
 
-        <h2>Notifikasi</h2>
-       <!-- Di dalam loop @foreach($notifications as $notif) -->
-<div class="notif-box" style="background:#00008070; padding:20px; margin-bottom:20px; border-radius:10px; color:white;">
-    <strong>• {{ $notif->pesan }}</strong>
-    <div style="margin-top:8px; font-size:14px; opacity:0.8;">
-        {{ $notif->created_at->format('d M Y, H:i') }}
-    </div>
-    <!-- TOMBOL CHAT KANAN -->
-    @if($notif->chatRoom)
-        <div style="text-align:right; margin-top:-25px;">
-            <a href="{{ route('chat.show', $notif->chatRoom) }}" class="chat-link">Masuk Chat</a>
+    <h2>Notifikasi</h2>
+
+    @if($notifications->count() > 0)
+
+        @foreach($notifications as $notif)
+            <div class="notif-box"
+                 style="background:#00008070; padding:20px; margin-bottom:20px;
+                        border-radius:10px; color:white;">
+
+                <strong>• {{ $notif->pesan }}</strong>
+
+                <div style="margin-top:8px; font-size:14px; opacity:0.8;">
+                    {{ $notif->created_at->format('d M Y, H:i') }}
+                </div>
+
+                @if($notif->chatRoom)
+                    <div style="text-align:right; margin-top:10px;">
+                        <a href="{{ route('chat.show', $notif->chatRoom) }}"
+                         class="btn-ulasan"> Masuk Chat
+                        </a>
+
+                    </div>
+                @endif
+
+            </div>
+        @endforeach
+
+    @else
+        <!-- ✅ EMPTY STATE -->
+        <div style="
+            margin-top:30px;
+            padding:30px;
+            background:#f1f5f9;
+            border-radius:10px;
+            text-align:center;
+            color:#334155;
+        ">
+            <p style="margin:0; font-size:16px;">
+                📭 Belum ada notifikasi
+            </p>
         </div>
     @endif
-</div>
-@endforeach
 
-        @if($notifications->isEmpty())
-            <p class="text-center text-white mt-4">Belum ada notifikasi.</p>
-        @endif
-    </div>
+</div>
+
 
     <!-- Pengaturan Akun -->
     <div id="settingsSection" class="fade-in">
@@ -685,7 +748,7 @@
     <div id="passwordSuccessSection" style="display: none;" class="fade-in">
         <h2 style="color:white; text-align: center;">Kata Sandi Berhasil Diubah</h2>
         <div style="background-color:#00008070; color:black; border-radius:10px; padding:30px; margin: 20px;">
-            <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; display:block:margin: 0 auto 15px auto;" />
+            <img src="https://img.icons8.com/ios-filled/100/26e07f/checkmark--v1.png" style="width:80px; display:block:margin: 0 auto 15px auto;"/>
             <p style="font-weight:bold; font-size:20px; text-align: center;color:white;">Kata sandi Anda telah berhasil diperbaharui.</p>
             <button onclick="showSettings()" style="margin-top:20px; padding:20px; background-color:#000080; color:white; border:none; border-radius:5px;Font-size:20px;width:500px;">
                 Kembali ke Pengaturan
@@ -747,14 +810,9 @@
                 Kembali ke Beranda
             </button>
         </div>
+        
     </div>
 
-    <!-- Navigasi Bawah -->
-    <div class="nav">
-        <i class="fas fa-home" title="Home" onclick="showDashboard()"></i>
-        <i class="fas fa-bell" title="Notifikasi" onclick="showNotifications()"></i>
-        <i class="fas fa-user" title="Profil" onclick="showProfile()"></i>
-    </div>
 
     <script>
         let books = [];
@@ -962,11 +1020,14 @@
             displayBooks(filtered);
         }
 
-        function showNotifications() {
-            hideAllSections();
-            document.getElementById('notificationsSection').style.display = 'block';
-            loadNotifications(); // 
-        }
+     function showNotifications() {
+    hideAllSections();
+    const el = document.getElementById('notificationsSection');
+    if (el) {
+        el.style.display = 'block';
+    }
+}
+
 
         function showProfile() {
             hideAllSections();
@@ -1241,17 +1302,34 @@
                 window.location.href = '/login';
             }
         }
+function hideAllSections() {
+    const sections = [
+        'dashboardSection',
+        'bookListSection',
+        'bookDetailSection',
+        'notificationSection',
+        'profileSection',
+        'notificationsSection',
+        'settingsSection',
+        'helpSection',
+        'termsSection',
+        'editAccountSection',
+        'changeEmailSection',
+        'emailSuccessSection',
+        'changePasswordSection',
+        'passwordSuccessSection',
+        'privacySection',
+        'deleteAccountConfirm',
+        'deleteSuccess'
+    ];
 
-                function hideAllSections() {
-            const sections = [
-                'dashboardSection', 'bookListSection', 'bookDetailSection', 
-                'notificationSection', 'profileSection', 'notificationsSection',
-                'settingsSection', 'helpSection', 'termsSection', 'editAccountSection',
-                'changeEmailSection', 'emailSuccessSection', 'changePasswordSection',
-                'passwordSuccessSection', 'privacySection', 'deleteAccountConfirm',
-                'deleteSuccess'
-            ].forEach(id => document.getElementById(id).style.display = 'none');
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = 'none';
         }
+    });
+}
 
         // parsing yang lebih aman
 function parseServerDateToUTC(dateStr) {

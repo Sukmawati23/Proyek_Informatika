@@ -36,20 +36,23 @@ class DonasiController extends Controller
 
 
         // ✅ Buat entri Buku
-        $buku = Buku::create([
-            'user_id'      => $donasi->user_id,
-            'donasi_id'    => $donasi->id,
-            'judul'        => $donasi->judul_buku,
+    $buku = Buku::updateOrCreate(
+    ['donasi_id' => $donasi->id], // KUNCI UNIK
+    [
+        'user_id'      => $donasi->user_id,
+        'judul'        => $donasi->judul_buku,
+        'penulis'      => $donasi->penulis,
+        'kategori'     => $donasi->kategori,
+        'penerbit'     => $donasi->penerbit,
+        'tahun_terbit' => now()->year,
+        'deskripsi'    => $donasi->deskripsi ?? '',
+        'foto'         => $donasi->foto ?? null,
+        'status_buku'  => 'tersedia', 
+        'penerima_id' => null,
 
-            'penulis'      => $donasi->penulis,     // ← FIX
-            'kategori'     => $donasi->kategori,
-            'status_buku'  => 'tersedia',
-            'penerbit'     => $donasi->penerbit,   // ← FIX
+    ]
+);
 
-            'tahun_terbit' => now()->year,
-            'deskripsi'    => $donasi->deskripsi ?? '',
-            'foto'         => $donasi->foto ?? null,
-        ]);
 
 
         // ✅ Kirim notifikasi
@@ -125,6 +128,17 @@ class DonasiController extends Controller
         $donasi = Donasi::findOrFail($id);
         $oldStatus = $donasi->status; // jika butuh logging
         $donasi->update(['status' => $request->status]);
+
+        if ($request->status === 'terkirim') {
+            Buku::where('donasi_id', $donasi->id)
+                ->update(['status_buku' => 'terkirim']);
+        }
+
+        if ($request->status === 'diverifikasi') {
+            Buku::where('donasi_id', $donasi->id)
+                ->update(['status_buku' => 'tersedia']);
+        }
+
 
         $donaturId  = $donasi->user_id;
         $penerimaId = $donasi->penerima_id;

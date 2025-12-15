@@ -25,14 +25,18 @@ class ChatController extends Controller
 
     public function show(ChatRoom $room)
     {
-        // Cek akses: hanya donatur & penerima yang terlibat bisa akses
         if (!in_array(Auth::id(), [$room->donatur_id, $room->penerima_id])) {
             abort(403);
         }
 
-        $messages = $room->messages()->with('sender')->latest()->paginate(20);
+        $messages = $room->messages()
+            ->with('sender')
+            ->oldest() // ⬅️ PENTING: urut dari lama ke baru
+            ->get();
+
         return view('chat.show', compact('room', 'messages'));
     }
+
 
     public function sendMessage(Request $request, ChatRoom $room)
     {

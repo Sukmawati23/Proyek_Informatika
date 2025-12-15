@@ -267,6 +267,25 @@
         border-radius: 24px;
         }
 
+        .btn-ulasan {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #ffffff;
+            border: 2px solid #1e3a8a;
+            color: #1e3a8a;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .btn-ulasan:hover {
+            background: #1e3a8a;
+            color: white;
+        }
+</style>
+
+
     </style>
 </head>
 <body>
@@ -432,7 +451,9 @@
     <div>{{ $notif->created_at->format('d M Y, H:i') }}</div>
     @if($notif->chatRoom)
         <div style="text-align:right; margin-top:-25px;">
-            <a href="{{ route('chat.show', $notif->chatRoom) }}" class="chat-link">Masuk Chat</a>
+        <a href="{{ route('chat.show', $notif->chatRoom) }}" class="btn-ulasan">
+            Masuk Chat
+        </a>
         </div>
     @endif
 </div>
