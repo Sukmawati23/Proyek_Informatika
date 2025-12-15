@@ -1177,11 +1177,6 @@
         alert('Terjadi kesalahan. Cek koneksi dan coba lagi.');
     });
 }
-        function showChangePassword() {
-            hideAllSections();
-            document.getElementById('changePasswordSection').style.display = 'block';
-        }
-
         function submitPasswordChange() {
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPassword').value;
@@ -1205,45 +1200,34 @@
 
     // Kirim ke backend
     fetch('/profile/change-password', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            current_password: currentPassword,
-            new_password: newPassword,
-            new_password_confirmation: confirmPassword // opsional, tapi aman
-        })
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({
+        current_password: currentPassword,
+        new_password: newPassword,
+        new_password_confirmation: confirmPassword
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw err; });
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // ✅ Update localStorage hanya untuk tampilan (opsional)
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            // 🔐 Jangan simpan password dalam bentuk teks! Cukup bersihkan/abaikan.
-            // userData.password = null; // jangan simpan
-            localStorage.setItem('userData', JSON.stringify(userData));
-
-            // Tampilkan sukses
-            hideAllSections();
-            document.getElementById('passwordSuccessSection').style.display = 'block';
-            alert(data.message || 'Kata sandi berhasil diperbarui.');
-        } else {
-            alert(data.message || 'Gagal mengganti kata sandi.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const msg = error.message || error.error || 'Terjadi kesalahan. Silakan coba lagi.';
-        alert(`Gagal mengganti kata sandi: ${msg}`);
-    });
+})
+.then(response => response.json())
+.then(data => {
+    if (data.success) {
+        alert('Kata sandi berhasil diperbarui.');
+        // 🔥 Opsional: Redirect ke login jika ingin force re-login
+        // window.location.href = '/login';
+        showSettings(); // atau kembali ke halaman pengaturan
+    } else {
+        alert(data.message || 'Gagal mengganti kata sandi. Silakan coba lagi.');
+    }
+})
+.catch(err => {
+    console.error(err);
+    alert('Terjadi kesalahan. Coba lagi.');
+});
 }
+
         function showPrivacy() {
             hideAllSections();
             document.getElementById('privacySection').style.display = 'block';
