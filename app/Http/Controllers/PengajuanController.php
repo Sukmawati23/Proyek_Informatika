@@ -77,36 +77,24 @@ class PengajuanController extends Controller
         ]);
 
         try {
-            $pengajuan = Pengajuan::with('buku')->findOrFail($id);
+        $pengajuan = Pengajuan::with('buku')->findOrFail($id);
 
-            // Update status pengajuan
-            $pengajuan->update(['status' => $request->status]);
+        // Update status pengajuan
+        $pengajuan->update(['status' => $request->status]);
 
+        $judulBuku = $pengajuan->buku->judul ?? '[Judul tidak tersedia]';
 
-            /**
-             * ❗ FIX PENTING:
-             * Jangan ubah status buku saat pengajuan disetujui / ditolak.
-             * Buku tetap TERSIMPAN sebagai 'tersedia'
-             * sampai admin memilih siapa yang akhirnya menerima buku (fitur lain).
-             */
-
-
-            // Buat notifikasi
-            $judulBuku = $pengajuan->buku->judul ?? '[Judul tidak tersedia]';
-
-            $pesan = $request->status === 'disetujui'
-                ? "Pengajuan buku \"{$judulBuku}\" telah disetujui."
-                : "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin.";
-
+        // ❌ Notifikasi hanya jika DITOLAK
+        if ($request->status === 'ditolak') {
             Notifikasi::create([
                 'user_id' => $pengajuan->user_id,
-                'pesan'   => $pesan
+                'pesan'   => "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin."
             ]);
-
-            // ✅ Trigger event jika disetujui
-            if ($request->status === 'disetujui') {
-                event(new PengajuanDisetujui($pengajuan));
-            }
+        }
+          // ✅ Event hanya jika DISETUJUI
+        if ($request->status === 'disetujui') {
+            event(new PengajuanDisetujui($pengajuan));
+        }
 
             return response()->json([
                 'success' => true,
