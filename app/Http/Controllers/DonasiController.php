@@ -36,22 +36,22 @@ class DonasiController extends Controller
 
 
         // ✅ Buat entri Buku
-    $buku = Buku::updateOrCreate(
-    ['donasi_id' => $donasi->id], // KUNCI UNIK
-    [
-        'user_id'      => $donasi->user_id,
-        'judul'        => $donasi->judul_buku,
-        'penulis'      => $donasi->penulis,
-        'kategori'     => $donasi->kategori,
-        'penerbit'     => $donasi->penerbit,
-        'tahun_terbit' => now()->year,
-        'deskripsi'    => $donasi->deskripsi ?? '',
-        'foto'         => $donasi->foto ?? null,
-        'status_buku'  => 'tersedia', 
-        'penerima_id' => null,
+        $buku = Buku::updateOrCreate(
+            ['donasi_id' => $donasi->id], // KUNCI UNIK
+            [
+                'user_id'      => $donasi->user_id,
+                'judul'        => $donasi->judul_buku,
+                'penulis'      => $donasi->penulis,
+                'kategori'     => $donasi->kategori,
+                'penerbit'     => $donasi->penerbit,
+                'tahun_terbit' => now()->year,
+                'deskripsi'    => $donasi->deskripsi ?? '',
+                'foto'         => $donasi->foto ?? null,
+                'status_buku'  => 'tersedia',
+                'penerima_id' => null,
 
-    ]
-);
+            ]
+        );
 
 
 
@@ -164,13 +164,26 @@ class DonasiController extends Controller
 
         return back()->with('success', 'Status donasi berhasil diperbarui.');
     }
-    public function reject($id)
+    // app/Http/Controllers/DonasiController.php
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'alasan_penolakan' => 'required|string|max:500',
+        ]);
+
         $donasi = Donasi::findOrFail($id);
-        $donasi->update(['status' => 'ditolak']);
-        $penerimaId = $donasi->penerima_id;
-        $donaturId = $donasi->user_id; // Buat notifikasi ke donatur 
-        Notifikasi::create(['user_id' => $donaturId, 'partner_id' => $penerimaId, 'pesan' => "❌ Donasi buku \"{$donasi->judul_buku}\" ditolak. Silakan hubungi admin untuk info lebih lanjut",]);
-        return back()->with('warning', 'Donasi berhasil ditolak.');
+        $donasi->update([
+            'status' => 'ditolak',
+            'alasan_penolakan' => $request->alasan_penolakan,
+        ]);
+
+        // Kirim notifikasi ke donatur
+        $pesan = "❌ Donasi buku \"{$donasi->judul_buku}\" ditolak. Alasan: {$request->alasan_penolakan}";
+        Notifikasi::create([
+            'user_id' => $donasi->user_id,
+            'pesan' => $pesan,
+        ]);
+
+        return back()->with('warning', 'Donasi berhasil ditolak dengan alasan.');
     }
 }

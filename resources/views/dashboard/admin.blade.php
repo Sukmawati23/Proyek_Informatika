@@ -753,10 +753,9 @@
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Verifikasi</button>
                             </form>
-                            <form action="{{ route('admin.donasi.reject', $donasi->id) }}" method="POST" style="display:inline">
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin tolak donasi ini?')">Tolak</button>
-                            </form>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="openRejectModal({{ $donasi->id }})">
+    Tolak
+</button>
                         @endif
                         <button class="btn btn-primary btn-sm" onclick="showDonationDetail({{ $donasi->id }})">Detail</button>
                         <button class="btn btn-secondary btn-sm" onclick="deleteDonation({{ $donasi->id }})">Hapus</button>
@@ -1408,6 +1407,35 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('editPenerimaModal').style.display='none';">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Tolak Donasi -->
+<div id="rejectModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:600px;">
+        <div class="modal-header">
+            <h3>Tolak Donasi</h3>
+            <span class="close" onclick="closeRejectModal()">&times;</span>
+        </div>
+        <form id="rejectForm" method="POST">
+            @csrf
+            <input type="hidden" name="donasi_id" id="rejectDonasiId">
+            <div class="form-group">
+                <label><strong>Alasan Penolakan</strong></label><br>
+                <select name="alasan_penolakan" id="rejectReasonSelect" class="form-control" onchange="toggleCustomReason()">
+                    <option value="">-- Pilih Alasan --</option>
+                    <option value="Buku tidak sesuai kategori">Buku tidak sesuai kategori</option>
+                    <option value="Kondisi buku rusak parah">Kondisi buku rusak parah</option>
+                    <option value="Informasi donasi tidak lengkap">Informasi donasi tidak lengkap</option>
+                    <option value="lainnya">Lainnya (isi manual)</option>
+                </select>
+                <textarea name="alasan_penolakan" id="customRejectReason" class="form-control mt-2" rows="3" placeholder="Tulis alasan penolakan..." style="display:none;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Batal</button>
+                <button type="submit" class="btn btn-danger">Tolak Donasi</button>
             </div>
         </form>
     </div>
@@ -2238,6 +2266,55 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
 });
 
 
+function openRejectModal(donasiId) {
+    document.getElementById('rejectDonasiId').value = donasiId;
+    document.getElementById('rejectReasonSelect').value = '';
+    document.getElementById('customRejectReason').style.display = 'none';
+    document.getElementById('customRejectReason').value = '';
+    document.getElementById('rejectModal').style.display = 'block';
+}
+
+function closeRejectModal() {
+    document.getElementById('rejectModal').style.display = 'none';
+}
+
+function toggleCustomReason() {
+    const select = document.getElementById('rejectReasonSelect');
+    const custom = document.getElementById('customRejectReason');
+    if (select.value === 'lainnya') {
+        custom.style.display = 'block';
+        custom.name = 'alasan_penolakan';
+        select.removeAttribute('name');
+    } else {
+        custom.style.display = 'none';
+        custom.removeAttribute('name');
+        select.setAttribute('name', 'alasan_penolakan');
+    }
+}
+
+// Tangani submit form
+document.getElementById('rejectForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const donasiId = form.querySelector('[name="donasi_id"]').value;
+    const formData = new FormData(form);
+    fetch(`/admin/donasi/${donasiId}/reject`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message || 'Donasi berhasil ditolak.');
+        location.reload(); // refresh halaman
+    })
+    .catch(err => {
+        alert('Terjadi kesalahan. Coba lagi.');
+        console.error(err);
+    });
+});
 </script>
 </body>
 </html>

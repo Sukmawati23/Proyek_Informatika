@@ -12,12 +12,12 @@ class Donasi extends Model
     use HasFactory;
 
     protected $casts = [
-        'tanggal' => 'date', 
+        'tanggal' => 'date',
     ];
 
     protected $fillable = [
         'user_id',
-        'penerima_id',      
+        'penerima_id',
         'judul_buku',
         'kategori',
         'kondisi',
@@ -28,6 +28,7 @@ class Donasi extends Model
         'deskripsi',
         'tanggal',
         'status',
+        'alasan_penolakan',
     ];
 
     // Relasi ke donatur (alias clearer dari `user()`)
