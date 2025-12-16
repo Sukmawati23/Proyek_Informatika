@@ -658,6 +658,10 @@ body {
                     {{ \Carbon\Carbon::parse($donasi->tanggal)->format('d M Y') }}
                 </small>
 
+                @if($donasi->status === 'ditolak' && $donasi->alasan_penolakan)
+    <br><span style="font-size:0.85em; color:red;">❌ Alasan: {{ $donasi->alasan_penolakan }}</span>
+@endif
+
                 <br><span style="font-size:0.85em; color:#555;">Penulis: {{ $donasi->penulis ?? '-' }}</span>
                 <br><span style="font-size:0.85em; color:#555;">Penerbit: {{ $donasi->penerbit ?? '-' }}</span>
 
