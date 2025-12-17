@@ -6,7 +6,9 @@
     <title>Dashboard Admin</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Bootstrap JS (WAJIB) -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         :root {
             --primary-color:#00002c;
@@ -814,16 +816,56 @@
                     </select>
                 </td>
                 <td>
-                    <div class="action-buttons">
-                        <button class="btn btn-primary btn-sm" onclick="showPengajuanDetail({{ $pengajuan->id }})">Detail</button>
-                        <button class="btn btn-danger btn-sm" onclick="deletePengajuan({{ $pengajuan->id }})">Hapus</button>
-                    </div>
-                </td>
+    <div class="action-buttons">
+        <button class="btn btn-primary btn-sm" onclick="showPengajuanDetail({{ $pengajuan->id }})">Detail</button>
+        <!-- Ganti tombol Hapus dengan Tombol Tolak yang membuka modal -->
+        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectPengajuanModal{{ $pengajuan->id }}">
+            Tolak
+        </button>
+    </div>
+</td>
             </tr>
             @endforeach
         </tbody>
     </table>
+</div> 
+
+<!-- SEMUA MODAL DIPINDAH KE SINI, DI LUAR TABEL -->
+@foreach($verifications as $pengajuan)
+<div class="modal fade" id="rejectPengajuanModal{{ $pengajuan->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tolak Pengajuan: {{ $pengajuan->buku?->judul ?? 'Buku Tidak Dikenal' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.pengajuan.reject', $pengajuan->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Alasan Penolakan</label>
+                        <select class="form-control" name="alasan" id="alasanSelectPengajuan{{ $pengajuan->id }}" required>
+                            <option value="">-- Pilih Alasan --</option>
+                            <option value="Buku tidak sesuai kategori">Buku tidak sesuai kategori</option>
+                            <option value="Kondisi buku rusak parah">Kondisi buku rusak parah</option>
+                            <option value="Informasi pengajuan tidak lengkap">Informasi pengajuan tidak lengkap</option>
+                            <option value="lainnya">Lainnya (isi manual)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="alasanLainnyaPengajuan{{ $pengajuan->id }}" style="display:none;">
+                        <label>Alasan Lainnya</label>
+                        <textarea name="alasan_lain" class="form-control" placeholder="Tuliskan alasan..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Tolak Pengajuan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+@endforeach
 
             <!-- Bagian 2: Daftar Buku yang Didonasikan -->
 <div class="card">
@@ -2313,6 +2355,20 @@ document.getElementById('rejectForm').addEventListener('submit', function(e) {
     .catch(err => {
         alert('Terjadi kesalahan. Coba lagi.');
         console.error(err);
+    });
+});
+
+document.querySelectorAll('[id^="alasanSelectPengajuan"]').forEach(select => {
+    select.addEventListener('change', function() {
+        const id = this.id.replace('alasanSelectPengajuan', '');
+        const lainnyaDiv = document.getElementById('alasanLainnyaPengajuan' + id);
+        if (this.value === 'lainnya') {
+            lainnyaDiv.style.display = 'block';
+            lainnyaDiv.querySelector('textarea').setAttribute('required', 'required');
+        } else {
+            lainnyaDiv.style.display = 'none';
+            lainnyaDiv.querySelector('textarea').removeAttribute('required');
+        }
     });
 });
 </script>

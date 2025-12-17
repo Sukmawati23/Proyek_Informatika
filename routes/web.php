@@ -109,6 +109,9 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::post('/admin/pengajuan/{id}/status', [PengajuanController::class, 'updateStatus'])
         ->name('admin.pengajuan.status');
 
+    Route::post('/admin/pengajuan/{id}/reject', [PengajuanController::class, 'reject'])
+        ->name('admin.pengajuan.reject');
+
     // Route untuk menampilkan semua aktivitas
     Route::get('/admin/activities', [DashboardController::class, 'allActivities'])->name('admin.activities');
 

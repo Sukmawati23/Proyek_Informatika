@@ -419,7 +419,12 @@
         <a href="{{ route('ulasan.form', $pengajuan->id) }}" class="btn-ulasan">
             Beri Ulasan
         </a>
-            @endif
+        @elseif($pengajuan->status === 'ditolak')
+            <br>
+            <span style="color:red; font-size:0.9em;">
+                🚫 Dit<strong>olak</strong>: {{ $pengajuan->alasan ?? 'Tidak ada alasan diberikan.' }}
+            </span>
+        @endif
         </td>
     </tr>
 @endforeach
