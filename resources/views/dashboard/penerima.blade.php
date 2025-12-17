@@ -914,7 +914,11 @@
 
             const emailNotif = localStorage.getItem('emailNotif') === 'true';
             document.getElementById('emailNotifCheckbox').checked = emailNotif;
-            
+            const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterBooks);
+    }
+
             // ✅ Panggil setelah semua siap
             fetchBukuTersedia();
         });
@@ -1002,30 +1006,25 @@
         }
 
         function filterBooks() {
-            const input = document.getElementById('searchInput');
-            const q = (input.value || '').toLowerCase().trim();
+    const input = document.getElementById('searchInput');
+    const q = (input.value || '').toLowerCase().trim();
 
-            // Kalau kosong → tampilkan semua buku lagi
-            if (!q) {
-                displayBooks(books);
-                return;
-            }
+    if (!q) {
+        displayBooks(books);
+        return;
+    }
 
-            // Kalau yang keisi itu email (ada @) → anggap tidak valid, tampilkan semua
-            if (q.includes('@')) {
-                displayBooks(books);
-                return;
-            }
+    // Filter berdasarkan: judul, kategori, penulis
+    const filtered = books.filter(book => 
+        book.title.toLowerCase().includes(q) ||
+        book.category.toLowerCase().includes(q) ||
+        book.author.toLowerCase().includes(q)
+    );
 
-            const filtered = books.filter(b =>
-                b.title.toLowerCase().includes(q) ||
-                b.category.toLowerCase().includes(q) ||
-                b.author.toLowerCase().includes(q)
-            );
-            displayBooks(filtered);
-        }
+    displayBooks(filtered);
+}
 
-     function showNotifications() {
+    function showNotifications() {
     hideAllSections();
     const el = document.getElementById('notificationsSection');
     if (el) {
