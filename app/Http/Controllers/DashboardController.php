@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use App\Models\Review;
 use App\Models\Report;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class DashboardController extends Controller
@@ -214,33 +215,25 @@ class DashboardController extends Controller
         exit;
     }
 
-    // === Helper: Ekspor ke PDF ===
+    // === Helper: Ekspor ke PDF menggunakan DomPDF ===
     private function exportToPDF($data, $type, $filename)
     {
-        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' . $filename . '</title></head><body>';
-        $html .= '<h2>' . $filename . '</h2>';
-        $html .= '<table border="1" cellpadding="5" cellspacing="0">';
-        $html .= '<thead><tr>';
-        foreach ($this->getReportHeaders($type) as $header) {
-            $html .= "<th>{$header}</th>";
-        }
-        $html .= '</tr></thead><tbody>';
-        foreach ($data as $item) {
-            $html .= '<tr>';
-            foreach ($this->getReportRow($item, $type) as $cell) {
-                $html .= "<td>" . htmlspecialchars($cell ?? '-') . "</td>";
-            }
-            $html .= '</tr>';
-        }
-        $html .= '</tbody></table></body></html>';
 
-        return response($html, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => "inline; filename={$filename}.pdf",
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Pragma' => 'no-cache',
-            'Expires' => '0'
-        ]);
+
+        // Siapkan data untuk view
+        $viewData = [
+            'title' => "Laporan {$type}",
+            'headers' => $this->getReportHeaders($type),
+            'rows' => $data,
+            'type' => $type,
+        ];
+
+        // Render view ke dalam PDF
+        $pdf = Pdf::loadView('admin.report-template', $viewData)
+            ->setPaper('a4', 'landscape'); // Atur ukuran kertas
+
+        // Download PDF
+        return $pdf->download("{$filename}.pdf");
     }
 
     // === Helper: Mendapatkan header laporan ===
@@ -311,10 +304,8 @@ class DashboardController extends Controller
         $report = Report::findOrFail($id);
         $report->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Laporan berhasil dihapus.'
-        ]);
+        // Redirect kembali ke halaman laporan dengan pesan sukses
+        return redirect()->route('laporan')->with('success', 'Laporan berhasil dihapus.');
     }
 
     public function allActivities()
