@@ -77,24 +77,24 @@ class PengajuanController extends Controller
         ]);
 
         try {
-        $pengajuan = Pengajuan::with('buku')->findOrFail($id);
+            $pengajuan = Pengajuan::with('buku')->findOrFail($id);
 
-        // Update status pengajuan
-        $pengajuan->update(['status' => $request->status]);
+            // Update status pengajuan
+            $pengajuan->update(['status' => $request->status]);
 
-        $judulBuku = $pengajuan->buku->judul ?? '[Judul tidak tersedia]';
+            $judulBuku = $pengajuan->buku->judul ?? '[Judul tidak tersedia]';
 
-        // ❌ Notifikasi hanya jika DITOLAK
-        if ($request->status === 'ditolak') {
-            Notifikasi::create([
-                'user_id' => $pengajuan->user_id,
-                'pesan'   => "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin."
-            ]);
-        }
-          // ✅ Event hanya jika DISETUJUI
-        if ($request->status === 'disetujui') {
-            event(new PengajuanDisetujui($pengajuan));
-        }
+            // ❌ Notifikasi hanya jika DITOLAK
+            if ($request->status === 'ditolak') {
+                Notifikasi::create([
+                    'user_id' => $pengajuan->user_id,
+                    'pesan'   => "Pengajuan buku \"{$judulBuku}\" ditolak oleh admin."
+                ]);
+            }
+            // ✅ Event hanya jika DISETUJUI
+            if ($request->status === 'disetujui') {
+                event(new PengajuanDisetujui($pengajuan));
+            }
 
             return response()->json([
                 'success' => true,
@@ -108,5 +108,25 @@ class PengajuanController extends Controller
                 'message' => 'Gagal memperbarui status.',
             ], 500);
         }
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $request->validate([
+            'alasan' => 'required|string',
+            'alasan_lain' => 'required_if:alasan,lainnya|string|max:500'
+        ]);
+
+        $pengajuan = Pengajuan::with('user', 'buku')->findOrFail($id);
+        $alasan = $request->alasan === 'lainnya' ? $request->alasan_lain : $request->alasan;
+
+        $pengajuan->update(['status' => 'ditolak', 'alasan' => $alasan]);
+
+        Notifikasi::create([
+            'user_id' => $pengajuan->user_id,
+            'pesan' => "Pengajuan buku \"{$pengajuan->buku->judul}\" ditolak.\nAlasan: {$alasan}",
+        ]);
+
+        return back()->with('warning', 'Pengajuan berhasil ditolak dengan alasan: ' . $alasan);
     }
 }
