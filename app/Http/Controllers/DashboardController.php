@@ -147,7 +147,6 @@ class DashboardController extends Controller
     public function downloadReport($id)
     {
         $report = Report::findOrFail($id);
-
         $type = $report->type;
         $startDate = $report->start_date;
         $endDate = $report->end_date;
@@ -159,41 +158,48 @@ class DashboardController extends Controller
         if ($format === 'excel') {
             return $this->exportToExcel($data, $type, $filename);
         } else {
-            return $this->exportToPDF($data, $type, $filename);
+            return $this->exportToPDF($data, $type, $filename, $startDate, $endDate); // ← tambahkan $startDate, $endDate
         }
     }
 
     private function getReportData($type, $startDate, $endDate)
     {
-        switch ($type) {
-            case 'donatur':
-                return User::where('role', 'donatur')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
-            case 'penerima':
-                return User::where('role', 'penerima')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'name', 'email', 'alamat', 'telepon', 'is_active', 'created_at']);
-            case 'donasi':
-                return Donasi::with('user')
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->orderBy('tanggal', 'desc')
-                    ->get(['id', 'judul_buku', 'kategori', 'status', 'tanggal', 'user_id']);
-            case 'verifikasi':
-                return Pengajuan::with(['user', 'buku'])
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->orderBy('tanggal', 'desc')
-                    ->get(['id', 'user_id', 'buku_id', 'status', 'tanggal']);
-            case 'ulasan':
-                return Review::with(['reviewer', 'reviewed'])
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->orderBy('created_at', 'desc')
-                    ->get(['id', 'reviewer_id', 'reviewed_id', 'rating', 'comment', 'created_at']);
-            default:
-                return collect();
+        $query = match ($type) {
+            'donatur' => User::where('role', 'donatur'),
+            'penerima' => User::where('role', 'penerima'),
+            'donasi' => Donasi::with('user'),
+            'verifikasi' => Pengajuan::with(['user', 'buku']),
+            'ulasan' => Review::with(['reviewer', 'reviewed']),
+            default => collect(),
+        };
+
+        // Hanya tambahkan whereBetween jika startDate dan endDate tidak null
+        if ($startDate && $endDate) {
+            $dateColumn = match ($type) {
+                'donatur', 'penerima' => 'created_at',
+                'donasi' => 'tanggal',
+                'verifikasi', 'ulasan' => 'tanggal',
+                default => null,
+            };
+            if ($dateColumn) {
+                $query->whereBetween($dateColumn, [$startDate, $endDate]);
+            }
         }
+
+        // Urutkan data
+        $orderByColumn = match ($type) {
+            'donatur', 'penerima' => 'created_at',
+            'donasi' => 'tanggal',
+            'verifikasi', 'ulasan' => 'tanggal',
+            default => null,
+        };
+
+        if ($orderByColumn) {
+            $query->orderBy($orderByColumn, 'desc');
+        }
+
+        // Ambil data
+        return $query->get();
     }
 
     private function exportToExcel($data, $type, $filename)
@@ -216,25 +222,30 @@ class DashboardController extends Controller
     }
 
     // === Helper: Ekspor ke PDF menggunakan DomPDF ===
-    private function exportToPDF($data, $type, $filename)
+    private function exportToPDF($data, $type, $filename, $startDate, $endDate)
     {
 
+        $headers = $this->getReportHeaders($type);
 
-        // Siapkan data untuk view
+        // Siapkan data sebagai array 2D (bukan objek Eloquent)
+        $rows = $data->map(function ($item) use ($type) {
+            return $this->getReportRow($item, $type);
+        });
+
         $viewData = [
             'title' => "Laporan {$type}",
-            'headers' => $this->getReportHeaders($type),
-            'rows' => $data,
-            'type' => $type,
+            'headers' => $headers,
+            'rows' => $rows,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
         ];
 
-        // Render view ke dalam PDF
         $pdf = Pdf::loadView('admin.report-template', $viewData)
-            ->setPaper('a4', 'landscape'); // Atur ukuran kertas
+            ->setPaper('a4', 'landscape');
 
-        // Download PDF
         return $pdf->download("{$filename}.pdf");
     }
+
 
     // === Helper: Mendapatkan header laporan ===
     private function getReportHeaders($type)

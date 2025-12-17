@@ -1,4 +1,3 @@
-<!-- resources/views/admin/report-template.blade.php -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -27,31 +26,42 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .empty-note {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h2>{{ $title }}</h2>
-        <p>Dari: {{ $rows->first()?->created_at?->format('d/m/Y H:i') ?? 'N/A' }} - Sampai: {{ $rows->last()?->created_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
+        <p>Dari: {{ \Carbon\Carbon::parse($start_date)->format('d/m/Y') }} 
+           - Sampai: {{ \Carbon\Carbon::parse($end_date)->format('d/m/Y') }}</p>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                @foreach($headers as $header)
-                    <th>{{ $header }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $item)
+    @if($rows->isEmpty())
+        <p class="empty-note">Tidak ada data dalam rentang tanggal tersebut.</p>
+    @else
+        <table>
+            <thead>
                 <tr>
-                    @foreach($this->getReportRow($item, $type) as $cell)
-                        <td>{{ $cell ?? '-' }}</td>
+                    @foreach($headers as $header)
+                        <th>{{ $header }}</th>
                     @endforeach
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($rows as $row)
+                    <tr>
+                        @foreach($row as $cell)
+                            <td>{!! htmlspecialchars($cell ?? '-') !!}</td>
+                        @endforeach
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 </body>
 </html>
