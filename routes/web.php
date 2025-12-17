@@ -125,13 +125,13 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
         ->name('generate.report')
         ->middleware(['auth', 'is_admin']);
 
-    // Rute untuk hapus laporan
-    Route::delete('/reports/{report}', [DashboardController::class, 'deleteReport'])
-        ->name('delete.report');
-
     Route::get('/reports/{id}/download', [DashboardController::class, 'downloadReport'])
         ->name('download.report')
-        ->middleware('auth', 'is_admin');
+        ->middleware(['auth', 'is_admin']);
+
+    Route::delete('/reports/{id}', [DashboardController::class, 'deleteReport'])
+        ->name('delete.report')
+        ->middleware(['auth', 'is_admin']);
 });
 
 // === Hapus User (aman via UserController) ===
